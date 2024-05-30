@@ -1,0 +1,37 @@
+{
+  "name": "bot-rewriter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf ./dist && tsc",
+    "start": "npm run build && node --unhandled-rejections=strict dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@telegraf/types": "^7.1.0",
+    "@types/axios": "^0.14.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^20.12.7",
+    "nodemon": "^3.1.0",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "@types/inversify": "^2.0.33",
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
+    "inversify": "^6.0.2",
+    "pg": "^8.11.5",
+    "pg-hstore": "^2.3.4",
+    "reflect-metadata": "^0.2.2",
+    "sequelize": "^6.37.3",
+    "telegraf": "^4.16.3",
+    "telegraf-session-local": "^2.1.1",
+    "telegram": "^2.20.15"
+  }
+}

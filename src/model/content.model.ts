@@ -1,3 +1,3 @@
-export class ContentModel {
+export interface ContentModel {
     text : string
 }

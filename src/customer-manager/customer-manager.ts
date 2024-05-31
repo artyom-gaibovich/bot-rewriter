@@ -24,6 +24,6 @@ export class CustomerManager implements CustomerManagerInterface{
         const channel = await this.chooseChannelAction.chooseChannel(channels)
         //3) Переписываю контент
         const rewriteText = await this.rewriteContentAction.rewriteContent(channel)
-
+        return {} as RewriteContentResponseModel
     }
 }

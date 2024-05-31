@@ -18,8 +18,11 @@ export class RewriteContentAction implements RewriteContentActionInterface {
         //Здесь может появится потенциальная ошибка, что делать?
         const response  = await axios.post<RewriteContentRequestModel>(this.config.getUrl(), request)
         //На бэкэнде, надо чтобы один только текст выдавался !
+
         return {
-            text : `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi dolore ipsam quo, reiciendis saepe similique sit voluptatem? Aut, fugit labore.`
+            rewriteContent : {
+                text : '1212121'
+            }
         }
 
     }

@@ -23,7 +23,7 @@
   "type": "commonjs",
   "dependencies": {
     "@types/inversify": "^2.0.33",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "inversify": "^6.0.2",
     "pg": "^8.11.5",

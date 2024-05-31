@@ -1,3 +1,6 @@
+import {LinkModel} from "./link.model";
+
 export interface ChannelModel {
-    link : string
+    link : LinkModel
+    channelsToRewrite : LinkModel[]
 }

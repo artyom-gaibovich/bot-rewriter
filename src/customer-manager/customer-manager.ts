@@ -1,19 +1,18 @@
-import {inject, injectable} from "inversify";
 import {CustomerManagerInterface} from "./customer-manager.interface";
 import {UserModel} from "../model/user.model";
 import {RewriteContentResponseModel} from "../model/response/rewrite-content.response.model";
-import {Transaction} from "sequelize";
 import {DI} from "../DI";
 import {ChannelRepositoryInterface} from "./repository/channel.repository.interface";
 import {ChooseChannelActionInterface} from "./actions/choose-channel/choose-channel.action.interface";
 import {RewriteContentActionInterface} from "./actions/rewrite-content/rewrite-content.action.interface";
+import {Inject, Injectable} from "@nestjs/common";
 
-@injectable()
+@Injectable()
 export class CustomerManager implements CustomerManagerInterface{
     constructor(
-        @inject(DI.ChannelRepository) private channelRepository : ChannelRepositoryInterface,
-        @inject(DI.ChooseChannelAction) private chooseChannelAction : ChooseChannelActionInterface,
-        @inject(DI.RewriteContentAction) private rewriteContentAction : RewriteContentActionInterface,
+        @Inject(DI.ChannelRepository) private channelRepository : ChannelRepositoryInterface,
+        @Inject(DI.ChooseChannelAction) private chooseChannelAction : ChooseChannelActionInterface,
+        @Inject(DI.RewriteContentAction) private rewriteContentAction : RewriteContentActionInterface,
     ) {
     }
     async rewriteContent(user: UserModel): Promise<RewriteContentResponseModel> {

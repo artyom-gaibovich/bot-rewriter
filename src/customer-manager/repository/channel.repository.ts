@@ -1,6 +1,5 @@
 import {ChannelRepositoryInterface} from "./channel.repository.interface";
 import {ChannelModel} from "../../model/channel.model";
-import {link} from "telegraf/format";
 
 export class ChannelRepository implements ChannelRepositoryInterface {
     async findById(id: number): Promise<ChannelModel[]> {

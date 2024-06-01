@@ -1,5 +1,10 @@
+import {ChooseChannelAction} from "./customer-manager/actions/choose-channel/choose-channel.action";
+import {RewriteContentActionConfig} from "./config/rewrite-content-action.config";
+
 export const DI = {
     CustomerManager : Symbol('CustomerManager'),
-    ChannelManager : Symbol('ChannelManager'),
-    ContentManager : Symbol('ContentManager'),
+    ChannelRepository : Symbol('ChannelRepository'),
+    ChooseChannelAction : Symbol('ChooseChannelAction'),
+    RewriteContentActionConfig : Symbol('RewriteContentActionConfig'),
+    RewriteContentAction : Symbol(`RewriteContentAction`)
 }

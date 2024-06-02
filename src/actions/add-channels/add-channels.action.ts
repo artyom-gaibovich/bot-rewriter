@@ -2,23 +2,22 @@ import {AddStep, Ctx, Hears, Scene, SceneEnter, SceneLeave} from "nestjs-puregra
 import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
-import {AddChannelsRequestModel} from "../model/request/add-channels.request.model";
-import {SendToCheckChannelsAction} from "./send-to-check-channels.action";
+import {AddChannelsRequestModel} from "../../model/request/add-channels.request.model";
+import {SendToCheckChannelsAction} from "../send-to-check-channels/send-to-check-channels.action";
+import {Inject, Injectable} from "@nestjs/common";
 
 interface AddChannelsInterface extends Record<string, any>{
     userChannel : string
     channels : string[]
 }
 
+@Injectable()
 @Scene('AddChannels')
 export class AddChannelsAction {
 
     constructor(private sendToCheckChannelsAction : SendToCheckChannelsAction) {
     }
-    @Hears('Some')
-    async some(@Ctx() ctx : MessageContext) {
-        await ctx.reply('привет')
-    }
+
     @SceneEnter()
     enter(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<unknown> {
         if (context.scene.step.firstTime) {

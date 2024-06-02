@@ -1,7 +1,7 @@
 import {SendToCheckChannelsActionInterface} from "./send-to-check-channels.action.interface";
-import {AddChannelsRequestModel} from "../model/request/add-channels.request.model";
+import {AddChannelsRequestModel} from "../../model/request/add-channels.request.model";
 import axios, {AxiosResponse} from "axios";
-import {SendToCheckChannelsConfig} from "../config/send-to-check-channels.config";
+import {SendToCheckChannelsConfig} from "../../config/send-to-check-channels/send-to-check-channels.config";
 import {Injectable, Module} from "@nestjs/common";
 
 

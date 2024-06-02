@@ -1,0 +1,80 @@
+import {AddStep, Ctx, Hears, Scene, SceneEnter, SceneLeave} from "nestjs-puregram";
+import {MessageContext} from "puregram";
+import {StepContext} from "@puregram/scenes";
+import {SessionInterface} from "@puregram/session";
+import {AddChannelsRequestModel} from "../model/request/add-channels.request.model";
+import {SendToCheckChannelsAction} from "./send-to-check-channels.action";
+
+interface AddChannelsInterface extends Record<string, any>{
+    userChannel : string
+    channels : string[]
+}
+
+@Scene('AddChannels')
+export class AddChannelsAction {
+
+    constructor(private sendToCheckChannelsAction : SendToCheckChannelsAction) {
+    }
+    @Hears('Some')
+    async some(@Ctx() ctx : MessageContext) {
+        await ctx.reply('привет')
+    }
+    @SceneEnter()
+    enter(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<unknown> {
+        if (context.scene.step.firstTime) {
+            context.scene.state.channels = []
+            return context.send('Welcome!');
+        }
+    }
+    @SceneLeave()
+    async leave(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<void> {
+        //должен быть некий request converter
+
+        const channels : AddChannelsRequestModel = {
+            links : context.context.scene.state.channels.map((el : string) => {
+                return {link : el}
+            })
+        }
+        const response = await this.sendToCheckChannelsAction.send(channels)
+        response.checkedChannels.map(channels => {
+            context.send(`${channels.channelLink}`);
+        })
+
+    }
+    @AddStep(1)
+    async userChannel(@Ctx() context: MessageContext & SessionInterface  & StepContext<AddChannelsInterface>): Promise<unknown> {
+        if (context.scene.step.firstTime || !context.hasText) {
+            return await context.send('Отправь название своего телеграм канала');
+        }
+        context.scene.state.userChannel = context.text
+        return await context.scene.step.next()
+    }
+    @AddStep(2)
+    async firstChannel(@Ctx() context: MessageContext & SessionInterface  & StepContext<AddChannelsInterface>): Promise<unknown> {
+        if (context.scene.step.firstTime || !context.hasText) {
+            return await context.send('Отправь название 1-го канала');
+        }
+        context.scene.state.channels = [...context.scene.state.channels, context.text]
+        return await context.scene.step.next()
+    }
+    @AddStep(3)
+    async secondChannel(@Ctx() context: MessageContext & SessionInterface  & StepContext<AddChannelsInterface>): Promise<unknown> {
+        if (context.scene.step.firstTime || !context.hasText) {
+            return await context.send('Отправь название 2-го канала');
+        }
+        context.scene.state.channels = [...context.scene.state.channels, context.text]
+
+        return await context.scene.step.next()
+    }
+    @AddStep(4)
+    async thirdChannel(@Ctx() context: MessageContext & SessionInterface  & StepContext<AddChannelsInterface>): Promise<unknown> {
+        if (context.scene.step.firstTime || !context.hasText) {
+            console.log(context.scene.state)
+
+            return await context.send('Отправь название 3-го канала');
+        }
+        context.scene.state.channels = [...context.scene.state.channels, context.text]
+        return await context.scene.step.next()
+    }
+
+}

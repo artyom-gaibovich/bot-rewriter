@@ -11,6 +11,7 @@ export class SendToCheckChannelsAction implements SendToCheckChannelsActionInter
     }
     async send(channels: AddChannelsRequestModel): Promise<AddChannelsResponseModel> {
         const response : AxiosResponse = await axios.post<AddChannelsResponseModel>(this.config.get().link, channels)
+        console.log(response.data)
         return response.data as AddChannelsResponseModel
     }
 }

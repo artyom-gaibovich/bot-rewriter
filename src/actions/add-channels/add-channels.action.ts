@@ -1,10 +1,10 @@
-import {AddStep, Ctx, Hears, Scene, SceneEnter, SceneLeave} from "nestjs-puregram";
+import {AddStep, Ctx, Scene, SceneEnter, SceneLeave} from "nestjs-puregram";
 import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
 import {AddChannelsRequestModel} from "../../model/request/add-channels.request.model";
 import {SendToCheckChannelsAction} from "../send-to-check-channels/send-to-check-channels.action";
-import {Inject, Injectable} from "@nestjs/common";
+import {Injectable} from "@nestjs/common";
 
 interface AddChannelsInterface extends Record<string, any>{
     userChannel : string
@@ -27,16 +27,16 @@ export class AddChannelsAction {
     }
     @SceneLeave()
     async leave(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<void> {
-        //должен быть некий request converter
+        //должен быть некий request converter, т.е. надо декомпозировать.
 
         const channels : AddChannelsRequestModel = {
-            links : context.context.scene.state.channels.map((el : string) => {
+            links : context.scene.state.channels.map((el : string) => {
                 return {link : el}
             })
         }
         const response = await this.sendToCheckChannelsAction.send(channels)
         response.checkedChannels.map(channels => {
-            context.send(`${channels.channelLink}`);
+            context.send(`Канал ${channels.channelLink} был` + (channels.isChannelExists ? ' Добавлен' : ' Не был добавлен, т.к. не существует.'));
         })
 
     }

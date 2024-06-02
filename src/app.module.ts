@@ -1,12 +1,12 @@
 import {Module} from '@nestjs/common';
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {TelegramModule} from "nestjs-puregram";
-import {AddChannelsAction} from "./actions/add-channels/add-channels.action";
 import {AddChannelsActionModule} from "./actions/add-channels/add-channels.action.module";
-import {AppController, SomeClass} from "./app.controller";
+import {AppController} from "./app.controller";
 
 @Module({
   imports: [
+      AddChannelsActionModule,
       ConfigModule.forRoot({isGlobal : true}),
       TelegramModule.forRootAsync({
           imports : [ConfigModule],
@@ -17,7 +17,6 @@ import {AppController, SomeClass} from "./app.controller";
       }),
   ],
     providers: [
-        { provide: SomeClass, useValue: new SomeClass('asdasdas') }, // Provide SomeClass with a specific value
         AppController
     ],
 })

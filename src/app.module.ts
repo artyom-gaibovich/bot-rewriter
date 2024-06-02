@@ -3,6 +3,7 @@ import {ConfigModule, ConfigService} from "@nestjs/config";
 import {TelegramModule} from "nestjs-puregram";
 import {AddChannelsActionModule} from "./actions/add-channels/add-channels.action.module";
 import {AppController} from "./app.controller";
+import {RewriteContentAction} from "./actions/rewrite-content/rewrite-content.action";
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import {AppController} from "./app.controller";
       }),
   ],
     providers: [
-        AppController
+        AppController, RewriteContentAction
     ],
 })
 export class AppModule {

@@ -22,12 +22,12 @@ export class AddChannelsAction {
     enter(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<unknown> {
         if (context.scene.step.firstTime) {
             context.scene.state.channels = []
-            return context.send('Welcome!');
+            return context.send('Отправь название своего телеграм канала :)');
         }
     }
     @SceneLeave()
     async leave(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<void> {
-        //должен быть некий request converter, т.е. надо декомпозировать.
+        //должен быть некий request converter
 
         const channels : AddChannelsRequestModel = {
             links : context.scene.state.channels.map((el : string) => {
@@ -36,14 +36,14 @@ export class AddChannelsAction {
         }
         const response = await this.sendToCheckChannelsAction.send(channels)
         response.checkedChannels.map(channels => {
-            context.send(`Канал ${channels.channelLink} был` + (channels.isChannelExists ? ' Добавлен' : ' Не был добавлен, т.к. не существует.'));
+            context.send(`Канал ${channels.channelLink}` + (channels.isChannelExists ? ' был добавлен 🎉' : ' не был добавлен, т.к. не существует, либо вы указали некорректную ссылку.😭'));
         })
 
     }
     @AddStep(1)
     async userChannel(@Ctx() context: MessageContext & SessionInterface  & StepContext<AddChannelsInterface>): Promise<unknown> {
         if (context.scene.step.firstTime || !context.hasText) {
-            return await context.send('Отправь название своего телеграм канала');
+            return await context.send('\n\n Для этого канала мы переписывать контент с других каналов😎😉');
         }
         context.scene.state.userChannel = context.text
         return await context.scene.step.next()

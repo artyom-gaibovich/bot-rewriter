@@ -1,5 +1,5 @@
 import {ChannelRepositoryInterface} from "./channel.repository.interface";
-import {ChannelModel} from "../../model/channel.model";
+import {ChannelModel} from "../model/channel.model";
 
 export class ChannelRepository implements ChannelRepositoryInterface {
     async findById(id: number): Promise<ChannelModel[]> {

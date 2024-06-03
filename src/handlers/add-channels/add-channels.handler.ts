@@ -3,7 +3,7 @@ import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
 import {AddChannelsRequestModel} from "../../model/request/add-channels.request.model";
-import {SendToCheckChannelsAction} from "../send-to-check-channels/send-to-check-channels.action";
+import {SendToCheckChannelsAction} from "../../actions/send-to-check-channels/send-to-check-channels.action";
 import {Injectable} from "@nestjs/common";
 
 interface AddChannelsInterface extends Record<string, any>{
@@ -13,7 +13,7 @@ interface AddChannelsInterface extends Record<string, any>{
 
 @Injectable()
 @Scene('AddChannels')
-export class AddChannelsAction {
+export class AddChannelsHandler {
 
     constructor(private sendToCheckChannelsAction : SendToCheckChannelsAction) {
     }

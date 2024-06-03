@@ -1,16 +1,18 @@
-import {ChannelRepositoryInterface} from "./channel.repository.interface";
 import {ChannelModel} from "../model/channel.model";
-import {AddChannelsRequestModel} from "../model/request/add-channels.request.model";
 import {SendToCheckChannelsAction} from "../actions/send-to-check-channels/send-to-check-channels.action";
 import {AddChannelsConvertRequestAction} from "../actions/convert-request/add-channels-convert-request.action";
 import {LinkModel} from "../model/link.model";
 import {Injectable} from "@nestjs/common";
+import {UserModel} from "../model/user.model";
+import {GetChannelsAction} from "../actions/get-channels/get-channels.action";
+import {GetUserChannelsResponseModel} from "../model/response/get-user-channels.response.model";
 
 @Injectable()
 export class ChannelRepository {
     constructor(
         private sendToCheckChannelsAction : SendToCheckChannelsAction,
-        private addChannelsConvertRequestAction : AddChannelsConvertRequestAction
+        private addChannelsConvertRequestAction : AddChannelsConvertRequestAction,
+        private getChannelsAction : GetChannelsAction,
     ) {
     }
 
@@ -19,17 +21,7 @@ export class ChannelRepository {
             this.addChannelsConvertRequestAction.convert(channelsLinks)
         )
     }
-    async findById(id: number): Promise<ChannelModel[]> {
-        //делаю здесь заглушку
-        return  await new Promise<ChannelModel[]>(resolve => () => {
-            setTimeout(() => {
-                resolve([
-                    {link : {link : 'some_chan'}, channelsToRewrite : [
-                            {link : 'https://t.me/zakodirovanna_telega'},
-                            {link : 'https://t.me/zakodirovanna_telega'}
-                        ]}
-                ])
-            }, 5000)
-        })
+    async findById(user : UserModel): Promise<GetUserChannelsResponseModel> {
+        return await this.getChannelsAction.get(user)
     }
 }

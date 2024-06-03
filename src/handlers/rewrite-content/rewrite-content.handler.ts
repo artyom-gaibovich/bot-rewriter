@@ -3,8 +3,8 @@ import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
 import {UserChannel} from "../../model/response/get-user-channels.response.model";
-import {GetChannelsAction} from "../../actions/get-channels/get-channels.action";
-import {RewriteContentAction} from "../../actions/rewrite-content/rewrite-content.action";
+import {ChannelRepository} from "../../repository/channel.repository";
+import {ContentManager} from "../../manager/content.manager";
 
 interface RewriteContentInterface extends Record<string, any>{
     userChannels : UserChannel[]
@@ -15,11 +15,9 @@ interface RewriteContentInterface extends Record<string, any>{
 @Scene('RewriteContent')
 export class RewriteContentHandler {
     constructor(
-        private readonly getChannelsAction : GetChannelsAction,
-        private readonly rewriteContentAction : RewriteContentAction,
+        private readonly channelRepository : ChannelRepository,
+        private readonly contentManager : ContentManager,
         ) {
-        console.log(this.getChannelsAction)
-        console.log(this.rewriteContentAction)
 
     }
 
@@ -49,15 +47,14 @@ export class RewriteContentHandler {
     async enter(@Ctx() context: MessageContext & StepContext<RewriteContentInterface>): Promise<unknown> {
 
         if (context.scene.step.firstTime) {
-            const response = await this.getChannelsAction.get({userId : context.from.id})
-            context.scene.state.userChannels = response.userChannels
+            context.scene.state.userChannels = (await this.channelRepository.findById({userId : context.from.id})).userChannels
             return context.send('Welcome!');
         }
     }
     @SceneLeave()
     async leave(@Ctx() context: MessageContext & StepContext<RewriteContentInterface>): Promise<void> {
 
-        const response  = await this.rewriteContentAction.rewrite(context.scene.state.chosenChannel.channelsToRewrite)
+        const response  = await this.contentManager.rewrite(context.scene.state.chosenChannel.channelsToRewrite)
         const rewrittenContent = response.channelsWithPosts.map(chn => {
             return chn.posts.join('')
         }).join('')

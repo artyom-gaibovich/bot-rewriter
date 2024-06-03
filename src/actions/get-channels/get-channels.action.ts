@@ -7,7 +7,6 @@ import {GetChannelsActionConfig} from "./get-channels.action.config";
 @Injectable()
 export class GetChannelsAction implements GetChannelsActionInterface {
     constructor(private readonly config : GetChannelsActionConfig) {
-        console.log(this.config)
     }
     async get(user : UserModel) : Promise<GetUserChannelsResponseModel> {
         const responseDataMock : GetUserChannelsResponseModel = {

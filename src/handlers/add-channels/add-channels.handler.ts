@@ -5,10 +5,12 @@ import {SessionInterface} from "@puregram/session";
 import {AddChannelsRequestModel} from "../../model/request/add-channels.request.model";
 import {SendToCheckChannelsAction} from "../../actions/send-to-check-channels/send-to-check-channels.action";
 import {Injectable} from "@nestjs/common";
+import {UserChannel} from "../../model/response/get-user-channels.response.model";
+import {LinkModel} from "../../model/link.model";
 
 interface AddChannelsInterface extends Record<string, any>{
-    userChannel : string
-    channels : string[]
+    userChannel : LinkModel
+    channels : LinkModel[]
 }
 
 @Injectable()
@@ -29,15 +31,17 @@ export class AddChannelsHandler {
     async leave(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<void> {
         //должен быть некий request converter
 
+        //здесь должен быть репозиторий
         const channels : AddChannelsRequestModel = {
-            links : context.scene.state.channels.map((el : string) => {
-                return {link : el}
+            links : context.scene.state.channels.map((link) => {
+                return {link : link.link}
             })
         }
         const response = await this.sendToCheckChannelsAction.send(channels)
         response.checkedChannels.map(channels => {
             context.send(`Канал ${channels.channelLink}` + (channels.isChannelExists ? ' был добавлен 🎉' : ' не был добавлен, т.к. не существует, либо вы указали некорректную ссылку.😭'));
         })
+        console.log(response)
 
     }
     @AddStep(1)
@@ -45,7 +49,9 @@ export class AddChannelsHandler {
         if (context.scene.step.firstTime || !context.hasText) {
             return await context.send('\n\n Для этого канала мы переписывать контент с других каналов😎😉');
         }
-        context.scene.state.userChannel = context.text
+        context.scene.state.userChannel = {
+            link : context.text
+        }
         return await context.scene.step.next()
     }
     @AddStep(2)
@@ -53,7 +59,7 @@ export class AddChannelsHandler {
         if (context.scene.step.firstTime || !context.hasText) {
             return await context.send('Отправь название 1-го канала');
         }
-        context.scene.state.channels = [...context.scene.state.channels, context.text]
+        context.scene.state.channels = [...context.scene.state.channels, {link : context.text}]
         return await context.scene.step.next()
     }
     @AddStep(3)
@@ -61,7 +67,7 @@ export class AddChannelsHandler {
         if (context.scene.step.firstTime || !context.hasText) {
             return await context.send('Отправь название 2-го канала');
         }
-        context.scene.state.channels = [...context.scene.state.channels, context.text]
+        context.scene.state.channels = [...context.scene.state.channels, {link : context.text}]
 
         return await context.scene.step.next()
     }
@@ -72,7 +78,7 @@ export class AddChannelsHandler {
 
             return await context.send('Отправь название 3-го канала');
         }
-        context.scene.state.channels = [...context.scene.state.channels, context.text]
+        context.scene.state.channels = [...context.scene.state.channels, {link : context.text}]
         return await context.scene.step.next()
     }
 

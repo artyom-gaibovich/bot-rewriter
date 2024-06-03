@@ -56,7 +56,6 @@ export class RewriteContentHandler {
     }
     @SceneLeave()
     async leave(@Ctx() context: MessageContext & StepContext<RewriteContentInterface>): Promise<void> {
-        console.log(context.scene.state)
 
         const response  = await this.rewriteContentAction.rewrite(context.scene.state.chosenChannel.channelsToRewrite)
         const rewrittenContent = response.channelsWithPosts.map(chn => {

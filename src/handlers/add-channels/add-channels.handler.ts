@@ -7,6 +7,8 @@ import {SendToCheckChannelsAction} from "../../actions/send-to-check-channels/se
 import {Injectable} from "@nestjs/common";
 import {UserChannel} from "../../model/response/get-user-channels.response.model";
 import {LinkModel} from "../../model/link.model";
+import {AddChannelsConvertRequestAction} from "../../actions/convert-request/add-channels-convert-request.action";
+import {ChannelRepository} from "../../repository/channel.repository";
 
 interface AddChannelsInterface extends Record<string, any>{
     userChannel : LinkModel
@@ -17,7 +19,9 @@ interface AddChannelsInterface extends Record<string, any>{
 @Scene('AddChannels')
 export class AddChannelsHandler {
 
-    constructor(private sendToCheckChannelsAction : SendToCheckChannelsAction) {
+    constructor(
+        private channelRepository : ChannelRepository
+    ) {
     }
 
     @SceneEnter()
@@ -30,14 +34,8 @@ export class AddChannelsHandler {
     @SceneLeave()
     async leave(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<void> {
         //должен быть некий request converter
+        const response = await this.channelRepository.checkByLinks(context.scene.state.channels)
 
-        //здесь должен быть репозиторий
-        const channels : AddChannelsRequestModel = {
-            links : context.scene.state.channels.map((link) => {
-                return {link : link.link}
-            })
-        }
-        const response = await this.sendToCheckChannelsAction.send(channels)
         response.checkedChannels.map(channels => {
             context.send(`Канал ${channels.channelLink}` + (channels.isChannelExists ? ' был добавлен 🎉' : ' не был добавлен, т.к. не существует, либо вы указали некорректную ссылку.😭'));
         })

@@ -2,13 +2,22 @@ import {ChannelRepositoryInterface} from "./channel.repository.interface";
 import {ChannelModel} from "../model/channel.model";
 import {AddChannelsRequestModel} from "../model/request/add-channels.request.model";
 import {SendToCheckChannelsAction} from "../actions/send-to-check-channels/send-to-check-channels.action";
+import {AddChannelsConvertRequestAction} from "../actions/convert-request/add-channels-convert-request.action";
+import {LinkModel} from "../model/link.model";
+import {Injectable} from "@nestjs/common";
 
+@Injectable()
 export class ChannelRepository {
-    constructor(private sendToCheckChannelsAction : SendToCheckChannelsAction) {
+    constructor(
+        private sendToCheckChannelsAction : SendToCheckChannelsAction,
+        private addChannelsConvertRequestAction : AddChannelsConvertRequestAction
+    ) {
     }
 
-    async checkByLinks(channels: AddChannelsRequestModel) : Promise<AddChannelsResponseModel> {
-        return await this.sendToCheckChannelsAction.send(channels)
+    async checkByLinks(channelsLinks: LinkModel[]) : Promise<AddChannelsResponseModel> {
+        return await this.sendToCheckChannelsAction.send(
+            this.addChannelsConvertRequestAction.convert(channelsLinks)
+        )
     }
     async findById(id: number): Promise<ChannelModel[]> {
         //делаю здесь заглушку

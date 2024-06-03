@@ -3,7 +3,7 @@ import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
 import {UserChannel} from "../../model/response/get-user-channels.response.model";
-import {ChannelRepository} from "../../repository/channel.repository";
+import {ChannelRepository} from "../../repository/channel/channel.repository";
 import {ContentManager} from "../../manager/content.manager";
 
 interface RewriteContentInterface extends Record<string, any>{

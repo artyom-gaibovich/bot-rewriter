@@ -1,5 +1,5 @@
 import {GetChannelsActionInterface} from "./get-channels.action.interface";
-import {UserModel} from "../../model/user.model";
+import {UserModel} from "../../model/user/user.model";
 import {GetUserChannelsResponseModel} from "../../model/response/get-user-channels.response.model";
 import {Injectable} from "@nestjs/common";
 import {GetChannelsActionConfig} from "./get-channels.action.config";
@@ -8,6 +8,7 @@ import {GetChannelsActionConfig} from "./get-channels.action.config";
 export class GetChannelsAction implements GetChannelsActionInterface {
 
     async get(user : UserModel) : Promise<GetUserChannelsResponseModel> {
+        //ЗАГЛУШКА
         const responseDataMock : GetUserChannelsResponseModel = {
             userChannels : [
                 {

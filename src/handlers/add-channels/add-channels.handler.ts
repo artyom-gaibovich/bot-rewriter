@@ -6,9 +6,9 @@ import {AddChannelsRequestModel} from "../../model/request/add-channels.request.
 import {SendToCheckChannelsAction} from "../../actions/send-to-check-channels/send-to-check-channels.action";
 import {Injectable} from "@nestjs/common";
 import {UserChannel} from "../../model/response/get-user-channels.response.model";
-import {LinkModel} from "../../model/link.model";
+import {LinkModel} from "../../model/link/link.model";
 import {AddChannelsConvertRequestAction} from "../../actions/convert-request/add-channels-convert-request.action";
-import {ChannelRepository} from "../../repository/channel.repository";
+import {ChannelRepository} from "../../repository/channel/channel.repository";
 
 interface AddChannelsInterface extends Record<string, any>{
     userChannel : LinkModel

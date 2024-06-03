@@ -1,12 +1,13 @@
-import {LinkModel} from "../../model/link.model";
+import {LinkModel} from "../../model/link/link.model";
 import axios from "axios";
 import {RewriteContentResponseNewModel} from "../../model/response/rewrite-content.response.model";
 import {RewriteContentActionConfig} from "./rewrite-content.action.config";
 import {Injectable} from "@nestjs/common";
 import {RewriteContentRequestModel} from "../../model/request/rewrite-content.request.model";
+import {RewriteContentActionInterface} from "./rewrite-content.action.interface";
 
 @Injectable()
-export class RewriteContentAction {
+export class RewriteContentAction implements RewriteContentActionInterface{
     constructor(private config : RewriteContentActionConfig) {
     }
     async rewrite(links : LinkModel[]) : Promise<RewriteContentResponseNewModel> {

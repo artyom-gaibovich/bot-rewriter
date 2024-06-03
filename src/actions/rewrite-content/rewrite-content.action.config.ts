@@ -1,4 +1,4 @@
-import {LinkModel} from "../../model/link.model";
+import {LinkModel} from "../../model/link/link.model";
 import {Injectable} from "@nestjs/common";
 
 @Injectable()

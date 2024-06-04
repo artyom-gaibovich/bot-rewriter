@@ -1,16 +1,16 @@
 import {Module} from "@nestjs/common";
-import {SendToCheckChannelsAction} from "../../actions/send-to-check-channels/send-to-check-channels.action";
-import {AddChannelsConvertRequestAction} from "../../actions/convert-request/add-channels-convert-request.action";
+import {ChannelMockRepository} from "./channel-mock.repository";
 
 @Module({
-    imports : [GetChannelsActionsModule],
     providers : [
-        SendToCheckChannelsAction,
-        AddChannelsConvertRequestAction,
-        GetChannelsAction,
-        ChannelRepository,
+        {
+            provide : 'CUSTOM_MOCK_REPOSITORY',
+            useFactory: () => {
+                return new ChannelMockRepository()
+            }
+        }
     ],
-    exports : [SendToCheckChannelsAction,AddChannelsConvertRequestAction, GetChannelsAction, ChannelRepository]
+    exports : [`CUSTOM_MOCK_REPOSITORY`]
 })
 export class ChannelRepositoryModule {
 

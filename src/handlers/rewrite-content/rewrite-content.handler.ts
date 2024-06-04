@@ -2,9 +2,10 @@ import {AddStep, Ctx, Scene, SceneEnter, SceneLeave} from "nestjs-puregram";
 import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
-import {UserChannel} from "../../model/response/get-user-channels.response.model";
-import {ChannelRepository} from "../../repository/channel/channel.repository";
-import {ContentManager} from "../../manager/content.manager";
+import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
+import {ContentRewriterInterface} from "../../rewriter/content.rewriter.interface";
+import {UserChannel} from "../../repository/channel/channel.model";
+import {Inject} from "@nestjs/common";
 
 interface RewriteContentInterface extends Record<string, any>{
     userChannels : UserChannel[]
@@ -12,11 +13,12 @@ interface RewriteContentInterface extends Record<string, any>{
 }
 
 
+
 @Scene('RewriteContent')
 export class RewriteContentHandler {
     constructor(
-        private readonly channelRepository : ChannelRepository,
-        private readonly contentManager : ContentManager,
+        @Inject('CUSTOM_MOCK_REPOSITORY') private readonly repository : ChannelMockRepository,
+        @Inject('CUSTOM_CONTENT_REWRITER') private readonly rewriter : ContentRewriterInterface,
         ) {
 
     }
@@ -45,19 +47,17 @@ export class RewriteContentHandler {
     }
     @SceneEnter()
     async enter(@Ctx() context: MessageContext & StepContext<RewriteContentInterface>): Promise<unknown> {
-
         if (context.scene.step.firstTime) {
-            context.scene.state.userChannels = (await this.channelRepository.findById({userId : context.from.id})).userChannels
+            context.scene.state.userChannels = (await this.repository.findById(context.from.id)).userChannels
             return context.send('Welcome!');
         }
     }
     @SceneLeave()
     async leave(@Ctx() context: MessageContext & StepContext<RewriteContentInterface>): Promise<void> {
 
-        const response  = await this.contentManager.rewrite(context.scene.state.chosenChannel.channelsToRewrite)
-        const rewrittenContent = response.channelsWithPosts.map(chn => {
-            return chn.posts.join('')
-        }).join('')
+        const rewrittenContent  = (await this.rewriter.rewrite({
+            channelsToRewrite : context.scene.state.chosenChannel.channelsToRewrite
+        })).rewrittenContent
         await this.sendContentInChunks(rewrittenContent, context, 2000)
     }
     @AddStep(1)

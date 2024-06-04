@@ -1,14 +1,12 @@
 import {Module} from "@nestjs/common";
-import {RewriteContentActionModule} from "../../actions/rewrite-content/rewrite-content.action.module";
-import {GetChannelsActionModule} from "../../actions/get-channels/get-channels.action.module";
+import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
+import {ContentRewriter} from "../../rewriter/content.rewriter";
 import {RewriteContentHandler} from "./rewrite-content.handler";
-import {ChannelRepository} from "../../repository/channel/channel.repository";
+import {ContentRewriterModule} from "../../rewriter/content.rewriter.module";
 import {ChannelRepositoryModule} from "../../repository/channel/channel.repository.module";
-import {ContentManagerModule} from "../../manager/content.manager.module";
-import {ContentManager} from "../../manager/content.manager";
 
 @Module({
-    imports: [ChannelRepositoryModule, ContentManagerModule],
-    providers : [ChannelRepository, ContentManager, RewriteContentHandler]
+    imports: [ContentRewriterModule, ChannelRepositoryModule],
+    providers : [RewriteContentHandler]
 })
 export class RewriteContentHandlerModule {}

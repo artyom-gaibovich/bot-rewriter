@@ -2,13 +2,9 @@ import {AddStep, Ctx, Scene, SceneEnter, SceneLeave} from "nestjs-puregram";
 import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
-import {AddChannelsRequestModel} from "../../model/request/add-channels.request.model";
-import {SendToCheckChannelsAction} from "../../actions/send-to-check-channels/send-to-check-channels.action";
-import {Injectable} from "@nestjs/common";
-import {UserChannel} from "../../model/response/get-user-channels.response.model";
+import {Inject, Injectable} from "@nestjs/common";
 import {LinkModel} from "../../model/link/link.model";
-import {AddChannelsConvertRequestAction} from "../../actions/convert-request/add-channels-convert-request.action";
-import {ChannelRepository} from "../../repository/channel/channel.repository";
+import {ChannelCheckerInterface} from "../../checker/channel.checker.interface";
 
 interface AddChannelsInterface extends Record<string, any>{
     userChannel : LinkModel
@@ -19,9 +15,8 @@ interface AddChannelsInterface extends Record<string, any>{
 @Scene('AddChannels')
 export class AddChannelsHandler {
 
-    constructor(
-        private channelRepository : ChannelRepository
-    ) {
+
+    constructor(@Inject('CUSTOM_CHANNEL_CHECKER') private checker : ChannelCheckerInterface) {
     }
 
     @SceneEnter()
@@ -34,12 +29,11 @@ export class AddChannelsHandler {
     @SceneLeave()
     async leave(@Ctx() context: MessageContext & StepContext<AddChannelsInterface>): Promise<void> {
         //должен быть некий request converter
-        const response = await this.channelRepository.checkByLinks(context.scene.state.channels)
+        const checkedChannels = (await this.checker.checkByLinks(context.scene.state.channels)).checkedChannels
 
-        response.checkedChannels.map(channels => {
+        checkedChannels.map(channels => {
             context.send(`Канал ${channels.channelLink}` + (channels.isChannelExists ? ' был добавлен 🎉' : ' не был добавлен, т.к. не существует, либо вы указали некорректную ссылку.😭'));
         })
-        console.log(response)
 
     }
     @AddStep(1)

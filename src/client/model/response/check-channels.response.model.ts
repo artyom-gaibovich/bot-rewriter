@@ -4,6 +4,6 @@ interface ChannelStatus {
     isChannelExists: boolean;
 }
 
-interface AddChannelsResponseModel {
+interface CheckChannelsResponse {
     checkedChannels: ChannelStatus[];
 }

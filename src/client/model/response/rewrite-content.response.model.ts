@@ -7,6 +7,6 @@ interface RewriteContent {
     status: string;
 }
 
-export interface RewriteContentResponseNewModel {
+export interface RewriteContentResponseModel {
     channelsWithPosts: RewriteContent[];
 }

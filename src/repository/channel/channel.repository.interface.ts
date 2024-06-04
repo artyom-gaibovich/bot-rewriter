@@ -4,6 +4,5 @@ import {GetUserChannelsResponseModel} from "../../model/response/get-user-channe
 import {LinkModel} from "../../model/link/link.model";
 
 export interface ChannelRepositoryInterface {
-    checkByLinks(channelsLinks: LinkModel[]) : Promise<AddChannelsResponseModel>
     findById(user : UserModel): Promise<GetUserChannelsResponseModel>
 }

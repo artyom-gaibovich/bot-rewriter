@@ -11,17 +11,11 @@ import {ChannelRepositoryInterface} from "./channel.repository.interface";
 @Injectable()
 export class ChannelRepository implements ChannelRepositoryInterface{
     constructor(
-        private sendToCheckChannelsAction : SendToCheckChannelsAction,
-        private addChannelsConvertRequestAction : AddChannelsConvertRequestAction,
         private getChannelsAction : GetChannelsAction,
     ) {
     }
 
-    async checkByLinks(channelsLinks: LinkModel[]) : Promise<AddChannelsResponseModel> {
-        return await this.sendToCheckChannelsAction.send(
-            this.addChannelsConvertRequestAction.convert(channelsLinks)
-        )
-    }
+
     async findById(user : UserModel): Promise<GetUserChannelsResponseModel> {
         return await this.getChannelsAction.get(user)
     }

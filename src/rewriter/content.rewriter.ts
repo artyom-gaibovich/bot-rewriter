@@ -13,7 +13,8 @@ export class ContentRewriter implements ContentRewriterInterface {
         const response = await this.client.rewriteContent({
             url : this.url,
             body: {
-                links : channelsToRewrite.channelsToRewrite
+                links : channelsToRewrite.channelsToRewrite,
+                limit : 3
             }
         })
         return {

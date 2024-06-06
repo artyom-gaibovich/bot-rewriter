@@ -24,7 +24,6 @@ export class RewriteContentAction {
     }
 
     private async sendContentInChunks(rewrittenContent: string, @Ctx() context: MessageContext, interval: number) {
-        //Приватный метод, который позволяет обойти ограничение телегарма в 4000 символомов.
         let startIndex = 0;
         const sendChunks = async function* () {
             while (startIndex < rewrittenContent.length) {

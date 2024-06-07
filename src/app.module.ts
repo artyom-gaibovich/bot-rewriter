@@ -1,13 +1,11 @@
 import {Module} from '@nestjs/common';
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {TelegramModule} from "nestjs-puregram";
-import {AddChannelsActionModule} from "./actions/add-channels/add-channels.action.module";
-import {AppController} from "./app.controller";
-import {RewriteContentAction} from "./actions/rewrite-content/rewrite-content.action";
+import {TelegramBotModule} from "./telegram-bot/telegram-bot.module";
 
 @Module({
   imports: [
-      AddChannelsActionModule,
+      TelegramBotModule,
       ConfigModule.forRoot({isGlobal : true}),
       TelegramModule.forRootAsync({
           imports : [ConfigModule],
@@ -17,9 +15,7 @@ import {RewriteContentAction} from "./actions/rewrite-content/rewrite-content.ac
           })
       }),
   ],
-    providers: [
-        AppController, RewriteContentAction
-    ],
+    providers: [],
 })
 export class AppModule {
 

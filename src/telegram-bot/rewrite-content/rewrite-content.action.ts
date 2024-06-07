@@ -2,10 +2,11 @@ import {AddStep, Ctx, Scene, SceneEnter, SceneLeave} from "nestjs-puregram";
 import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
-import {ChannelMockRepository} from "../../../repository/channel/channel-mock.repository";
-import {ContentRewriterInterface} from "../../../rewriter/content.rewriter.interface";
-import {UserChannel} from "../../../repository/channel/channel.model";
+import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
+import {ContentRewriterInterface} from "../../rewriter/content.rewriter.interface";
+import {UserChannel} from "../../repository/channel/channel.model";
 import {Inject} from "@nestjs/common";
+import {KeyboardInterface} from "../keyboard/keyboard.interface";
 
 interface RewriteContentInterface extends Record<string, any>{
     userChannels : UserChannel[]
@@ -19,6 +20,7 @@ export class RewriteContentAction {
     constructor(
         @Inject('CUSTOM_MOCK_REPOSITORY') private readonly repository : ChannelMockRepository,
         @Inject('CUSTOM_CONTENT_REWRITER') private readonly rewriter : ContentRewriterInterface,
+        @Inject('MAIN_KEYBOARD') private keyboard : KeyboardInterface,
         ) {
 
     }
@@ -58,6 +60,9 @@ export class RewriteContentAction {
             channelsToRewrite : telegramContext.scene.state.chosenChannel.channelsToRewrite
         })).rewrittenContent
         await this.sendContentInChunks(rewrittenContent, telegramContext, 2000)
+        await telegramContext.send('Выберите дальнейшее дейсвтие', {
+            reply_markup : this.keyboard
+        })
     }
     @AddStep(1)
     async userChannel(@Ctx() telegramContext: MessageContext & SessionInterface  & StepContext<RewriteContentInterface>): Promise<unknown> {
@@ -78,7 +83,7 @@ export class RewriteContentAction {
         })
 
         if (!chosenChannel) {
-            await telegramContext.send('Некорректная ссылка. Введите канал, предоженный из списка')
+            await telegramContext.send('Некорректная ссылка. Введите канал, предложенный из списка')
         }
         else {
             telegramContext.scene.state.chosenChannel = chosenChannel

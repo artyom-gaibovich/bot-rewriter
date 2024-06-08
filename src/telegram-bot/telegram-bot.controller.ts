@@ -13,9 +13,15 @@ export class TelegramBotController {
     }
     @Hears('/start')
     async start(@Ctx() telegramContext: MessageContext & StepContext) {
-        await telegramContext.send('Вас приветствует бот для копирайтинга контента с других телеграм каналов!')
+        await telegramContext.send('Бот: На вашем тарифе можно добавить 3 канала разных тематик ')
         await telegramContext.send('Что вас интересует?', {
-            reply_markup : this.keyboard
+            reply_markup : {
+                keyboard : [
+                    [{text : 'Добавить каналы'}],
+                    [{text : 'Назад'}],
+                ],
+                resize_keyboard : true,
+            }
         })
 
     }
@@ -23,8 +29,9 @@ export class TelegramBotController {
     async signup(@Ctx() telegramContext: MessageContext & StepContext): Promise<unknown> {
         return telegramContext.scene.enter('AddChannels');
     }
-    @Hears('Переписать контент')
+
+    /*@Hears('Переписать контент')
     async rewrite(@Ctx() telegramContext: MessageContext & StepContext): Promise<unknown> {
         return telegramContext.scene.enter('RewriteContent');
-    }
+    }*/
 }

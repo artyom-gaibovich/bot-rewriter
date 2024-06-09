@@ -1,5 +1,5 @@
 import {Module} from "@nestjs/common";
-import {LinkModel} from "../model/link/link.model";
+import {LinkInterface} from "../model/link/link.interface";
 import {ContentAgencyClient} from "../client/content-agency.client";
 import {ContentRewriter} from "../rewriter/content.rewriter";
 import {ChannelChecker} from "./channel.checker";

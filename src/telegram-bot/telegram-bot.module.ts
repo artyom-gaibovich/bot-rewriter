@@ -1,12 +1,18 @@
 import {Module} from "@nestjs/common";
-import {AddChannelsActionModule} from "./add-channels/add-channels.action.module";
-import {RewriteContentActionModule} from "./rewrite-content/rewrite-content.action.module";
 import {TelegramBotController} from "./telegram-bot.controller";
 import {MainPageKeyboard} from "./keyboard/keyboard";
-import {KeyboardInterface} from "./keyboard/keyboard.interface";
+import {ActivateCodeScene} from "./scenes/activate-code-scene";
+import {MainScene} from "./scenes/main-scene";
+import {ImproveLimitsScene} from "./scenes/improve-limits-scene";
+import {SupportScene} from "./scenes/support-scene";
+import {MainChannelScene} from "./scenes/main-channel-scene";
+import {AddUserChannelScene} from "./scenes/add-user-channel-scene";
+import {MainChannelsToRewriteScene} from "./scenes/main-channels-to-rewrite-scene";
+import {EditChannelToRewriteScene} from "./scenes/edit-channel-to-rewrite-scene";
+import {AddChannelToRewriteScene} from "./scenes/add-channel-to-rewrite-scene";
 
 @Module({
-    imports : [AddChannelsActionModule, RewriteContentActionModule],
+    imports : [AddChannelToRewriteScene, EditChannelToRewriteScene, AddUserChannelScene, MainChannelsToRewriteScene, MainChannelScene, ActivateCodeScene, MainScene, ImproveLimitsScene, SupportScene],
     providers : [{
         provide : 'MAIN_KEYBOARD',
         useFactory : () => {

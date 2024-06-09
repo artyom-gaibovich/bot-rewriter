@@ -1,9 +1,9 @@
-import {LinkModel} from "../../../model/link/link.model";
+import {LinkInterface} from "../../../model/link/link.interface";
 
 export interface RewriteContentRequestModel {
-    url : LinkModel,
+    url : LinkInterface,
     body : {
-        links : LinkModel[]
+        links : LinkInterface[]
         limit? : number,
     }
 

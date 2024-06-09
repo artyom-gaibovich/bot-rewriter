@@ -1,8 +1,9 @@
-import {LinkModel} from "../../model/link/link.model";
+import {LinkInterface} from "../../model/link/link.interface";
+import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
 
 export interface UserChannel {
-    userChannel : LinkModel
-    channelsToRewrite : LinkModel[]
+    userChannel : ChannelLinkInterface
+    channelsToRewrite : ChannelLinkInterface[]
 }
 export interface UserChannels {
     userChannels : UserChannel[]

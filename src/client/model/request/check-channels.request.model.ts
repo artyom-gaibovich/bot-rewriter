@@ -1,8 +1,8 @@
-import {LinkModel} from "../../../model/link/link.model";
+import {LinkInterface} from "../../../model/link/link.interface";
 
 export interface CheckChannelsRequestModel {
-    url : LinkModel
+    url : LinkInterface
     body : {
-        links : LinkModel[]
+        links : LinkInterface[]
     }
 }

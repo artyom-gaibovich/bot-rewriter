@@ -1,14 +1,14 @@
 import {ChannelCheckerInterface} from "./channel.checker.interface";
-import {LinkModel} from "../model/link/link.model";
+import {LinkInterface} from "../model/link/link.interface";
 import {ContentAgencyClientInterface} from "../client/content-agency.client.interface";
 import {Injectable} from "@nestjs/common";
 
 @Injectable()
 export class ChannelChecker implements ChannelCheckerInterface {
 
-    constructor(private url : LinkModel, private client : ContentAgencyClientInterface ) {
+    constructor(private url : LinkInterface, private client : ContentAgencyClientInterface ) {
     }
-    async checkByLinks(links: LinkModel[]): Promise<CheckedChannelsModel> {
+    async checkByLinks(links: LinkInterface[]): Promise<CheckedChannelsModel> {
         const response = await this.client.checkChannels({
             url : this.url,
             body : {

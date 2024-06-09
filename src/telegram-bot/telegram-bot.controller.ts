@@ -1,9 +1,8 @@
 import {Ctx, Hears, Update} from "nestjs-puregram";
-import {MessageContext} from "puregram";
-import {StepContext} from "@puregram/scenes";
 import {KeyboardInterface} from "./keyboard/keyboard.interface";
-import {ReplyMarkupUnion} from "puregram/lib/generated";
 import {Inject, Injectable} from "@nestjs/common";
+import {TelegramContextModel} from "./model/telegram-context-model";
+import {ACTIVATE_CODE_SCENE, MAIN_CHANNEL_SCENE} from "./scenes/scenes.types";
 
 
 @Update()
@@ -12,19 +11,10 @@ export class TelegramBotController {
     constructor(@Inject('MAIN_KEYBOARD') private keyboard : KeyboardInterface) {
     }
     @Hears('/start')
-    async start(@Ctx() telegramContext: MessageContext & StepContext) {
-        await telegramContext.send('Вас приветствует бот для копирайтинга контента с других телеграм каналов!')
-        await telegramContext.send('Что вас интересует?', {
-            reply_markup : this.keyboard
-        })
+    //БАГ С ДОБАВЛЕНИЕМ КАНАЛОВ ЕСТЬ
+    async start(@Ctx() telegramContext: TelegramContextModel) {
+        await telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
+    }
 
-    }
-    @Hears('Добавить каналы')
-    async signup(@Ctx() telegramContext: MessageContext & StepContext): Promise<unknown> {
-        return telegramContext.scene.enter('AddChannels');
-    }
-    @Hears('Переписать контент')
-    async rewrite(@Ctx() telegramContext: MessageContext & StepContext): Promise<unknown> {
-        return telegramContext.scene.enter('RewriteContent');
-    }
+
 }

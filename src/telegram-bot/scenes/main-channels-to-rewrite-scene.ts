@@ -15,6 +15,7 @@ import {ContentAgencyClient} from "../../client/content-agency.client";
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
     foundUserChannel : UserChannel
     channelsToRewrite : ChannelLinkInterface[] //НАДО ТИПИЗИРОВАТЬ, ЧТО ЭТО КАНАЛЫ ДЛЯ ПЕРЕПИСЫВАНИЯ
+    generatedContent : string
 }
 
 export type MainChannelsToRewriteSceneContext = TelegramContextModel & StepContext<MainChannelsToRewriteSceneInterface>
@@ -35,13 +36,15 @@ export class MainChannelsToRewriteScene {
     async zeroStep(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
         const foundUserChannel = telegramContext.scene.state.foundUserChannel
 
-        if (telegramContext.text === 'Генерировать контент') {
+        if (telegramContext.text === 'Генерировать контент' || telegramContext.text === 'Перегенерировать контент') {
+            //если Перегенерировать контент - я сделаю логику такую, чтобы уже другой запрос шёл.
             const contentRewriter = new ContentRewriter({link : 'http://localhost:4000/channels/posts'}, new ContentAgencyClient())
             const rewrittenContent = await contentRewriter.rewrite({
                 channelsToRewrite : telegramContext.scene.state.channelsToRewrite
             })
             await telegramContext.reply(rewrittenContent.rewrittenContent.slice(0,4000))
             await telegramContext.reply('Контент был успешно сгенерирован')
+            telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent
         }
         if (telegramContext.text === 'Назад') {
             return telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
@@ -76,9 +79,8 @@ export class MainChannelsToRewriteScene {
             return [{text : chn.link}]
         })
         const rewriteContentKeyboard = [
-            [{text : 'Генерировать контент'}]
+            [{text : telegramContext.scene.state.generatedContent ? 'Перегенерировать контент' : 'Генерировать контент'}]
         ]
-
         const addChannelKeyboard = [
             [{text : 'Добавить подканал'}],
         ]

@@ -11,6 +11,7 @@ export class TelegramBotController {
     constructor(@Inject('MAIN_KEYBOARD') private keyboard : KeyboardInterface) {
     }
     @Hears('/start')
+    //БАГ С ДОБАВЛЕНИЕМ КАНАЛОВ ЕСТЬ
     async start(@Ctx() telegramContext: TelegramContextModel) {
         await telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
     }

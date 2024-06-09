@@ -17,6 +17,7 @@ export class ContentRewriter implements ContentRewriterInterface {
                 limit : 3
             }
         })
+        //ошибка возникает, если канала не существует, надо исправить.
         return {
             rewrittenContent : response.channelsWithPosts.map(chn => {
                 return chn.posts.join('')

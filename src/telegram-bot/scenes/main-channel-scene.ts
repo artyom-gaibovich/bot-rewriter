@@ -1,7 +1,7 @@
 import {TelegramContextModel} from "../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {MAIN_CHANNEL_SCENE} from "./scenes.types";
+import {ADD_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "./scenes.types";
 import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
 import {UserChannel} from "../../repository/channel/channel.model";
 
@@ -18,12 +18,20 @@ export class MainChannelScene {
         if (telegramContext.scene.step.firstTime) {
             const repository = new ChannelMockRepository()
             telegramContext.scene.state.userChannels = (await repository.findById(1)).userChannels
-            telegramContext.scene.state.limit = 0
         }
     }
 
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : MainChannelSceneContext) {
+        if (telegramContext.text === 'Добавить канал') {
+            return telegramContext.scene.enter(ADD_USER_CHANNEL_SCENE)
+        }
+        //Проверяем, выбрал ли пользователь канал из ему предложенных
+        if (telegramContext.scene.state.userChannels.map(chn=>chn.userChannel.link).includes(telegramContext.text)) {
+            const foundChannel : UserChannel = telegramContext.scene.state.userChannels.find(chn => chn.userChannel.link === telegramContext.text)
+            return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {state : {foundChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
+        }
+        //
         //ПЕРЕВОДИМ НА ДРУГУЮ СЦЕНУ, ИЛИ ШАГ, ГДЕ ДОБАВЛЯЕТ КАНАЛ, А ЗАТЕМ НАЗАД ИДЁМ
         const channels = telegramContext.scene.state.userChannels
         const channelsCount = telegramContext.scene.state.userChannels.length
@@ -51,8 +59,6 @@ export class MainChannelScene {
             mainKeyboard = [...addChannelKeyboard, ...backKeyboard]
         }
 
-        telegramContext.scene.state.limit+=1
-        console.log(telegramContext.scene.state.limit)
         await telegramContext.send('Выберите дальнейшее действие', {
             reply_markup : {
                 resize_keyboard : true,

@@ -1,6 +1,5 @@
-import {IMPROVE_LIMITS_SCENE, MAIN_SCENE, SUPPORT_SCENE} from "./scenes.types";
+import {MAIN_SCENE, SUPPORT_SCENE} from "./scenes.types";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {AddUserChannelsSceneContext} from "./add-user-channels-scene";
 import {TelegramContextModel} from "../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 
@@ -13,7 +12,7 @@ export type SupportSceneContext = TelegramContextModel & StepContext<SupportScen
 @Scene(SUPPORT_SCENE)
 export class SupportScene {
     @SceneEnter()
-    async sceneEnter(@Ctx() telegramContext : AddUserChannelsSceneContext) {
+    async sceneEnter(@Ctx() telegramContext : SupportSceneContext) {
 
     }
 

@@ -3,13 +3,13 @@ import {MessageContext} from "puregram";
 import {StepContext} from "@puregram/scenes";
 import {SessionInterface} from "@puregram/session";
 import {Inject, Injectable} from "@nestjs/common";
-import {LinkModel} from "../../model/link/link.model";
+import {LinkInterface} from "../../model/link/link.interface";
 import {ChannelCheckerInterface} from "../../checker/channel.checker.interface";
 import {KeyboardInterface} from "../keyboard/keyboard.interface";
 
 interface AddChannelsInterface extends Record<string, any>{
-    userChannel : LinkModel
-    channels : LinkModel[]
+    userChannel : LinkInterface
+    channels : LinkInterface[]
 }
 
 @Injectable()

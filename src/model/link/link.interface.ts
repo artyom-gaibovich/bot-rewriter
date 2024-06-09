@@ -1,3 +1,4 @@
-export interface LinkModel {
+export interface LinkInterface {
     link : string
 }
+

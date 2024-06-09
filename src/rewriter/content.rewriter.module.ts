@@ -1,6 +1,6 @@
 import {Module} from "@nestjs/common";
 import {ContentAgencyClient} from "../client/content-agency.client";
-import {LinkModel} from "../model/link/link.model";
+import {LinkInterface} from "../model/link/link.interface";
 import {ContentRewriter} from "./content.rewriter";
 
 @Module({

@@ -8,9 +8,10 @@ import {ImproveLimitsScene} from "./scenes/improve-limits-scene";
 import {SupportScene} from "./scenes/support-scene";
 import {AddUserChannelsActionScene} from "./scenes/add-user-channels-action-scene";
 import {AddRewriteChannelsScene} from "./scenes/add-rewrite-channels-scene";
+import {MainChannelScene} from "./scenes/main-channel-scene";
 
 @Module({
-    imports : [ActivateCodeScene, AddRewriteChannelsScene,AddUserChannelsScene, MainScene,AddUserChannelsActionScene, ImproveLimitsScene, SupportScene],
+    imports : [MainChannelScene, ActivateCodeScene, AddRewriteChannelsScene,AddUserChannelsScene, MainScene,AddUserChannelsActionScene, ImproveLimitsScene, SupportScene],
     providers : [{
         provide : 'MAIN_KEYBOARD',
         useFactory : () => {

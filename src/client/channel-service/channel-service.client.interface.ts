@@ -1,6 +1,6 @@
 
 export interface ChannelServiceClientInterface {
     get()
-    post()
+    create()
     delete()
 }

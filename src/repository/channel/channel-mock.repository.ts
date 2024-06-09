@@ -8,12 +8,12 @@ export class ChannelMockRepository implements ChannelRepositoryInterface {
         const responseDataMock : UserChannels = {
             userChannels : [
                 {
-                    userChannel : {link : 'https://ваш_телеграм_канал_1'},
-                    channelsToRewrite : [{link : 'https://t.me/zakodirovanna_telega'}, {link : 'https://t.me/habr_media'}, {link : 'https://t.me/zakodirovanna_telega'}]
+                    userChannel : {id : 1, link : 'https://ваш_телеграм_канал_1'},
+                    channelsToRewrite : [{id : 90001, link : 'https://t.me/zakodirovanna_telega'}, {id : 90002, link : 'https://t.me/habr_media'}, {id : 90003, link : 'https://t.me/zakodirovanna_telega'}]
                 },
                 {
-                    userChannel : {link : 'https://ваш_телеграм_канал_2'},
-                    channelsToRewrite : [{link : 'https://t.me/tot_proger'}, {link : 'https://t.me/habr_media'}]
+                    userChannel : {id : 2, link : 'https://ваш_телеграм_канал_2'},
+                    channelsToRewrite : [{id : 80001,   link : 'https://t.me/tot_proger'}, {id : 80003, link : 'https://t.me/habr_media'}]
                 }
             ]
         }

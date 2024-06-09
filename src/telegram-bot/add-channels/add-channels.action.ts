@@ -35,46 +35,33 @@ export class AddChannelsAction {
         }
     }
     @SceneLeave()
-    async leave(@Ctx() telegramContext: MessageContext & StepContext<AddChannelsInterface>): Promise<unknown> {
-        //должен быть некий request converter
-        if (telegramContext.scene.state.channels.length > 3) {
-            await telegramContext.send('Вам нельзя добавить больше 3-х каналов, нету подписки.', this.keyboard)
-            return await telegramContext.send('Выберите дальнейшее действие', {
-                reply_markup : this.keyboard
-            })
+    async leave(@Ctx() telegramContext: MessageContext & StepContext<AddChannelsInterface>) {
+        if (telegramContext.scene.step.firstTime) {
+            await telegramContext.send('Выход')
         }
-        const checkedChannels = (await this.checker.checkByLinks(telegramContext.scene.state.channels)).checkedChannels
-
-        for (const channels of checkedChannels) {
-            await telegramContext.send(`Канал ${channels.channelLink}` +
-                (channels.isChannelExists ? ' был добавлен 🎉' : ' не был добавлен, т.к. не существует, либо вы указали некорректную ссылку.😭')
-            );
-        }
-
-        return await telegramContext.send('Выберите дальнейшее действие', {
-            reply_markup : this.keyboard
-        })
 
     }
     @AddStep(1)
-    async userChannel(@Ctx() telegramContext: MessageContext & SessionInterface  & StepContext<AddChannelsInterface>): Promise<unknown> {
-        if (telegramContext.scene.step.firstTime || !telegramContext.hasText) {
-            return await telegramContext.send('\n\n Для этого канала мы переписывать контент с других каналов😎😉');
-        }
-        telegramContext.scene.state.userChannel = {
-            link : telegramContext.text
+    async step1(@Ctx() telegramContext: MessageContext & StepContext<AddChannelsInterface>) {
+        if (telegramContext.scene.step.firstTime) {
+            return await telegramContext.send('1-ый шаг')
         }
         return await telegramContext.scene.step.next()
     }
     @AddStep(2)
-    async firstChannel(@Ctx() telegramContext: MessageContext & SessionInterface  & StepContext<AddChannelsInterface>): Promise<unknown> {
-        if (telegramContext.scene.step.firstTime || !telegramContext.hasText) {
-            return await telegramContext.send('Отправь ссылки на телеграм каналы для переписывания. Раздели ссылки запятой.');
+    async step2(@Ctx() telegramContext: MessageContext & StepContext<AddChannelsInterface>) {
+        if (telegramContext.scene.step.firstTime) {
+            return await telegramContext.send('2-ый шаг')
         }
-        telegramContext.scene.state.channels = telegramContext.text.split(',').map(link => {
-            return {link: link}
-        })
         return await telegramContext.scene.step.next()
+    }
+
+    @AddStep(3)
+    async step3(@Ctx() telegramContext: MessageContext & StepContext<AddChannelsInterface>) {
+        if (telegramContext.scene.step.firstTime) {
+            return await telegramContext.send('3-ый шаг')
+        }
+        return await telegramContext.scene.step.go(0)
     }
 
 

@@ -1,25 +1,23 @@
-import {AddStep, Ctx, On, Scene, SceneEnter} from "nestjs-puregram";
-import {ACTIVATE_CODE, MAIN_SCENE} from "./scenes.types";
+import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
+import {ACTIVATE_CODE_SCENE, MAIN_SCENE} from "./scenes.types";
 import {TelegramContextModel} from "../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 
 
-
-
-export interface ActivateCodeInterface extends Record<string, any> {
+export interface ActivateCodeSceneInterface extends Record<string, any> {
     activateCode : string
 }
 
-export type ActivateCodeContext = TelegramContextModel & StepContext<ActivateCodeInterface>
-@Scene(ACTIVATE_CODE)
-export class ActivateCode {
+export type ActivateCodeSceneContext = TelegramContextModel & StepContext<ActivateCodeSceneInterface>
+@Scene(ACTIVATE_CODE_SCENE)
+export class ActivateCodeScene {
     @SceneEnter()
-    async sceneEnter(@Ctx() telegramContext : ActivateCodeContext) {
+    async sceneEnter(@Ctx() telegramContext : ActivateCodeSceneContext) {
 
     }
 
     @AddStep(0)
-    async zeroStep(@Ctx() telegramContext : ActivateCodeContext) {
+    async zeroStep(@Ctx() telegramContext : ActivateCodeSceneContext) {
         if (telegramContext.scene.step.firstTime) {
             return await telegramContext.send('Введите код для активации ')
         }

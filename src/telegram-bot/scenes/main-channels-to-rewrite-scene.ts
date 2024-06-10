@@ -1,7 +1,7 @@
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
 import {
-    ADD_CHANNEL_TO_REWRITE_SCENE,
+    ADD_CHANNEL_TO_REWRITE_SCENE, DELETE_USER_CHANNEL_SCENE,
     EDIT_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNEL_SCENE,
     MAIN_CHANNELS_TO_REWROTE_SCENE
 } from "./scenes.types";
@@ -13,8 +13,9 @@ import {ContentRewriter} from "../../rewriter/content.rewriter";
 import {ContentAgencyClient} from "../../client/content-agency.client";
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
-    foundChannel : UserChannel
+    foundUserChannel : UserChannel
     channelsToRewrite : ChannelLinkInterface[] //НАДО ТИПИЗИРОВАТЬ, ЧТО ЭТО КАНАЛЫ ДЛЯ ПЕРЕПИСЫВАНИЯ
+    generatedContent : string
 }
 
 export type MainChannelsToRewriteSceneContext = TelegramContextModel & StepContext<MainChannelsToRewriteSceneInterface>
@@ -25,33 +26,47 @@ export class MainChannelsToRewriteScene {
     async sceneEnter(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
         if (telegramContext.scene.step.firstTime) {
             const repository = new ChannelMockRepository()
-            const foundChannel = telegramContext.scene.state.foundChannel
-            telegramContext.scene.state.channelsToRewrite = (await repository.findOne(foundChannel.userChannel.id)).channelsToRewrite
+            const foundUserChannel = telegramContext.scene.state.foundUserChannel
+            telegramContext.scene.state.channelsToRewrite = (await repository.findOne(foundUserChannel.userChannel.id)).channelsToRewrite
         }
     }
 
+
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
-        if (telegramContext.text === 'Генерировать контент') {
+        const foundUserChannel = telegramContext.scene.state.foundUserChannel
+
+        if (telegramContext.text === 'Генерировать контент' || telegramContext.text === 'Перегенерировать контент') {
+            //если Перегенерировать контент - я сделаю логику такую, чтобы уже другой запрос шёл.
             const contentRewriter = new ContentRewriter({link : 'http://localhost:4000/channels/posts'}, new ContentAgencyClient())
             const rewrittenContent = await contentRewriter.rewrite({
                 channelsToRewrite : telegramContext.scene.state.channelsToRewrite
             })
             await telegramContext.reply(rewrittenContent.rewrittenContent.slice(0,4000))
             await telegramContext.reply('Контент был успешно сгенерирован')
+            telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent
         }
         if (telegramContext.text === 'Назад') {
             return telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
         }
-
-        if (telegramContext.text === 'Добавить подканал') {
-            return telegramContext.scene.enter(ADD_CHANNEL_TO_REWRITE_SCENE)
+        if (telegramContext.text === 'Удалить канал') {
+            return telegramContext.scene.enter(DELETE_USER_CHANNEL_SCENE, {
+                state : {
+                    userChannelToDelete : foundUserChannel
+                }
+            })
         }
+        if (telegramContext.text === 'Добавить подканал') {
+            return telegramContext.scene.enter(ADD_CHANNEL_TO_REWRITE_SCENE, {
+                state : {foundUserChannel}
+            })
 
+
+        }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.channelsToRewrite.map(chn=>chn.link).includes(telegramContext.text)) {
             const foundChannelToRewrite : ChannelLinkInterface = telegramContext.scene.state.channelsToRewrite.find(chn => chn.link === telegramContext.text)
-            return telegramContext.scene.enter(EDIT_CHANNEL_TO_REWRITE_SCENE, {state : {foundChannelToRewrite}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
+            return telegramContext.scene.enter(EDIT_CHANNEL_TO_REWRITE_SCENE, {state : {foundChannelToRewrite, foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
         //
 
@@ -64,9 +79,8 @@ export class MainChannelsToRewriteScene {
             return [{text : chn.link}]
         })
         const rewriteContentKeyboard = [
-            [{text : 'Генерировать контент'}]
+            [{text : telegramContext.scene.state.generatedContent ? 'Перегенерировать контент' : 'Генерировать контент'}]
         ]
-
         const addChannelKeyboard = [
             [{text : 'Добавить подканал'}],
         ]
@@ -76,21 +90,24 @@ export class MainChannelsToRewriteScene {
         const limitKeyboard = [
             [{text : 'Повысить лимит'}],
         ]
+        const deleteChannelKeyboard = [
+            [{text : 'Удалить канал'}]
+        ]
         let mainKeyboard = []
         if (channelsToRewriteCount === channelsToRewriteLimit) {
-            mainKeyboard = [...rewriteContentKeyboard, ...limitKeyboard, ...channelKeyboard, ...backKeyboard]
+            mainKeyboard = [...rewriteContentKeyboard, ...limitKeyboard, ...channelKeyboard]
         }
         if (channelsToRewriteCount > 0 && channelsToRewriteCount < channelsToRewriteLimit) {
-            mainKeyboard = [...rewriteContentKeyboard, ...addChannelKeyboard, ...channelKeyboard, ...backKeyboard]
+            mainKeyboard = [...rewriteContentKeyboard, ...addChannelKeyboard, ...channelKeyboard]
         }
         if (channelsToRewriteCount === 0) {
-            mainKeyboard = [...addChannelKeyboard, ...backKeyboard]
+            mainKeyboard = [...addChannelKeyboard]
         }
         await telegramContext.send('Выберите дальнейшее действие', {
             reply_markup : {
                 resize_keyboard : true,
                 remove_keyboard : true,
-                keyboard : [...mainKeyboard]
+                keyboard : [...mainKeyboard, ...deleteChannelKeyboard, ...backKeyboard]
             }
         })
 

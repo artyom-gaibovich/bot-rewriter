@@ -10,9 +10,10 @@ import {AddUserChannelScene} from "./scenes/add-user-channel-scene";
 import {MainChannelsToRewriteScene} from "./scenes/main-channels-to-rewrite-scene";
 import {EditChannelToRewriteScene} from "./scenes/edit-channel-to-rewrite-scene";
 import {AddChannelToRewriteScene} from "./scenes/add-channel-to-rewrite-scene";
+import {DeleteUserChannelScene} from "./scenes/delete-user-channel-scene";
 
 @Module({
-    imports : [AddChannelToRewriteScene, EditChannelToRewriteScene, AddUserChannelScene, MainChannelsToRewriteScene, MainChannelScene, ActivateCodeScene, MainScene, ImproveLimitsScene, SupportScene],
+    imports : [DeleteUserChannelScene, AddChannelToRewriteScene, EditChannelToRewriteScene, AddUserChannelScene, MainChannelsToRewriteScene, MainChannelScene, ActivateCodeScene, MainScene, ImproveLimitsScene, SupportScene],
     providers : [{
         provide : 'MAIN_KEYBOARD',
         useFactory : () => {

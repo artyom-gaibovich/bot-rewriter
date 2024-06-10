@@ -7,6 +7,8 @@ import {ChannelMockRepository} from "../../repository/channel/channel-mock.repos
 import {MainChannelSceneContext} from "./main-channel-scene";
 import {ChannelChecker} from "../../checker/channel.checker";
 import {ContentAgencyClient} from "../../client/content-agency.client";
+import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
+import {createTelegramApiFactory} from "nestjs-puregram/dist/utils";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelAdded : boolean
@@ -59,8 +61,6 @@ export class AddUserChannelScene {
                 }
             })
         }
-
-
 
     }
 }

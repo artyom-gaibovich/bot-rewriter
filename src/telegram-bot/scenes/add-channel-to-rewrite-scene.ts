@@ -4,9 +4,11 @@ import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {ADD_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "./scenes.types";
 import {ChannelChecker} from "../../checker/channel.checker";
 import {ContentAgencyClient} from "../../client/content-agency.client";
+import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelAdded : boolean
+    foundUserChannel : ChannelLinkInterface
 }
 
 export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddUserChannelSceneInterface>
@@ -23,14 +25,20 @@ export class AddChannelToRewriteScene {
     }
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : AddUserChannelSceneContext) {
-        if (telegramContext.text === 'Назад') {
-            return await telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
+        const foundUserChannel = telegramContext.scene.state.foundUserChannel
+
+        if (telegramContext.text === 'Отменить') {
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+                state : {
+                    foundUserChannel
+                }
+            })
         }
         if (telegramContext.scene.step.firstTime) {
             return await telegramContext.send('Отправьте ссылку на телеграм канал, откуда будем переписывать контент', {
                 reply_markup : {
                     resize_keyboard : true,
-                    keyboard : [[{text : 'Назад'}]]
+                    keyboard : [[{text : 'Отменить'}]]
                 }
             })
         }
@@ -41,20 +49,19 @@ export class AddChannelToRewriteScene {
         ])).checkedChannels[0].isChannelExists
 
         if (isChannelAdded) {
-            await telegramContext.send('Канал был успешно добавлен!', {
+            await telegramContext.send('Подканал был успешно добавлен!', {
                 reply_markup : {
                     remove_keyboard : true
                 }
             })
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE)
-        }
-        else {
-            await telegramContext.send('Канал не был добавлен, отправьте корректную ссылку.', {
-                reply_markup : {
-                    resize_keyboard : true,
-                    keyboard : [[{text : 'Назад'}]]
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+                state : {
+                    foundUserChannel
                 }
             })
+        }
+        else {
+            await telegramContext.send('Подканал не был добавлен. Либо он не существует, либо вы отправили некорректную ссылку.')
         }
 
 

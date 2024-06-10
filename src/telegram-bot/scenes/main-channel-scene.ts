@@ -28,8 +28,8 @@ export class MainChannelScene {
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.userChannels.map(chn=>chn.userChannel.link).includes(telegramContext.text)) {
-            const foundChannel : UserChannel = telegramContext.scene.state.userChannels.find(chn => chn.userChannel.link === telegramContext.text)
-            return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {state : {foundChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
+            const foundUserChannel : UserChannel = telegramContext.scene.state.userChannels.find(chn => chn.userChannel.link === telegramContext.text)
+            return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {state : {foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
         //
         //ПЕРЕВОДИМ НА ДРУГУЮ СЦЕНУ, ИЛИ ШАГ, ГДЕ ДОБАВЛЯЕТ КАНАЛ, А ЗАТЕМ НАЗАД ИДЁМ

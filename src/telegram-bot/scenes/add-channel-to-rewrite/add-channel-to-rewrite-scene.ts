@@ -1,13 +1,16 @@
-import {TelegramContextModel} from "../model/telegram-context-model";
+import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ADD_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "./scenes.types";
-import {ChannelChecker} from "../../checker/channel.checker";
-import {ContentAgencyClient} from "../../client/content-agency.client";
-import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
+import {ADD_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "../scenes.types";
+import {ChannelChecker} from "../../../checker/channel.checker";
+import {ContentAgencyClient} from "../../../client/content-agency.client";
+import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
+import {Inject} from "@nestjs/common";
+import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
+import {ChannelCheckerInterface} from "../../../checker/channel.checker.interface";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
-    isChannelAdded : boolean
+    isChannelExists : boolean
     foundUserChannel : ChannelLinkInterface
 }
 
@@ -17,10 +20,17 @@ export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddU
 @Scene(ADD_CHANNEL_TO_REWRITE_SCENE)
 export class AddChannelToRewriteScene {
 
+    constructor(
+        @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
+        @Inject('CUSTOM_CHANNEL_CHECKER') private checker : ChannelCheckerInterface,
+    ) {
+    }
+
+
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : AddUserChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            telegramContext.scene.state.isChannelAdded = false
+            telegramContext.scene.state.isChannelExists = false
         }
     }
     @AddStep(0)
@@ -43,12 +53,24 @@ export class AddChannelToRewriteScene {
             })
         }
 
-        const checker = new ChannelChecker({link : 'http://localhost:4000/channels/check'}, new ContentAgencyClient())
-        const isChannelAdded = (await checker.checkByLinks([
+        const isChannelExists = (await this.checker.checkByLinks([
             {link : telegramContext.text}
         ])).checkedChannels[0].isChannelExists
 
-        if (isChannelAdded) {
+        if (isChannelExists) {
+            await this.channelManager.addChannel({
+                user : {
+                    id : telegramContext.from.id,
+                    userChannels : [
+                        {
+                            userChannel : foundUserChannel,
+                            channelsToRewrite : [
+                                {link : telegramContext.text}
+                            ]
+                        }
+                    ]
+                }
+            })
             await telegramContext.send('Подканал был успешно добавлен!', {
                 reply_markup : {
                     remove_keyboard : true

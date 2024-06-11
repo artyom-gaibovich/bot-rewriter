@@ -1,8 +1,8 @@
 import {ChannelLinkInterface} from "./link/channel.link.interface";
 
 export interface UserChannelInterface {
-    userChannel : ChannelLinkInterface
-    channelsToRewrite : ChannelLinkInterface[]
+    userChannel? : ChannelLinkInterface | {}
+    channelsToRewrite? : ChannelLinkInterface[]
 }
 
 

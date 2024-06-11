@@ -5,8 +5,8 @@ import {
     IMPROVE_LIMITS_SCENE,
     MAIN_SCENE,
     SUPPORT_SCENE
-} from "./scenes.types";
-import {TelegramContextModel} from "../model/telegram-context-model";
+} from "../scenes.types";
+import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 
 

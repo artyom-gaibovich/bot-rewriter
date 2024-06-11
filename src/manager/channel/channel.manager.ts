@@ -1,10 +1,11 @@
 import {ChannelManagerInterface} from "./channel.manager.interface";
-import {Inject} from "@nestjs/common";
+import {Inject, Injectable} from "@nestjs/common";
 import {UserManagerLinkConfig} from "../user/user.manager.link.config";
 import {UserInterface} from "../../model/user.interface";
 import {ChannelManagerLinkConfig} from "./channel.manager.link.config";
 import {ChannelServiceClientInterface} from "../../client/channel-service/channel-service.client.interface";
 
+@Injectable()
 export class ChannelManager implements ChannelManagerInterface {
     constructor(
         @Inject('CHANNEL_MANAGER_LINK_CONFIG') private linkConfig : ChannelManagerLinkConfig,

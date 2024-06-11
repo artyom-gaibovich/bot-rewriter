@@ -1,11 +1,11 @@
-import {TelegramContextModel} from "../model/telegram-context-model";
+import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {EDIT_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "./scenes.types";
-import {ChannelChecker} from "../../checker/channel.checker";
-import {ContentAgencyClient} from "../../client/content-agency.client";
-import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
-import {ChannelManager} from "../../manager/channel/channel.manager";
+import {EDIT_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "../scenes.types";
+import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
+import {Inject} from "@nestjs/common";
+import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
+import {ChannelCheckerInterface} from "../../../checker/channel.checker.interface";
 
 export interface EditChannelToRewriteSceneInterface extends Record<string, any> {
     isChannelAdded : boolean
@@ -16,8 +16,14 @@ export interface EditChannelToRewriteSceneInterface extends Record<string, any> 
 export type EditChannelToRewriteSceneContext = TelegramContextModel & StepContext<EditChannelToRewriteSceneInterface>
 
 
+
 @Scene(EDIT_CHANNEL_TO_REWRITE_SCENE)
 export class EditChannelToRewriteScene {
+    constructor(
+        @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
+        @Inject('CUSTOM_CHANNEL_CHECKER') private checker : ChannelCheckerInterface,
+    ) {
+    }
 
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : EditChannelToRewriteSceneContext) {
@@ -35,8 +41,19 @@ export class EditChannelToRewriteScene {
             })
         }
         if (telegramContext.text === 'Удалить подканал') {
-            const channelManager = new ChannelManager()
-            channelManager.delete(foundUserChannel.id)
+            await this.channelManager.deleteChannel({
+                user : {
+                    id : telegramContext.from.id,
+                    userChannels : [
+                        {
+                            userChannel : {},
+                            channelsToRewrite : [
+                                foundChannelToRewrite //ID у него должен быть, иначе не удалится
+                            ]
+                        }
+                    ]
+                }
+            })
             await telegramContext.send(`Канал ${foundChannelToRewrite.link} был успешно удалён`)
             return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
                 state : {foundUserChannel}
@@ -54,8 +71,7 @@ export class EditChannelToRewriteScene {
             })
         }
 
-        const checker = new ChannelChecker({link : 'http://localhost:4000/channels/check'}, new ContentAgencyClient())
-        const isChannelAdded = (await checker.checkByLinks([
+        const isChannelAdded = (await this.checker.checkByLinks([
             {link : telegramContext.text}
         ])).checkedChannels[0].isChannelExists
 

@@ -1,19 +1,21 @@
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
+import {ChannelMockRepository} from "../../../repository/channel/channel-mock.repository";
 import {
-    ADD_CHANNEL_TO_REWRITE_SCENE, DELETE_USER_CHANNEL_SCENE,
-    EDIT_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNEL_SCENE,
+    ADD_CHANNEL_TO_REWRITE_SCENE,
+    DELETE_USER_CHANNEL_SCENE,
+    EDIT_CHANNEL_TO_REWRITE_SCENE,
+    MAIN_CHANNEL_SCENE,
     MAIN_CHANNELS_TO_REWROTE_SCENE
-} from "./scenes.types";
-import {UserChannel} from "../../model/channel.model";
-import {TelegramContextModel} from "../model/telegram-context-model";
+} from "../scenes.types";
+import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
-import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
-import {ContentRewriter} from "../../rewriter/content.rewriter";
-import {ContentAgencyClient} from "../../client/content-agency.client";
+import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
+import {UserChannelInterface} from "../../../model/channel.interface";
+import {Inject} from "@nestjs/common";
+import {ContentRewriterInterface} from "../../../rewriter/content.rewriter.interface";
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
-    foundUserChannel : UserChannel
+    foundUserChannel : UserChannelInterface
     channelsToRewrite : ChannelLinkInterface[] //НАДО ТИПИЗИРОВАТЬ, ЧТО ЭТО КАНАЛЫ ДЛЯ ПЕРЕПИСЫВАНИЯ
     generatedContent : string
 }
@@ -22,12 +24,14 @@ export type MainChannelsToRewriteSceneContext = TelegramContextModel & StepConte
 
 @Scene(MAIN_CHANNELS_TO_REWROTE_SCENE)
 export class MainChannelsToRewriteScene {
+    constructor(@Inject('CUSTOM_CONTENT_REWRITER') private contentRewriter : ContentRewriterInterface) {
+    }
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
         if (telegramContext.scene.step.firstTime) {
             const repository = new ChannelMockRepository()
-            const foundUserChannel = telegramContext.scene.state.foundUserChannel
-            telegramContext.scene.state.channelsToRewrite = (await repository.findOne(foundUserChannel.userChannel.id)).channelsToRewrite
+            //все логично здесь ??)))
+            telegramContext.scene.state.channelsToRewrite = telegramContext.scene.state.foundUserChannel.channelsToRewrite
         }
     }
 
@@ -38,8 +42,7 @@ export class MainChannelsToRewriteScene {
 
         if (telegramContext.text === 'Генерировать контент' || telegramContext.text === 'Перегенерировать контент') {
             //если Перегенерировать контент - я сделаю логику такую, чтобы уже другой запрос шёл.
-            const contentRewriter = new ContentRewriter({link : 'http://localhost:4000/channels/posts'}, new ContentAgencyClient())
-            const rewrittenContent = await contentRewriter.rewrite({
+            const rewrittenContent = await this.contentRewriter.rewrite({
                 channelsToRewrite : telegramContext.scene.state.channelsToRewrite
             })
             await telegramContext.reply(rewrittenContent.rewrittenContent.slice(0,4000))

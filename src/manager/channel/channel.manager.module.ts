@@ -4,6 +4,7 @@ import {ChannelServiceClient} from "../../client/channel-service/channer-service
 import {ChannelServiceClientInterface} from "../../client/channel-service/channel-service.client.interface";
 import {UserManager} from "../user/user.manager";
 import {ChannelManagerLinkConfig} from "./channel.manager.link.config";
+import {ChannelManager} from "./channel.manager";
 
 @Module({
     providers : [
@@ -26,13 +27,14 @@ import {ChannelManagerLinkConfig} from "./channel.manager.link.config";
         },
         {
             provide: 'CHANNEL_MANAGER',
-            useFactory : (linkConfig : UserManagerLinkConfig, channelService : ChannelServiceClientInterface ) => {
-                return new UserManager(linkConfig, channelService)
+            useFactory : (linkConfig : ChannelManagerLinkConfig, channelService : ChannelServiceClientInterface ) => {
+                return new ChannelManager(linkConfig, channelService)
             },
             inject : ['CHANNEL_MANAGER_LINK_CONFIG','CHANNEL_SERVICE_CLIENT']
         }
 
     ],
+    exports : ['CHANNEL_MANAGER']
 
 })
 export class ChannelManagerModule {

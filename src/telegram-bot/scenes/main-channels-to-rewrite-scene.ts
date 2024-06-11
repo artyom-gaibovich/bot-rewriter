@@ -5,7 +5,7 @@ import {
     EDIT_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNEL_SCENE,
     MAIN_CHANNELS_TO_REWROTE_SCENE
 } from "./scenes.types";
-import {UserChannel} from "../../repository/channel/channel.model";
+import {UserChannel} from "../../model/channel.model";
 import {TelegramContextModel} from "../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {ChannelLinkInterface} from "../../model/link/channel.link.interface";

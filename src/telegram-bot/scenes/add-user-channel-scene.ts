@@ -1,4 +1,4 @@
-import {UserChannel} from "../../repository/channel/channel.model";
+import {UserChannel} from "../../model/channel.model";
 import {TelegramContextModel} from "../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";

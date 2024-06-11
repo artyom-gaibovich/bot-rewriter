@@ -5,7 +5,7 @@ import {DELETE_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_
 import {ChannelChecker} from "../../checker/channel.checker";
 import {ContentAgencyClient} from "../../client/content-agency.client";
 import {LinkInterface} from "../../model/link/link.interface";
-import {UserChannel} from "../../repository/channel/channel.model";
+import {UserChannel} from "../../model/channel.model";
 import {ChannelManager} from "../../manager/channel.manager";
 
 export interface DeleteUserChannelSceneInterface extends Record<string, any> {

@@ -3,7 +3,7 @@ import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {ADD_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "./scenes.types";
 import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
-import {UserChannel} from "../../repository/channel/channel.model";
+import {UserChannel} from "../../model/channel.model";
 
 export interface MainChannelSceneInterface extends Record<string, any> {
     userChannels : UserChannel[]

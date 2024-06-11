@@ -1,5 +1,5 @@
 import {ChannelRepositoryInterface} from "./channel.repository.interface";
-import {UserChannel, UserChannels} from "./channel.model";
+import {UserChannel, UserChannels} from "../../model/channel.model";
 import {Injectable} from "@nestjs/common";
 
 @Injectable()

@@ -5,7 +5,7 @@ import {EDIT_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWR
 import {ChannelChecker} from "../../checker/channel.checker";
 import {ContentAgencyClient} from "../../client/content-agency.client";
 import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
-import {ChannelManager} from "../../manager/channel.manager";
+import {ChannelManager} from "../../manager/channel/channel.manager";
 
 export interface EditChannelToRewriteSceneInterface extends Record<string, any> {
     isChannelAdded : boolean

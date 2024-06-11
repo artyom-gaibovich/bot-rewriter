@@ -6,7 +6,7 @@ import {ChannelChecker} from "../../checker/channel.checker";
 import {ContentAgencyClient} from "../../client/content-agency.client";
 import {LinkInterface} from "../../model/link/link.interface";
 import {UserChannel} from "../../model/channel.model";
-import {ChannelManager} from "../../manager/channel.manager";
+import {ChannelManager} from "../../manager/channel/channel.manager";
 
 export interface DeleteUserChannelSceneInterface extends Record<string, any> {
     userChannelToDelete : UserChannel

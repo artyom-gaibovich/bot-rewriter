@@ -24,3 +24,4 @@ export interface ChannelServiceClientInterface {
     deleteChannel(req : DeleteChannelRequestInterface) : Promise<DeleteUserResponseInterface>
     deleteChannelToRewrite(req: DeleteChannelRequestInterface) : Promise<DeleteChannelResponseInterface>
 }
+

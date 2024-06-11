@@ -5,15 +5,7 @@ import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.
 
 @Module({
     imports : [ChannelManagerModule],
-    providers : [
-        {
-            provide : DeleteUserChannelScene,
-            useFactory : (channelManager : ChannelManagerInterface) => {
-                return new DeleteUserChannelScene(channelManager)
-            },
-        }
-    ],
-    exports: [DeleteUserChannelScene]
+    providers : [DeleteUserChannelScene]
 
 })
 export class DeleteUserChannelSceneModule {

@@ -8,10 +8,11 @@ import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
 import {ChannelCheckerInterface} from "../../../checker/channel.checker.interface";
+import {UserChannelInterface} from "../../../model/channel.interface";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelExists : boolean
-    foundUserChannel : ChannelLinkInterface
+    foundUserChannel : UserChannelInterface
 }
 
 export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddUserChannelSceneInterface>
@@ -58,12 +59,15 @@ export class AddChannelToRewriteScene {
         ])).checkedChannels[0].isChannelExists
 
         if (isChannelExists) {
-            await this.channelManager.addChannel({
+
+            const result = await this.channelManager.addChannel({
                 user : {
                     id : telegramContext.from.id,
                     userChannels : [
                         {
-                            userChannel : foundUserChannel,
+                            userChannel : {link :
+                                (foundUserChannel.userChannel as ChannelLinkInterface).link,
+                                id : (foundUserChannel.userChannel as ChannelLinkInterface).id,},
                             channelsToRewrite : [
                                 {link : telegramContext.text}
                             ]
@@ -78,7 +82,7 @@ export class AddChannelToRewriteScene {
             })
             return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
                 state : {
-                    foundUserChannel
+                    foundUserChannel : result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link === (foundUserChannel.userChannel as ChannelLinkInterface).link)
                 }
             })
         }

@@ -10,11 +10,20 @@ import {AddChannelRequestInterface} from "./model/req/add-channel-request.interf
 import {AddChannelResponseInterface} from "./model/res/add-channel-response.interface";
 import {DeleteChannelRequestInterface} from "./model/req/delete-channel-request.interface";
 import {DeleteChannelResponseInterface} from "./model/res/delete-channel-response.interface";
+import {UserInterface} from "../../model/user.interface";
 
 export class ChannelServiceClient implements ChannelServiceClientInterface {
     async getUser(req: GetUserRequestInterface): Promise<GetUserResponseInterface> {
-        const request = await axios.post<GetUserResponseInterface>(req.url.link, req.body)
-        return request.data
+        try {
+            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            return {
+                body : request.data
+            }
+        } catch (error) {
+            return {
+                body : false
+            }
+        }
     }
 
     async createUser(req: CreateUserRequestInterface): Promise<CreateUserResponseInterface> {

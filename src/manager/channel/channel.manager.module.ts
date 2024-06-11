@@ -12,7 +12,7 @@ import {ChannelManager} from "./channel.manager";
             provide : 'CHANNEL_MANAGER_LINK_CONFIG',
             useFactory : () => {
                 return {
-                    addChannel : {link : 'http://localhost:8080/api/v1/user/create'},
+                    addChannel : {link : 'http://localhost:8080/api/v1/channel/add'},
                     deleteChannel : {link : 'http://localhost:8080/api/v1/channel/delete'},
                     deleteChannelToRewrite : {link : 'http://localhost:8080/api/v1/channel/delete/channel-to-rewrite'}
 

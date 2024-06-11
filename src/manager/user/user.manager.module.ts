@@ -30,6 +30,7 @@ import {UserManager} from "./user.manager";
         }
 
     ],
+    exports : ['USER_MANAGER']
 
 })
 export class UserManagerModule {

@@ -1,5 +1,4 @@
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ChannelMockRepository} from "../../../repository/channel/channel-mock.repository";
 import {
     ADD_CHANNEL_TO_REWRITE_SCENE,
     DELETE_USER_CHANNEL_SCENE,
@@ -13,6 +12,7 @@ import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {UserChannelInterface} from "../../../model/channel.interface";
 import {Inject} from "@nestjs/common";
 import {ContentRewriterInterface} from "../../../rewriter/content.rewriter.interface";
+import {UserRepositoryInterface} from "../../../repository/user/user.repository.interface";
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
     foundUserChannel : UserChannelInterface
@@ -24,13 +24,14 @@ export type MainChannelsToRewriteSceneContext = TelegramContextModel & StepConte
 
 @Scene(MAIN_CHANNELS_TO_REWROTE_SCENE)
 export class MainChannelsToRewriteScene {
-    constructor(@Inject('CUSTOM_CONTENT_REWRITER') private contentRewriter : ContentRewriterInterface) {
+    constructor(
+        @Inject('USER_REPOSITORY') private userRepository : UserRepositoryInterface,
+        @Inject('CUSTOM_CONTENT_REWRITER') private contentRewriter : ContentRewriterInterface)
+    {
     }
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            const repository = new ChannelMockRepository()
-            //все логично здесь ??)))
             telegramContext.scene.state.channelsToRewrite = telegramContext.scene.state.foundUserChannel.channelsToRewrite
         }
     }

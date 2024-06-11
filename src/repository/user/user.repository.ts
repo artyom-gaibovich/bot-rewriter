@@ -3,6 +3,7 @@ import {UserInterface} from "../../model/user.interface";
 import {Inject, Injectable} from "@nestjs/common";
 import {ChannelServiceClientInterface} from "../../client/channel-service/channel-service.client.interface";
 import {LinkInterface} from "../../model/link/link.interface";
+import {User} from "puregram";
 
 
 @Injectable()
@@ -13,13 +14,17 @@ export class UserRepository implements UserRepositoryInterface {
     ) {
     }
     async getUser(telegramId: number): Promise<UserInterface> {
-        return (await this.channelService.getUser({
+
+
+        const data = (await this.channelService.getUser({
             url : this.link,
             body : {
                 user : {
                     id : telegramId
                 }
             }
-        })).body
+
+        }))
+        return (data.body as UserInterface)
     }
 }

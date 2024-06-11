@@ -25,24 +25,9 @@ export class MainChannelScene {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            await this.userManager.createUser({
-                user : {
-                    id : telegramContext.from.id,
-                    userChannels : [
-                        {
-                            userChannel : {
-                                link : 'https://t.me/artyom_gaibovich',
-                            },
-                        },
-                        {
-                            userChannel : {
-                                link : 'https://t.me/artyom_gaibovich',
-                            },
-                        },
-                    ]
-                }
-            })
-            telegramContext.scene.state.userChannels = (await this.repository.getUser(telegramContext.id)).user.userChannels
+            const user = (await this.repository.getUser(telegramContext.from.id))
+            console.log(user)
+            telegramContext.scene.state.userChannels = user.user.userChannels
         }
     }
 

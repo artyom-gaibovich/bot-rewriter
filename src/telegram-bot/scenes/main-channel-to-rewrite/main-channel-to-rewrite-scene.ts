@@ -2,7 +2,6 @@ import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {
-    EDIT_CHANNEL_TO_REWRITE_SCENE,
     MAIN_CHANNEL_TO_REWRITE_SCENE,
     MAIN_CHANNELS_TO_REWROTE_SCENE
 } from "../scenes.types";
@@ -25,7 +24,6 @@ export type MainChannelToRewriteSceneContext = TelegramContextModel & StepContex
 export class MainChannelToRewriteScene {
     constructor(
         @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
-        @Inject('CUSTOM_CHANNEL_CHECKER') private checker : ChannelCheckerInterface,
     ) {
     }
 
@@ -73,8 +71,6 @@ export class MainChannelToRewriteScene {
                     ]
                 }
             })
-            console.log(JSON.stringify(foundUserChannel))
-            console.log(JSON.stringify(result))
 
             const currentUserChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).id === foundUserChannel.userChannel.id )
             console.log('cu', currentUserChannel)

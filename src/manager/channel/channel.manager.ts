@@ -14,23 +14,24 @@ export class ChannelManager implements ChannelManagerInterface {
     }
 
     async addChannel(user : UserInterface): Promise<UserInterface> {
-        return (await this.client.addChannel({
+        const result = (await this.client.addChannel({
             url : this.linkConfig.addChannel,
             body : user
-        })).body
+        }))
+        return result.body as UserInterface
     }
 
     async deleteChannel(user : UserInterface): Promise<UserInterface> {
         return (await this.client.deleteChannel({
             url : this.linkConfig.deleteChannel,
             body : user
-        })).body
+        })).body as UserInterface
     }
 
     async deleteChannelToRewrite(user : UserInterface): Promise<UserInterface> {
         return (await this.client.deleteChannelToRewrite({
             url : this.linkConfig.deleteChannelToRewrite,
             body : user
-        })).body
+        })).body as UserInterface
     }
 }

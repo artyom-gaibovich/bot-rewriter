@@ -33,32 +33,8 @@ export class EditChannelToRewriteScene {
     }
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : EditChannelToRewriteSceneContext) {
-        const foundUserChannel = telegramContext.scene.state.foundUserChannel
         const foundChannelToRewrite = telegramContext.scene.state.foundChannelToRewrite
-        if (telegramContext.text === 'Отменить') {
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
-                state : {foundUserChannel}
-            })
-        }
-        if (telegramContext.text === 'Удалить подканал') {
-            await this.channelManager.deleteChannel({
-                user : {
-                    id : telegramContext.from.id,
-                    userChannels : [
-                        {
-                            userChannel : {},
-                            channelsToRewrite : [
-                                foundChannelToRewrite //ID у него должен быть, иначе не удалится
-                            ]
-                        }
-                    ]
-                }
-            })
-            await telegramContext.send(`Канал ${foundChannelToRewrite.link} был успешно удалён`)
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
-                state : {foundUserChannel}
-            })
-        }
+
         if (telegramContext.scene.step.firstTime) {
             return await telegramContext.send(`Ваш текущий канал для переписывания${foundChannelToRewrite.link}. Если хотите его изменить, отправьте новую ссылку.`, {
                 reply_markup : {
@@ -71,14 +47,81 @@ export class EditChannelToRewriteScene {
             })
         }
 
+        const foundUserChannel = telegramContext.scene.state.foundUserChannel
+        if (telegramContext.text === 'Отменить') {
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+                state : {foundUserChannel}
+            })
+        }
+        if (telegramContext.text === 'Удалить подканал') {
+            const result = await this.channelManager.deleteChannel({
+                user : {
+                    id : telegramContext.from.id,
+                    userChannels : [
+                        {
+                            userChannel : {},
+                            channelsToRewrite : [
+                                foundChannelToRewrite //ID у него должен быть, иначе не удалится
+                            ]
+                        }
+                    ]
+                }
+            })
+            console.log(JSON.stringify(foundUserChannel))
+            console.log(JSON.stringify(result))
+
+            const newChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link ===  foundUserChannel.link)
+            await telegramContext.send(`Канал ${foundChannelToRewrite.link} был успешно удалён`)
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+                state : {foundUserChannel : newChannel}
+            })
+        }
+
         const isChannelAdded = (await this.checker.checkByLinks([
             {link : telegramContext.text}
         ])).checkedChannels[0].isChannelExists
 
 
         if (isChannelAdded) {
+            await this.channelManager.deleteChannelToRewrite({
+                user : {
+                    id : telegramContext.from.id,
+                    userChannels : [
+                        {
+                            userChannel : {},
+                            channelsToRewrite : [
+                                {
+                                    id : foundChannelToRewrite.id,
+                                    link : foundChannelToRewrite.link
+                                }
+                            ]
+                        }
+                    ]
+                }
+            })
+            const result = await this.channelManager.addChannel({
+                user : {
+                    id : telegramContext.from.id,
+                    userChannels : [
+                        {
+                            userChannel : {},
+                            channelsToRewrite : [
+                                {
+                                    link : telegramContext.text
+                                }
+                            ]
+                        }
+                    ]
+                }
+            })
+            //const newChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link ===  foundUserChannel.link)
+            console.log(JSON.stringify(foundUserChannel))
+            console.log(JSON.stringify(result))
+
             await telegramContext.send('Подканал был изменён!')
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE)
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+                state : {foundUserChannel : newChannel}
+            })
         }
         else {
             await telegramContext.send('Подканал не был изменен, либо отправили некорректную ссылку')

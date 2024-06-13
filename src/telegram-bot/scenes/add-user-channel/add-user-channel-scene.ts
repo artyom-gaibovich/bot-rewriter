@@ -5,6 +5,7 @@ import {ADD_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE} from "../scenes.types";
 import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
 import {ChannelCheckerInterface} from "../../../checker/channel.checker.interface";
+import {UserChannelInterface} from "../../../model/channel.interface";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelExists : boolean

@@ -1,5 +1,5 @@
 import {UserInterface} from "../../../../model/user.interface";
 
 export interface DeleteChannelResponseInterface {
-    body : UserInterface
+    body : UserInterface | false
 }

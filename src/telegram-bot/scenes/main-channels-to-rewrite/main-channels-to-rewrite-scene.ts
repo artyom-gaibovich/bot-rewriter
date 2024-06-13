@@ -32,6 +32,7 @@ export class MainChannelsToRewriteScene {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
         if (telegramContext.scene.step.firstTime) {
+            console.log(telegramContext.scene.state.foundUserChannel)
             telegramContext.scene.state.channelsToRewrite = telegramContext.scene.state.foundUserChannel.channelsToRewrite
         }
     }

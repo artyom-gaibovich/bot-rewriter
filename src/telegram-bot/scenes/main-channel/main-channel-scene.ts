@@ -26,7 +26,6 @@ export class MainChannelScene {
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
             const user = (await this.repository.getUser(telegramContext.from.id))
-            console.log(user)
             telegramContext.scene.state.userChannels = user.user.userChannels
         }
     }

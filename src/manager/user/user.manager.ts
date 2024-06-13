@@ -3,6 +3,7 @@ import {UserInterface} from "../../model/user.interface";
 import {Inject, Injectable} from "@nestjs/common";
 import {UserManagerLinkConfig} from "./user.manager.link.config";
 import {ChannelServiceClientInterface} from "../../client/channel-service/channel-service.client.interface";
+
 @Injectable()
 export class UserManager implements UserManagerInterface {
 
@@ -16,12 +17,12 @@ export class UserManager implements UserManagerInterface {
         return (await this.client.createUser({
             url : this.linkConfig.createUser,
             body : user
-        })).body
+        })).body as UserInterface
     }
     async deleteUser(user : UserInterface): Promise<UserInterface> {
         return (await this.client.deleteUser({
             url : this.linkConfig.createUser,
             body : user
-        })).body
+        })).body as UserInterface
     }
 }

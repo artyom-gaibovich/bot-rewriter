@@ -4,5 +4,5 @@ import {UserManagerInterface} from "../../../../manager/user/user.manager.interf
 import {UserInterface} from "../../../../model/user.interface";
 
 export interface CreateUserResponseInterface {
-    body : UserInterface
+    body : UserInterface | false
 }

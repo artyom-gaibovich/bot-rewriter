@@ -27,25 +27,66 @@ export class ChannelServiceClient implements ChannelServiceClientInterface {
     }
 
     async createUser(req: CreateUserRequestInterface): Promise<CreateUserResponseInterface> {
-        const request = await axios.post<CreateUserResponseInterface>(req.url.link, req.body)
-        return request.data
+        try {
+            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            return {
+                body : request.data
+            }
+        } catch (error) {
+            return {
+                body : false
+            }
+        }
     }
     async deleteUser(req: DeleteUserRequestInterface): Promise<DeleteUserResponseInterface> {
-        const request = await axios.post<DeleteUserResponseInterface>(req.url.link, req.body)
-        return request.data
+        try {
+            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            return {
+                body : request.data
+            }
+        } catch (error) {
+            return {
+                body : false
+            }
+        }
     }
 
     async addChannel(req: AddChannelRequestInterface): Promise<AddChannelResponseInterface> {
-        const request = await axios.post<AddChannelResponseInterface>(req.url.link, req.body)
-        return request.data
+        try {
+            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            return {
+                body : request.data
+            }
+        } catch (error) {
+            return {
+                body : false
+            }
+        }
     }
 
     async deleteChannel(req: DeleteChannelRequestInterface): Promise<DeleteUserResponseInterface> {
-        const request = await axios.post<DeleteUserResponseInterface>(req.url.link, req.body)
-        return request.data
+        try {
+            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            return {
+                body : request.data
+            }
+        } catch (error) {
+            return {
+                body : false
+            }
+        }
     }
+
     async deleteChannelToRewrite(req: DeleteChannelRequestInterface): Promise<DeleteChannelResponseInterface> {
-        const request = await axios.post<DeleteChannelResponseInterface>(req.url.link, req.body)
-        return request.data
+        try {
+            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            return {
+                body : request.data
+            }
+        } catch (error) {
+            return {
+                body : false
+            }
+        }
     }
 }

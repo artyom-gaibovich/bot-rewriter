@@ -4,8 +4,7 @@ import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {ADD_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE} from "../scenes.types";
 import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
-import {ChannelCheckerInterface} from "../../../checker/channel.checker.interface";
-import {UserChannelInterface} from "../../../model/channel.interface";
+import {LinkValidatorInterface} from "../../../validator/link.validator.interface";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelExists : boolean
@@ -18,8 +17,8 @@ export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddU
 export class AddUserChannelScene {
 
     constructor(
+        @Inject('LINK_VALIDATOR') private linkValidator : LinkValidatorInterface,
         @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
-        @Inject('CUSTOM_CHANNEL_CHECKER') private checker : ChannelCheckerInterface,
     ) {
     }
 
@@ -37,7 +36,7 @@ export class AddUserChannelScene {
             return await telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
         }
         if (telegramContext.scene.step.firstTime) {
-            return await telegramContext.send('Отправьте ссылку на ваш телеграм канал', {
+            return await telegramContext.send(`Отправьте в следующем формате : [название канала] [категория]`, {
                 reply_markup : {
                     resize_keyboard : true,
                     keyboard : [[{text : 'Назад'}]]
@@ -45,17 +44,13 @@ export class AddUserChannelScene {
             })
         }
 
-        const isChannelExists = (await this.checker.checkByLinks([
-            {link : telegramContext.text}
-        ])).checkedChannels[0].isChannelExists
-
-        if (isChannelExists) {
+        if (this.linkValidator.validate({link : telegramContext.text})) {
             await this.channelManager.addChannel({
                 user : {
                     id : telegramContext.from.id,
                     userChannels : [
                         {
-                            userChannel : {link : telegramContext.text},
+                            userChannel : {link : telegramContext.text.replace('https://', '')},
                         }
                     ]
                 }
@@ -68,7 +63,7 @@ export class AddUserChannelScene {
             return await telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
         }
         else {
-            await telegramContext.send('Канал не был добавлен, отправьте корректную ссылку.', {
+            await telegramContext.send('Канал не был добавлен, отправьте в корректном формате.', {
                 reply_markup : {
                     resize_keyboard : true,
                     keyboard : [[{text : 'Назад'}]]

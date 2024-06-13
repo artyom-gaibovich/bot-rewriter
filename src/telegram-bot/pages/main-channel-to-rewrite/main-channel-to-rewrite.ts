@@ -1,14 +1,11 @@
 import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {
-    MAIN_CHANNEL_TO_REWRITE_SCENE,
-    MAIN_CHANNELS_TO_REWROTE_SCENE
-} from "../scenes.types";
+
 import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
-import {ChannelCheckerInterface} from "../../../checker/channel.checker.interface";
+import {MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE} from "../pages.types";
 
 export interface MainChannelToRewriteSceneInterface extends Record<string, any> {
     isChannelAdded : boolean
@@ -20,8 +17,8 @@ export type MainChannelToRewriteSceneContext = TelegramContextModel & StepContex
 
 
 
-@Scene(MAIN_CHANNEL_TO_REWRITE_SCENE)
-export class MainChannelToRewriteScene {
+@Scene(MAIN_CHANNEL_TO_REWRITE_PAGE)
+export class MainChannelToRewrite {
     constructor(
         @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
     ) {
@@ -52,7 +49,7 @@ export class MainChannelToRewriteScene {
 
 
         if (telegramContext.text === 'Обратно') {
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {foundUserChannel}
             })
         }
@@ -75,7 +72,7 @@ export class MainChannelToRewriteScene {
             const currentUserChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).id === foundUserChannel.userChannel.id )
             console.log('cu', currentUserChannel)
             await telegramContext.send(`Подканал ${foundChannelToRewrite.link} был успешно удалён`)
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {
                     channelsToRewrite : currentUserChannel.channelsToRewrite,
                     foundUserChannel : currentUserChannel

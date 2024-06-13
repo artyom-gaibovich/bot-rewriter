@@ -1,14 +1,12 @@
 import {TelegramContextModel} from "../../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ADD_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "../../scenes.types";
-import {ChannelChecker} from "../../../../checker/channel.checker";
-import {ContentAgencyClient} from "../../../../client/content-agency.client";
 import {ChannelLinkInterface} from "../../../../model/link/channel.link.interface";
 import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../../manager/channel/channel.manager.interface";
 import {ChannelCheckerInterface} from "../../../../checker/channel.checker.interface";
 import {UserChannelInterface} from "../../../../model/channel.interface";
+import {ADD_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE} from "../../pages.types";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelExists : boolean
@@ -18,8 +16,8 @@ export interface AddUserChannelSceneInterface extends Record<string, any> {
 export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddUserChannelSceneInterface>
 
 
-@Scene(ADD_CHANNEL_TO_REWRITE_SCENE)
-export class AddChannelToRewriteScene {
+@Scene(ADD_CHANNEL_TO_REWRITE_PAGE)
+export class AddChannelToRewrite {
 
     constructor(
         @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
@@ -39,7 +37,7 @@ export class AddChannelToRewriteScene {
         const foundUserChannel = telegramContext.scene.state.foundUserChannel
 
         if (telegramContext.text === 'Отменить') {
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {
                     foundUserChannel
                 }
@@ -82,7 +80,7 @@ export class AddChannelToRewriteScene {
                     remove_keyboard : true
                 }
             })
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {
+            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {
                     foundUserChannel : newChannel
                 }

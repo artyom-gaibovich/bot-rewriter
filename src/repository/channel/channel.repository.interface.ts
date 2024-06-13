@@ -1,6 +1,7 @@
-import {UserChannel, UserChannels} from "./channel.model";
+import {UserChannelInterface, UserChannelsInterface} from "../../model/channel.interface";
 
 export interface ChannelRepositoryInterface {
-    findById(id : number): Promise<UserChannels>
-    findOne(id : number): Promise<UserChannel>
+    findById(id : number): Promise<UserChannelsInterface>
+    findOne(id : number): Promise<UserChannelInterface>
 }
+

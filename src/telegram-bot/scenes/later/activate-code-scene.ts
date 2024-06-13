@@ -1,6 +1,6 @@
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ACTIVATE_CODE_SCENE, MAIN_SCENE} from "./scenes.types";
-import {TelegramContextModel} from "../model/telegram-context-model";
+import {ACTIVATE_CODE_SCENE, MAIN_SCENE} from "../scenes.types";
+import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 
 

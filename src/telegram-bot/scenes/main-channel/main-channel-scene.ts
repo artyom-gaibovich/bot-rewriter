@@ -1,23 +1,32 @@
-import {TelegramContextModel} from "../model/telegram-context-model";
+import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ADD_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "./scenes.types";
-import {ChannelMockRepository} from "../../repository/channel/channel-mock.repository";
-import {UserChannel} from "../../repository/channel/channel.model";
+import {ADD_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "../scenes.types";
+import {UserChannelInterface} from "../../../model/channel.interface";
+import {Inject} from "@nestjs/common";
+import {UserRepositoryInterface} from "../../../repository/user/user.repository.interface";
+import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
+import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
+import {UserManagerInterface} from "../../../manager/user/user.manager.interface";
 
 export interface MainChannelSceneInterface extends Record<string, any> {
-    userChannels : UserChannel[]
+    userChannels : UserChannelInterface[]
 }
 
 export type MainChannelSceneContext = TelegramContextModel & StepContext<MainChannelSceneInterface>
 @Scene(MAIN_CHANNEL_SCENE)
 export class MainChannelScene {
+    constructor(
+        @Inject('USER_MANAGER') private userManager : UserManagerInterface,
+        @Inject('USER_REPOSITORY') private repository : UserRepositoryInterface,
+    ) {
+    }
 
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            const repository = new ChannelMockRepository()
-            telegramContext.scene.state.userChannels = (await repository.findById(1)).userChannels
+            const user = (await this.repository.getUser(telegramContext.from.id))
+            telegramContext.scene.state.userChannels = user.user.userChannels
         }
     }
 
@@ -27,8 +36,8 @@ export class MainChannelScene {
             return telegramContext.scene.enter(ADD_USER_CHANNEL_SCENE)
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
-        if (telegramContext.scene.state.userChannels.map(chn=>chn.userChannel.link).includes(telegramContext.text)) {
-            const foundUserChannel : UserChannel = telegramContext.scene.state.userChannels.find(chn => chn.userChannel.link === telegramContext.text)
+        if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text)) {
+            const foundUserChannel : UserChannelInterface = telegramContext.scene.state.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link === telegramContext.text)
             return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWROTE_SCENE, {state : {foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
         //
@@ -37,7 +46,7 @@ export class MainChannelScene {
         const channelsCount = telegramContext.scene.state.userChannels.length
         const channelsLimit = 3
         const channelKeyboard = channels.map(chn => {
-            return [{text : chn.userChannel.link}]
+            return [{text : (chn.userChannel as ChannelLinkInterface).link}]
         })
         const addChannelKeyboard = [
             [{text : 'Добавить канал'}],

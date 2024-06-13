@@ -1,6 +1,6 @@
 import {ChannelCheckerInterface} from "./channel.checker.interface";
 import {LinkInterface} from "../model/link/link.interface";
-import {ContentAgencyClientInterface} from "../client/content-agency.client.interface";
+import {ContentAgencyClientInterface} from "../client/content-agency/content-agency.client.interface";
 import {Injectable} from "@nestjs/common";
 
 @Injectable()

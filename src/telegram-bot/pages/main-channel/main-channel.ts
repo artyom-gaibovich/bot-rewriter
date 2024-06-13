@@ -16,6 +16,7 @@ export type MainChannelSceneContext = TelegramContextModel & StepContext<MainCha
 @Scene(MAIN_CHANNEL_PAGE)
 export class MainChannel {
     constructor(
+        @Inject('USER_MANAGER') private userManager : UserManagerInterface,
         @Inject('USER_REPOSITORY') private repository : UserRepositoryInterface,
     ) {
     }
@@ -23,7 +24,14 @@ export class MainChannel {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            const user = (await this.repository.getUser(telegramContext.from.id))
+            let user = (await this.repository.getUser(telegramContext.from.id))
+            if (!user) {
+                user = await this.userManager.createUser({
+                    user : {
+                        id : telegramContext.from.id
+                    }
+                })
+            }
             telegramContext.scene.state.userChannels = user.user.userChannels
         }
     }

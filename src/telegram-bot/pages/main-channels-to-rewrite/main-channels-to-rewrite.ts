@@ -45,7 +45,7 @@ export class MainChannelsToRewrite {
             const rewrittenContent = await this.contentRewriter.rewrite({
                 channelsToRewrite : telegramContext.scene.state.channelsToRewrite
             })
-            await telegramContext.reply(rewrittenContent.rewrittenContent.slice(0,4000))
+            await telegramContext.reply(rewrittenContent.rewrittenContent)
             await telegramContext.reply('Контент был успешно сгенерирован')
             telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent
         }

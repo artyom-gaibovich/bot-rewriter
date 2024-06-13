@@ -1,12 +1,10 @@
 
 
 
-interface RewriteContent {
-    channelLink: string;
-    posts: (string | null)[];
-    status: string;
-}
+
 
 export interface RewriteContentResponseModel {
-    channelsWithPosts: RewriteContent[];
+    response_key : string
+    response_message : string
+    data : string
 }

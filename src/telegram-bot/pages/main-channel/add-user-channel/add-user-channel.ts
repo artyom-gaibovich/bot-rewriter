@@ -1,10 +1,10 @@
-import {TelegramContextModel} from "../../model/telegram-context-model";
+import {TelegramContextModel} from "../../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ADD_USER_CHANNEL_SCENE, MAIN_CHANNEL_SCENE} from "../scenes.types";
 import {Inject} from "@nestjs/common";
-import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
-import {LinkValidatorInterface} from "../../../validator/link.validator.interface";
+import {ChannelManagerInterface} from "../../../../manager/channel/channel.manager.interface";
+import {LinkValidatorInterface} from "../../../../validator/link.validator.interface";
+import {ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE} from "../../pages.types";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelExists : boolean
@@ -13,8 +13,8 @@ export interface AddUserChannelSceneInterface extends Record<string, any> {
 export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddUserChannelSceneInterface>
 
 
-@Scene(ADD_USER_CHANNEL_SCENE)
-export class AddUserChannelScene {
+@Scene(ADD_USER_CHANNEL_PAGE)
+export class AddUserChannel {
 
     constructor(
         @Inject('LINK_VALIDATOR') private linkValidator : LinkValidatorInterface,
@@ -33,7 +33,7 @@ export class AddUserChannelScene {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : AddUserChannelSceneContext) {
         if (telegramContext.text === 'Назад') {
-            return await telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
+            return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
         }
         if (telegramContext.scene.step.firstTime) {
             return await telegramContext.send(`Отправьте в следующем формате : [название канала] [категория]`, {
@@ -60,7 +60,7 @@ export class AddUserChannelScene {
                     remove_keyboard : true
                 }
             })
-            return await telegramContext.scene.enter(MAIN_CHANNEL_SCENE)
+            return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
         }
         else {
             await telegramContext.send('Канал не был добавлен, отправьте в корректном формате.', {

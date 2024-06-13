@@ -1,11 +1,11 @@
 import {Module} from "@nestjs/common";
 import {ContentRewriterModule} from "../../../rewriter/content.rewriter.module";
-import {MainChannelsToRewriteScene} from "./main-channels-to-rewrite-scene";
+import {MainChannelsToRewrite} from "./main-channels-to-rewrite";
 import {UserRepositoryModule} from "../../../repository/user/user.repository.module";
 
 @Module({
     imports : [ContentRewriterModule, UserRepositoryModule],
-    providers: [MainChannelsToRewriteScene]
+    providers: [MainChannelsToRewrite]
 })
 export class MainChannelsToRewriteModule {
 

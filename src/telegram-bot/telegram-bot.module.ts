@@ -1,25 +1,15 @@
 import {Module} from "@nestjs/common";
 import {TelegramBotController} from "./telegram-bot.controller";
 import {MainPageKeyboard} from "./keyboard/keyboard";
-import {ActivateCodeScene} from "./scenes/later/activate-code-scene";
-import {MainScene} from "./scenes/later/main-scene";
-import {ImproveLimitsScene} from "./scenes/later/improve-limits-scene";
-import {SupportScene} from "./scenes/later/support-scene";
-import {MainChannelScene} from "./scenes/main-channel/main-channel-scene";
-import {AddUserChannelScene} from "./scenes/add-user-channel/add-user-channel-scene";
-import {MainChannelsToRewriteScene} from "./scenes/main-channels-to-rewrite/main-channels-to-rewrite-scene";
-import {MainChannelToRewriteScene} from "./scenes/main-channel-to-rewrite/main-channel-to-rewrite-scene";
-import {AddChannelToRewriteScene} from "./scenes/main-channel-to-rewrite/add/add-channel-to-rewrite-scene";
-import {DeleteUserChannelScene} from "./scenes/delete-user-channel/delete-user-channel-scene";
-import {DeleteUserChannelSceneModule} from "./scenes/delete-user-channel/delete-user-channel-scene.module";
-import {AddChannelToRewriteModule} from "./scenes/main-channel-to-rewrite/add/add-channel-to-rewrite.module";
-import {AddUserChannelModule} from "./scenes/add-user-channel/add-user-channel.module";
-import {MainChannelRewriteModule} from "./scenes/main-channel-to-rewrite/main-channel-rewrite.module";
-import {MainChannelSceneModule} from "./scenes/main-channel/main-channel-scene.module";
-import {MainChannelsToRewriteModule} from "./scenes/main-channels-to-rewrite/main-channels-to-rewrite.module";
+import {DeleteUserChannelModule} from "./pages/main-channel/delete-user-channel/delete-user-channel.module";
+import {AddChannelToRewriteModule} from "./pages/main-channel-to-rewrite/add/add-channel-to-rewrite.module";
+import {AddUserChannelModule} from "./pages/main-channel/add-user-channel/add-user-channel.module";
+import {MainChannelRewriteModule} from "./pages/main-channel-to-rewrite/main-channel-rewrite.module";
+import {MainChannelModule} from "./pages/main-channel/main-channel.module";
+import {MainChannelsToRewriteModule} from "./pages/main-channels-to-rewrite/main-channels-to-rewrite.module";
 
 @Module({
-    imports : [DeleteUserChannelSceneModule, AddChannelToRewriteModule, AddUserChannelModule, MainChannelRewriteModule, MainChannelSceneModule, MainChannelsToRewriteModule],
+    imports : [DeleteUserChannelModule, AddChannelToRewriteModule, AddUserChannelModule, MainChannelRewriteModule, MainChannelModule, MainChannelsToRewriteModule],
     providers : [{
         provide : 'MAIN_KEYBOARD',
         useFactory : () => {

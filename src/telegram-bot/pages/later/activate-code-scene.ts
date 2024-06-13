@@ -1,5 +1,4 @@
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ACTIVATE_CODE_SCENE, MAIN_SCENE} from "../scenes.types";
 import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 
@@ -9,7 +8,7 @@ export interface ActivateCodeSceneInterface extends Record<string, any> {
 }
 
 export type ActivateCodeSceneContext = TelegramContextModel & StepContext<ActivateCodeSceneInterface>
-@Scene(ACTIVATE_CODE_SCENE)
+@Scene('')
 export class ActivateCodeScene {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : ActivateCodeSceneContext) {
@@ -24,7 +23,7 @@ export class ActivateCodeScene {
         telegramContext.scene.state.activateCode = telegramContext.text
         if (telegramContext.scene.state.activateCode === 'PASSWORD') {
             await telegramContext.send('Верный код')
-            await telegramContext.scene.enter(MAIN_SCENE)
+            await telegramContext.scene.enter('MAIN_SCENE')
         }
         else {
             await telegramContext.send('Не верный код. Повторите попытку', {

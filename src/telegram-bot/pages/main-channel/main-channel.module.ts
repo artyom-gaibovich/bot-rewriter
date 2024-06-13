@@ -1,13 +1,13 @@
 import {Module} from "@nestjs/common";
 import {ChannelRepositoryModule} from "../../../repository/channel/channel.repository.module";
 import {UserManagerModule} from "../../../manager/user/user.manager.module";
-import {MainChannelScene} from "./main-channel-scene";
+import {MainChannel} from "./main-channel";
 import {UserRepositoryModule} from "../../../repository/user/user.repository.module";
 
 @Module({
     imports : [UserManagerModule, UserRepositoryModule],
-    providers : [MainChannelScene]
+    providers : [MainChannel]
 })
-export class MainChannelSceneModule {
+export class MainChannelModule {
 
 }

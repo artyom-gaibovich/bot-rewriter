@@ -1,14 +1,14 @@
-import {TelegramContextModel} from "../../model/telegram-context-model";
+import {TelegramContextModel} from "../../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
-import {ADD_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "../scenes.types";
-import {ChannelChecker} from "../../../checker/channel.checker";
-import {ContentAgencyClient} from "../../../client/content-agency.client";
-import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
+import {ADD_CHANNEL_TO_REWRITE_SCENE, MAIN_CHANNELS_TO_REWROTE_SCENE} from "../../scenes.types";
+import {ChannelChecker} from "../../../../checker/channel.checker";
+import {ContentAgencyClient} from "../../../../client/content-agency.client";
+import {ChannelLinkInterface} from "../../../../model/link/channel.link.interface";
 import {Inject} from "@nestjs/common";
-import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
-import {ChannelCheckerInterface} from "../../../checker/channel.checker.interface";
-import {UserChannelInterface} from "../../../model/channel.interface";
+import {ChannelManagerInterface} from "../../../../manager/channel/channel.manager.interface";
+import {ChannelCheckerInterface} from "../../../../checker/channel.checker.interface";
+import {UserChannelInterface} from "../../../../model/channel.interface";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelExists : boolean

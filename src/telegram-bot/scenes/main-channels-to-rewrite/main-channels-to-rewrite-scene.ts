@@ -2,8 +2,7 @@ import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {
     ADD_CHANNEL_TO_REWRITE_SCENE,
     DELETE_USER_CHANNEL_SCENE,
-    EDIT_CHANNEL_TO_REWRITE_SCENE,
-    MAIN_CHANNEL_SCENE,
+    MAIN_CHANNEL_SCENE, MAIN_CHANNEL_TO_REWRITE_SCENE,
     MAIN_CHANNELS_TO_REWROTE_SCENE
 } from "../scenes.types";
 import {TelegramContextModel} from "../../model/telegram-context-model";
@@ -32,7 +31,8 @@ export class MainChannelsToRewriteScene {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            console.log(telegramContext.scene.state.foundUserChannel)
+            const chnl = telegramContext.scene.state.foundUserChannel.channelsToRewrite
+            console.log(chnl)
             telegramContext.scene.state.channelsToRewrite = telegramContext.scene.state.foundUserChannel.channelsToRewrite
         }
     }
@@ -71,7 +71,7 @@ export class MainChannelsToRewriteScene {
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.channelsToRewrite.map(chn=>chn.link).includes(telegramContext.text)) {
             const foundChannelToRewrite : ChannelLinkInterface = telegramContext.scene.state.channelsToRewrite.find(chn => chn.link === telegramContext.text)
-            return telegramContext.scene.enter(EDIT_CHANNEL_TO_REWRITE_SCENE, {state : {foundChannelToRewrite, foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
+            return telegramContext.scene.enter(MAIN_CHANNEL_TO_REWRITE_SCENE, {state : {foundChannelToRewrite, foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
         //
 

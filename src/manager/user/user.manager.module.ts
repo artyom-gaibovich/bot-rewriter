@@ -3,17 +3,22 @@ import {ChannelServiceClient} from "../../client/channel-service/channer-service
 import {ChannelServiceClientInterface} from "../../client/channel-service/channel-service.client.interface";
 import {UserManagerLinkConfig} from "./user.manager.link.config";
 import {UserManager} from "./user.manager";
+import {ConfigModule, ConfigService} from "@nestjs/config";
+
+//CREATE_USER_URL_DOCKER
 
 @Module({
+    imports : [ConfigModule],
     providers : [
         {
             provide : 'USER_MANAGER_LINK_CONFIG',
-            useFactory : () => {
+            useFactory : (config : ConfigService) => {
                 return {
-                    createUser : {link : 'http://localhost:8080/api/v1/user/create'},
-                    deleteUser : {link : 'http://localhost:8080/api/v1/user/delete'}
+                    createUser : {link : config.get('CREATE_USER_URL')},
+                    deleteUser : {link : config.get('CHECK_CHANNELS_URL')}
                 } as UserManagerLinkConfig
             },
+            inject : [ConfigService]
         },
         {
             provide : 'CHANNEL_SERVICE_CLIENT',

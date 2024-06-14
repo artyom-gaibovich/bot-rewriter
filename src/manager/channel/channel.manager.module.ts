@@ -5,19 +5,22 @@ import {ChannelServiceClientInterface} from "../../client/channel-service/channe
 import {UserManager} from "../user/user.manager";
 import {ChannelManagerLinkConfig} from "./channel.manager.link.config";
 import {ChannelManager} from "./channel.manager";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 
 @Module({
+    imports : [ConfigModule],
     providers : [
         {
             provide : 'CHANNEL_MANAGER_LINK_CONFIG',
-            useFactory : () => {
+            useFactory : (config : ConfigService) => {
                 return {
-                    addChannel : {link : 'http://localhost:8080/api/v1/channel/add'},
-                    deleteChannel : {link : 'http://localhost:8080/api/v1/channel/delete'},
-                    deleteChannelToRewrite : {link : 'http://localhost:8080/api/v1/channel/delete/channel-to-rewrite'}
+                    addChannel : {link : config.get('ADD_CHANNEL_URL')},
+                    deleteChannel : {link : config.get('DELETE_CHANNEL_URL')},
+                    deleteChannelToRewrite : {link : config.get('DELETE_CHANNEL_TO_REWRITE_URL')}
 
                 } as ChannelManagerLinkConfig
             },
+            inject : [ConfigService]
         },
         {
             provide : 'CHANNEL_SERVICE_CLIENT',

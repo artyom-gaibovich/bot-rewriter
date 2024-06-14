@@ -3,7 +3,7 @@ services:
     container_name: db_postgresql
     image: postgres:14.3-alpine
     ports:
-      - "5432:5432"
+      - "2020:5432"
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=admin
@@ -15,7 +15,7 @@ services:
       dockerfile: ./docker/dev/parser-server/Dockerfile
     container_name: parser-server
     ports:
-      - "4200:4000"
+      - "8080:8080"
     depends_on:
       - db_postgresql
     networks:

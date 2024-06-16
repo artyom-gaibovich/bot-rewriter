@@ -9,7 +9,7 @@ import {ChannelServiceClient} from "../../client/channel-service/channer-service
             provide : 'CATEGORY_REPOSITORY',
             useFactory : () => {
                 return new CategoryRepository(
-                    {link : 'http://localhost:8080/api/v1/channel/add'},
+                    {link : 'http://localhost:8080/api/v1/category/add'},
                     new ChannelServiceClient())
             }
         },

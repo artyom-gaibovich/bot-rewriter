@@ -9,13 +9,10 @@ export class CategoryRepository implements CategoryRepositoryInterface {
         private clientChannel : ChannelServiceClientInterface
     ) {
     }
-    async findAll(): Promise<CategoriesInterface> {
-        const result = (await this.clientChannel.getCategories({
-            url : this.link
+    async findAll(): Promise<CategoryInterface[]> {
+
+        return (await this.clientChannel.getCategories({
+            url: this.link
         })).categories
-        
-        return {
-            categories :  result
-        }
     }
 }

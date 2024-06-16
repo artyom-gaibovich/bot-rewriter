@@ -12,6 +12,7 @@ import {DeleteChannelRequestInterface} from "./req/delete-channel-request.interf
 import {DeleteChannelResponseInterface} from "./res/delete-channel-response.interface";
 import {UserInterface} from "../../model/user.interface";
 import {GetCategoriesRequestInterface} from "./req/get-categories.request.interface";
+import {mockCategories} from "./mock/categories.mock";
 
 export class ChannelServiceClient implements ChannelServiceClientInterface {
 
@@ -21,7 +22,7 @@ export class ChannelServiceClient implements ChannelServiceClientInterface {
 
             return {
                 status : 'OK',
-                categories : categories
+                categories : mockCategories
             }
         }
         catch (error) {

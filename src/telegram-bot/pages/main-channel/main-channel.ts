@@ -6,7 +6,12 @@ import {Inject} from "@nestjs/common";
 import {UserRepositoryInterface} from "../../../repository/user/user.repository.interface";
 import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {UserManagerInterface} from "../../../manager/user/user.manager.interface";
-import {ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE} from "../pages.types";
+import {
+    ADD_CHANNEL_CATEGORY,
+    ADD_USER_CHANNEL_PAGE,
+    MAIN_CHANNEL_PAGE,
+    MAIN_CHANNELS_TO_REWRITE_PAGE
+} from "../pages.types";
 
 export interface MainChannelSceneInterface extends Record<string, any> {
     userChannels : UserChannelInterface[]
@@ -24,7 +29,7 @@ export class MainChannel {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            let user = (await this.repository.getUser(telegramContext.from.id))
+           /* let user = (await this.repository.getUser(telegramContext.from.id))
             if (!user) {
                 user = await this.userManager.createUser({
                     user : {
@@ -32,7 +37,7 @@ export class MainChannel {
                     }
                 })
             }
-            telegramContext.scene.state.userChannels = user.user.userChannels
+            telegramContext.scene.state.userChannels = user.user.userChannels*/
         }
     }
 

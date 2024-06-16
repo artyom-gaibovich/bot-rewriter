@@ -1,4 +1,4 @@
-const categories : CategoryInterface[] = [
+export const mockCategories : CategoryInterface[] = [
     {
         title: "Универсальный",
         value: "standart",

@@ -3,9 +3,10 @@ import {ChannelManagerModule} from "../../../../manager/channel/channel.manager.
 import {ChannelCheckerModule} from "../../../../checker/channel.checker.module";
 import {AddUserChannel} from "./add-user-channel";
 import {LinkValidatorModule} from "../../../../validator/link.validator.module";
+import {AddChannelCategoryModule} from "./add-channel-category/add-channel-category.module";
 
 @Module({
-    imports : [LinkValidatorModule, ChannelManagerModule, ChannelCheckerModule],
+    imports : [AddChannelCategoryModule, LinkValidatorModule, ChannelManagerModule, ChannelCheckerModule],
     providers : [AddUserChannel]
 })
 export class AddUserChannelModule {

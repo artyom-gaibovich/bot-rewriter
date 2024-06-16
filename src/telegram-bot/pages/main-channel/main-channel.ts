@@ -29,7 +29,7 @@ export class MainChannel {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-           /* let user = (await this.repository.getUser(telegramContext.from.id))
+            let user = (await this.repository.getUser(telegramContext.from.id))
             if (!user) {
                 user = await this.userManager.createUser({
                     user : {
@@ -37,14 +37,14 @@ export class MainChannel {
                     }
                 })
             }
-            telegramContext.scene.state.userChannels = user.user.userChannels*/
+            telegramContext.scene.state.userChannels = user.user.userChannels
         }
     }
 
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.text === 'Добавить канал') {
-            return telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE)
+            return telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text)) {

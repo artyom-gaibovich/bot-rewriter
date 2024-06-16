@@ -13,7 +13,7 @@ export class TelegramBotController {
     @Hears('/start')
     //БАГ С ДОБАВЛЕНИЕМ КАНАЛОВ ЕСТЬ
     async start(@Ctx() telegramContext: TelegramContextModel) {
-        await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
+        await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
     }
 
 

@@ -13,7 +13,7 @@ import {
 } from "./pages/main-channel/add-user-channel/add-channel-category/add-channel-category.module";
 
 @Module({
-    imports : [AddChannelCategoryModule, DeleteUserChannelModule, AddChannelToRewriteModule, AddUserChannelModule, MainChannelRewriteModule, MainChannelModule, MainChannelsToRewriteModule],
+    imports : [DeleteUserChannelModule, AddChannelToRewriteModule, AddUserChannelModule, MainChannelRewriteModule, MainChannelModule, MainChannelsToRewriteModule],
     providers : [{
         provide : 'MAIN_KEYBOARD',
         useFactory : () => {

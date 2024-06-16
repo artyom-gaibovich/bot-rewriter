@@ -1,5 +1,5 @@
 import {
-    ADD_CHANNEL_CATEGORY,
+    ADD_CHANNEL_CATEGORY, ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE,
 } from "../../../pages.types";
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {Inject} from "@nestjs/common";
@@ -36,18 +36,28 @@ export class AddChannelCategory {
         if (telegramContext.text === 'Следующая') {
             telegramContext.scene.state.currentPage++;
             await this.showCategories(telegramContext);
+        }
 
-        } else if (telegramContext.text === 'Назад') {
+        if (telegramContext.text === 'Назад') {
             telegramContext.scene.state.currentPage--;
             await this.showCategories(telegramContext);
-        } else {
-            // Handle category selection or exit
+        }
+
+        if (telegramContext.text === 'Выйти') {
+            return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+        }
+        if (telegramContext.text !== 'Добавить канал') {
+            return await telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE, {
+                state : {
+                    category : telegramContext.scene.state.categories.find(cat=>cat.title=telegramContext.text)
+                }
+            })
         }
     }
 
     private async showCategories(telegramContext: AddChannelCategoryContext) {
         const { categories, limit, currentPage } = telegramContext.scene.state;
-
+        console.log('chn')
         const startIndex = currentPage * limit;
         const endIndex = startIndex + limit;
         const categoriesForPage = categories.slice(startIndex, endIndex);
@@ -86,7 +96,7 @@ export class AddChannelCategory {
                 ];
             }
         }
-        console.log(mainKeyboard)
+
         await telegramContext.send('Выберите дальнейшее действие', {
             reply_markup: {
                 resize_keyboard: true,

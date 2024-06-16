@@ -3,6 +3,8 @@ ifneq ("$(wildcard .env)","")
 endif
 
 
+
+
 up:
 	@docker compose up -d --remove-orphans --build --force-recreate
 

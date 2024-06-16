@@ -2,7 +2,7 @@ import {Ctx, Hears, Update} from "nestjs-puregram";
 import {KeyboardInterface} from "./keyboard/keyboard.interface";
 import {Inject, Injectable} from "@nestjs/common";
 import {TelegramContextModel} from "./model/telegram-context-model";
-import {MAIN_CHANNEL_PAGE} from "./pages/pages.types";
+import {ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE} from "./pages/pages.types";
 
 
 @Update()
@@ -13,7 +13,7 @@ export class TelegramBotController {
     @Hears('/start')
     //БАГ С ДОБАВЛЕНИЕМ КАНАЛОВ ЕСТЬ
     async start(@Ctx() telegramContext: TelegramContextModel) {
-        await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
+        await telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE)
     }
 
 

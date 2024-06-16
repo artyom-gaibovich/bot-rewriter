@@ -1,18 +1,37 @@
 import {ChannelServiceClientInterface} from "./channel-service.client.interface";
-import {GetUserRequestInterface} from "./model/req/get-user-request.interface";
-import {GetUserResponseInterface} from "./model/res/get-user.response.interface";
+import {GetUserRequestInterface} from "./req/get-user-request.interface";
+import {GetUserResponseInterface} from "./res/get-user.response.interface";
 import axios from "axios";
-import {CreateUserRequestInterface} from "./model/req/create-user-request.interface";
-import {CreateUserResponseInterface} from "./model/res/create-user-response.interface";
-import {DeleteUserRequestInterface} from "./model/req/delete-user-request.interface";
-import {DeleteUserResponseInterface} from "./model/res/delete-user-response.interface";
-import {AddChannelRequestInterface} from "./model/req/add-channel-request.interface";
-import {AddChannelResponseInterface} from "./model/res/add-channel-response.interface";
-import {DeleteChannelRequestInterface} from "./model/req/delete-channel-request.interface";
-import {DeleteChannelResponseInterface} from "./model/res/delete-channel-response.interface";
+import {CreateUserRequestInterface} from "./req/create-user-request.interface";
+import {CreateUserResponseInterface} from "./res/create-user-response.interface";
+import {DeleteUserRequestInterface} from "./req/delete-user-request.interface";
+import {DeleteUserResponseInterface} from "./res/delete-user-response.interface";
+import {AddChannelRequestInterface} from "./req/add-channel-request.interface";
+import {AddChannelResponseInterface} from "./res/add-channel-response.interface";
+import {DeleteChannelRequestInterface} from "./req/delete-channel-request.interface";
+import {DeleteChannelResponseInterface} from "./res/delete-channel-response.interface";
 import {UserInterface} from "../../model/user.interface";
+import {GetCategoriesRequestInterface} from "./req/get-categories.request.interface";
+import {mockCategories} from "./mock/categories.mock";
 
 export class ChannelServiceClient implements ChannelServiceClientInterface {
+
+    //ДЕКОМПОЗИРОВАТЬ НА BASE RESPONSE ИНТЕРФЕЙС
+    async getCategories(req: GetCategoriesRequestInterface): Promise<GetCategoriesResponseInterface> {
+        try {
+
+            return {
+                status : 'OK',
+                categories : mockCategories
+            }
+        }
+        catch (error) {
+            return {
+                status : 'ERROR'
+            }
+        }
+    }
+
     async getUser(req: GetUserRequestInterface): Promise<GetUserResponseInterface> {
         try {
             const request = await axios.post<UserInterface>(req.url.link, req.body);

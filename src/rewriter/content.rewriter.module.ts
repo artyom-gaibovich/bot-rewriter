@@ -11,7 +11,7 @@ import {ConfigModule, ConfigService} from "@nestjs/config";
         {
             provide : 'CUSTOM_CONTENT_REWRITER',
             useFactory: (config : ConfigService) => {
-                return new ContentRewriter({link : config.get('REWRITE_CONTENT_URL_DOCKER')}, new ContentAgencyClient())
+                return new ContentRewriter({link : config.get('REWRITE_CONTENT_URL')}, new ContentAgencyClient())
             },
             inject : [ConfigService]
         },

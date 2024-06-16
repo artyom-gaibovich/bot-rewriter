@@ -10,7 +10,7 @@ import {ChannelServiceClientInterface} from "../../client/channel-service/channe
         {
             provide : 'GET_USER_URL',
             useFactory: () => {
-                return {link : 'http://localhost:8080/api/v1/user/get'} as LinkInterface
+                return {link : 'http://localhost:7070/api/v1/user/get'} as LinkInterface
             }
         },
         {

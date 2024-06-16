@@ -13,7 +13,7 @@ import {ConfigService} from "@nestjs/config";
             provide : "CUSTOM_CHANNEL_CHECKER",
             useFactory: (config : ConfigService) => {
                 return new ChannelChecker(
-                    {link : config.get('CHECK_CHANNELS_URL_DOCKER')},
+                    {link : config.get('CHECK_CHANNELS_URL')},
                     new ContentAgencyClient()
                 )
             },

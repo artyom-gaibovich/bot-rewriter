@@ -2,7 +2,7 @@ import {Ctx, Hears, Update} from "nestjs-puregram";
 import {KeyboardInterface} from "./keyboard/keyboard.interface";
 import {Inject, Injectable} from "@nestjs/common";
 import {TelegramContextModel} from "./model/telegram-context-model";
-import {MAIN_CHANNEL_PAGE} from "./pages/pages.types";
+import {ADD_CHANNEL_CATEGORY, ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE} from "./pages/pages.types";
 
 
 @Update()

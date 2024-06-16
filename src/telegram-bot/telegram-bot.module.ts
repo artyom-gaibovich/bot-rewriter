@@ -7,6 +7,10 @@ import {AddUserChannelModule} from "./pages/main-channel/add-user-channel/add-us
 import {MainChannelRewriteModule} from "./pages/main-channel-to-rewrite/main-channel-rewrite.module";
 import {MainChannelModule} from "./pages/main-channel/main-channel.module";
 import {MainChannelsToRewriteModule} from "./pages/main-channels-to-rewrite/main-channels-to-rewrite.module";
+import {ADD_CHANNEL_CATEGORY} from "./pages/pages.types";
+import {
+    AddChannelCategoryModule
+} from "./pages/main-channel/add-user-channel/add-channel-category/add-channel-category.module";
 
 @Module({
     imports : [DeleteUserChannelModule, AddChannelToRewriteModule, AddUserChannelModule, MainChannelRewriteModule, MainChannelModule, MainChannelsToRewriteModule],

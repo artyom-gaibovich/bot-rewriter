@@ -6,7 +6,12 @@ import {Inject} from "@nestjs/common";
 import {UserRepositoryInterface} from "../../../repository/user/user.repository.interface";
 import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {UserManagerInterface} from "../../../manager/user/user.manager.interface";
-import {ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE} from "../pages.types";
+import {
+    ADD_CHANNEL_CATEGORY,
+    ADD_USER_CHANNEL_PAGE,
+    MAIN_CHANNEL_PAGE,
+    MAIN_CHANNELS_TO_REWRITE_PAGE
+} from "../pages.types";
 
 export interface MainChannelSceneInterface extends Record<string, any> {
     userChannels : UserChannelInterface[]
@@ -39,7 +44,7 @@ export class MainChannel {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.text === 'Добавить канал') {
-            return telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE)
+            return telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text)) {

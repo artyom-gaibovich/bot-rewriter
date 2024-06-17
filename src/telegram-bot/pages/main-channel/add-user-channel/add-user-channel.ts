@@ -5,6 +5,7 @@ import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../../manager/channel/channel.manager.interface";
 import {LinkValidatorInterface} from "../../../../validator/link.validator.interface";
 import {ADD_CHANNEL_CATEGORY, ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE} from "../../pages.types";
+import {CHANNEL_MANAGER, LINK_VALIDATOR} from "../../../../constants/DI.constants";
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     category : CategoryInterface
@@ -17,8 +18,8 @@ export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddU
 export class AddUserChannel {
 
     constructor(
-        @Inject('LINK_VALIDATOR') private linkValidator : LinkValidatorInterface,
-        @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
+        @Inject(LINK_VALIDATOR) private linkValidator : LinkValidatorInterface,
+        @Inject(CHANNEL_MANAGER) private channelManager : ChannelManagerInterface,
     ) {
     }
 
@@ -32,7 +33,7 @@ export class AddUserChannel {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : AddUserChannelSceneContext) {
         if (telegramContext.text === 'Вернуться обратно') {
-            return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
+            return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
         }
         if (telegramContext.scene.step.firstTime) {
             return await telegramContext.send(`Отправьте в следующем формате : [название канала] [категория]`, {
@@ -44,7 +45,7 @@ export class AddUserChannel {
         }
 
         if (this.linkValidator.validate({link : telegramContext.text})) {
-            await this.channelManager.addChannel({
+            const result = await this.channelManager.addChannel({
                 user : {
                     id : telegramContext.from.id,
                     userChannels : [

@@ -3,13 +3,14 @@ import {Inject, Injectable} from "@nestjs/common";
 import {UserManagerLinkConfig} from "../user/user.manager.link.config";
 import {UserInterface} from "../../model/user.interface";
 import {ChannelManagerLinkConfig} from "./channel.manager.link.config";
-import {ChannelServiceClientInterface} from "../../client/channel-service/channel-service.client.interface";
+import {StorageClientInterface} from "../../client/storage/storage.client.interface";
+import {CHANNEL_MANAGER, CHANNEL_MANAGER_LINK_CONFIG, STORAGE_CLIENT} from "../../constants/DI.constants";
 
 @Injectable()
 export class ChannelManager implements ChannelManagerInterface {
     constructor(
-        @Inject('CHANNEL_MANAGER_LINK_CONFIG') private linkConfig : ChannelManagerLinkConfig,
-        @Inject('CHANNEL_SERVICE_CLIENT') private client : ChannelServiceClientInterface,
+        @Inject(CHANNEL_MANAGER_LINK_CONFIG) private linkConfig : ChannelManagerLinkConfig,
+        @Inject(STORAGE_CLIENT) private client : StorageClientInterface,
 ) {
     }
 

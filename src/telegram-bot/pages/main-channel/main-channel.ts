@@ -12,6 +12,7 @@ import {
     MAIN_CHANNEL_PAGE,
     MAIN_CHANNELS_TO_REWRITE_PAGE
 } from "../pages.types";
+import {USER_MANAGER, USER_REPOSITORY} from "../../../constants/DI.constants";
 
 export interface MainChannelSceneInterface extends Record<string, any> {
     userChannels : UserChannelInterface[]
@@ -21,16 +22,17 @@ export type MainChannelSceneContext = TelegramContextModel & StepContext<MainCha
 @Scene(MAIN_CHANNEL_PAGE)
 export class MainChannel {
     constructor(
-        @Inject('USER_MANAGER') private userManager : UserManagerInterface,
-        @Inject('USER_REPOSITORY') private repository : UserRepositoryInterface,
+        @Inject(USER_MANAGER) private userManager : UserManagerInterface,
+        @Inject(USER_REPOSITORY) private repository : UserRepositoryInterface,
     ) {
     }
 
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            let user = (await this.repository.getUser(telegramContext.from.id))
+            let user = (await this.repository.get(telegramContext.from.id))
             if (!user) {
+                console.log(user)
                 user = await this.userManager.createUser({
                     user : {
                         id : telegramContext.from.id

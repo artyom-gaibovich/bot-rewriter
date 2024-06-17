@@ -1,4 +1,4 @@
-import {ChannelServiceClientInterface} from "./channel-service.client.interface";
+import {StorageClientInterface} from "./storage.client.interface";
 import {GetUserRequestInterface} from "./req/get-user-request.interface";
 import {GetUserResponseInterface} from "./res/get-user.response.interface";
 import axios from "axios";
@@ -14,7 +14,7 @@ import {UserInterface} from "../../model/user.interface";
 import {GetCategoriesRequestInterface} from "./req/get-categories.request.interface";
 import {mockCategories} from "./mock/categories.mock";
 
-export class ChannelServiceClient implements ChannelServiceClientInterface {
+export class StorageClient implements StorageClientInterface {
 
     //ДЕКОМПОЗИРОВАТЬ НА BASE RESPONSE ИНТЕРФЕЙС
     async getCategories(req: GetCategoriesRequestInterface): Promise<GetCategoriesResponseInterface> {
@@ -34,6 +34,7 @@ export class ChannelServiceClient implements ChannelServiceClientInterface {
 
     async getUser(req: GetUserRequestInterface): Promise<GetUserResponseInterface> {
         try {
+            console.log(req)
             const request = await axios.post<UserInterface>(req.url.link, req.body);
             return {
                 body : request.data
@@ -73,9 +74,10 @@ export class ChannelServiceClient implements ChannelServiceClientInterface {
 
     async addChannel(req: AddChannelRequestInterface): Promise<AddChannelResponseInterface> {
         try {
-            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            console.log(JSON.stringify(req.body))
+            const response = await axios.post<UserInterface>(req.url.link, req.body);
             return {
-                body : request.data
+                body : response.data
             }
         } catch (error) {
             return {

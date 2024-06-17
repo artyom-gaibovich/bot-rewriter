@@ -6,6 +6,7 @@ import {Inject} from "@nestjs/common";
 import {CategoryRepositoryInterface} from "../../../../../repository/category/category.repository.interface";
 import {TelegramContextModel} from "../../../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
+import {CATEGORY_REPOSITORY} from "../../../../../constants/DI.constants";
 
 export interface AddChannelCategoryInterface extends Record<string, any> {
     categories: CategoryInterface[];
@@ -18,7 +19,7 @@ export type AddChannelCategoryContext = TelegramContextModel & StepContext<AddCh
 @Scene(ADD_CHANNEL_CATEGORY)
 export class AddChannelCategory {
     constructor(
-        @Inject('CATEGORY_REPOSITORY') private repository: CategoryRepositoryInterface,
+        @Inject(CATEGORY_REPOSITORY) private repository: CategoryRepositoryInterface,
     ) {}
 
     @SceneEnter()
@@ -35,12 +36,12 @@ export class AddChannelCategory {
     async zeroStep(@Ctx() telegramContext: AddChannelCategoryContext) {
         if (telegramContext.text === 'Следующая') {
             telegramContext.scene.state.currentPage++;
-            await this.showCategories(telegramContext);
+            return await this.showCategories(telegramContext);
         }
 
         if (telegramContext.text === 'Назад') {
             telegramContext.scene.state.currentPage--;
-            await this.showCategories(telegramContext);
+            return await this.showCategories(telegramContext);
         }
 
         if (telegramContext.text === 'Выйти') {
@@ -53,11 +54,11 @@ export class AddChannelCategory {
                 }
             })
         }
+
     }
 
     private async showCategories(telegramContext: AddChannelCategoryContext) {
         const { categories, limit, currentPage } = telegramContext.scene.state;
-        console.log('chn')
         const startIndex = currentPage * limit;
         const endIndex = startIndex + limit;
         const categoriesForPage = categories.slice(startIndex, endIndex);

@@ -6,6 +6,7 @@ import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../../manager/channel/channel.manager.interface";
 import {ChannelLinkInterface} from "../../../../model/link/channel.link.interface";
 import {DELETE_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE} from "../../pages.types";
+import {CHANNEL_MANAGER} from "../../../../constants/DI.constants";
 
 export interface DeleteUserChannelSceneInterface extends Record<string, any> {
     userChannelToDelete : UserChannelInterface
@@ -17,7 +18,7 @@ export type DeleteUserChannelSceneContext = TelegramContextModel & StepContext<D
 @Scene(DELETE_USER_CHANNEL_PAGE)
 export class DeleteUserChannel {
     constructor(
-        @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
+        @Inject(CHANNEL_MANAGER) private channelManager : ChannelManagerInterface,
     ) {
     }
 

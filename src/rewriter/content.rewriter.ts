@@ -4,20 +4,24 @@ import {RewrittenContentModel} from "./model/rewritten-content.model";
 import {ContentAgencyClientInterface} from "../client/content-agency/content-agency.client.interface";
 import {LinkInterface} from "../model/link/link.interface";
 import {Inject, Injectable} from "@nestjs/common";
+import {CONTENT_REWRITER_LINK_CONFIG} from "../constants/enviroment.constants";
+import {ContentRewriterConfig} from "./content.rewriter.config";
+import {CONTENT_AGENCY_CLIENT} from "../constants/DI.constants";
 
 @Injectable()
 export class ContentRewriter implements ContentRewriterInterface {
-    constructor(private url : LinkInterface, private client : ContentAgencyClientInterface) {
+    constructor(
+        @Inject(CONTENT_REWRITER_LINK_CONFIG) private config : ContentRewriterConfig,
+        @Inject(CONTENT_AGENCY_CLIENT) private client : ContentAgencyClientInterface) {
     }
     async rewrite(channelsToRewrite: ChannelsToRewriteModel): Promise<RewrittenContentModel> {
         const response = await this.client.rewriteContent({
-            url : this.url,
+            url : this.config.rewriteLink,
             body: {
                 links : channelsToRewrite.channelsToRewrite,
-                limit : 3
+                limit : this.config.limit // вот тут задается лимит на посты.
             }
         })
-        //ошибка возникает, если канала не существует, надо исправить.
         return {
             rewrittenContent : response.data
         }

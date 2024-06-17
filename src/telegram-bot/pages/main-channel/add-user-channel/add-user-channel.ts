@@ -33,7 +33,7 @@ export class AddUserChannel {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : AddUserChannelSceneContext) {
         if (telegramContext.text === 'Вернуться обратно') {
-            return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
+            return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
         }
         if (telegramContext.scene.step.firstTime) {
             return await telegramContext.send(`Отправьте в следующем формате : [название канала] [категория]`, {

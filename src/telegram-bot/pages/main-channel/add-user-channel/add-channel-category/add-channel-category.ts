@@ -47,6 +47,13 @@ export class AddChannelCategory {
         if (telegramContext.text === 'Выйти') {
             return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
         }
+        if (telegramContext.text !== 'Добавить канал') {
+            return await telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE, {
+                state : {
+                    category : telegramContext.scene.state.categories.find(cat=>cat.title=telegramContext.text)
+                }
+            })
+        }
 
     }
 

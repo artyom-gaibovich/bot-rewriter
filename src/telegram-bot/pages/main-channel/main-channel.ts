@@ -29,7 +29,7 @@ export class MainChannel {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            let user = (await this.repository.getUser(telegramContext.from.id))
+            let user = (await this.repository.get(telegramContext.from.id))
             if (!user) {
                 user = await this.userManager.createUser({
                     user : {

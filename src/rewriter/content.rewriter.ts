@@ -5,18 +5,21 @@ import {ContentAgencyClientInterface} from "../client/content-agency/content-age
 import {LinkInterface} from "../model/link/link.interface";
 import {Inject, Injectable} from "@nestjs/common";
 import {CONTENT_REWRITER_LINK_CONFIG} from "../constants/enviroment.constants";
-import {ContentRewriterLinkConfig} from "./content.rewriter.link.config";
+import {ContentRewriterConfig} from "./content.rewriter.config";
+import {CONTENT_AGENCY_CLIENT} from "../constants/DI.constants";
 
 @Injectable()
 export class ContentRewriter implements ContentRewriterInterface {
-    constructor(@Inject(CONTENT_REWRITER_LINK_CONFIG) private config : ContentRewriterLinkConfig, private client : ContentAgencyClientInterface) {
+    constructor(
+        @Inject(CONTENT_REWRITER_LINK_CONFIG) private config : ContentRewriterConfig,
+        @Inject(CONTENT_AGENCY_CLIENT) private client : ContentAgencyClientInterface) {
     }
     async rewrite(channelsToRewrite: ChannelsToRewriteModel): Promise<RewrittenContentModel> {
         const response = await this.client.rewriteContent({
-            url : this.config.rewrite,
+            url : this.config.rewriteLink,
             body: {
                 links : channelsToRewrite.channelsToRewrite,
-                limit : 3
+                limit : this.config.limit // вот тут задается лимит на посты.
             }
         })
         return {

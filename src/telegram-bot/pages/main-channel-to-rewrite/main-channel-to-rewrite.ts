@@ -6,6 +6,7 @@ import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {Inject} from "@nestjs/common";
 import {ChannelManagerInterface} from "../../../manager/channel/channel.manager.interface";
 import {MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE} from "../pages.types";
+import {CHANNEL_MANAGER} from "../../../constants/DI.constants";
 
 export interface MainChannelToRewriteSceneInterface extends Record<string, any> {
     isChannelAdded : boolean
@@ -20,7 +21,7 @@ export type MainChannelToRewriteSceneContext = TelegramContextModel & StepContex
 @Scene(MAIN_CHANNEL_TO_REWRITE_PAGE)
 export class MainChannelToRewrite {
     constructor(
-        @Inject('CHANNEL_MANAGER') private channelManager : ChannelManagerInterface,
+        @Inject(CHANNEL_MANAGER) private channelManager : ChannelManagerInterface,
     ) {
     }
 

@@ -16,7 +16,8 @@ import {GET_CATEGORIES_URL} from "../../constants/enviroment.constants";
                 return {
                     findAll : {link : config.get(GET_CATEGORIES_URL)}
                 } as CategoryRepositoryLinkConfig
-            }
+            },
+            inject : [ConfigService]
         },
         {
             provide : CATEGORY_REPOSITORY,

@@ -12,6 +12,7 @@ import {
     DELETE_USER_CHANNEL_PAGE,
     MAIN_CHANNEL_PAGE, MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE,
 } from "../pages.types";
+import {CONTENT_REWRITER} from "../../../constants/DI.constants";
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
     foundUserChannel : UserChannelInterface
@@ -24,8 +25,7 @@ export type MainChannelsToRewriteSceneContext = TelegramContextModel & StepConte
 @Scene(MAIN_CHANNELS_TO_REWRITE_PAGE)
 export class MainChannelsToRewrite {
     constructor(
-        @Inject('USER_REPOSITORY') private userRepository : UserRepositoryInterface,
-        @Inject('CUSTOM_CONTENT_REWRITER') private contentRewriter : ContentRewriterInterface)
+        @Inject(CONTENT_REWRITER) private contentRewriter : ContentRewriterInterface)
     {
     }
     @SceneEnter()

@@ -17,7 +17,8 @@ import {GET_USER_URL} from "../../constants/enviroment.constants";
                 return {
                     get : {link : config.get(GET_USER_URL)}
                 } as UserRepositoryLinkConfig
-            }
+            },
+            inject : [ConfigService]
         },
         {
             provide : USER_REPOSITORY,

@@ -34,6 +34,7 @@ export class StorageClient implements StorageClientInterface {
 
     async getUser(req: GetUserRequestInterface): Promise<GetUserResponseInterface> {
         try {
+            console.log(req)
             const request = await axios.post<UserInterface>(req.url.link, req.body);
             return {
                 body : request.data
@@ -73,9 +74,10 @@ export class StorageClient implements StorageClientInterface {
 
     async addChannel(req: AddChannelRequestInterface): Promise<AddChannelResponseInterface> {
         try {
-            const request = await axios.post<UserInterface>(req.url.link, req.body);
+            console.log(JSON.stringify(req.body))
+            const response = await axios.post<UserInterface>(req.url.link, req.body);
             return {
-                body : request.data
+                body : response.data
             }
         } catch (error) {
             return {

@@ -6,13 +6,13 @@ import {StorageClientModule} from "../../client/storage/storage.client.module";
 import {STORAGE_CLIENT, USER_REPOSITORY} from "../../constants/DI.constants";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {UserRepositoryLinkConfig} from "./user.repository.link.config";
-import {GET_USER_URL} from "../../constants/enviroment.constants";
+import {GET_USER_URL, USER_REPOSITORY_LINK_CONFIG} from "../../constants/enviroment.constants";
 
 @Module({
     imports : [StorageClientModule, ConfigModule],
     providers : [
         {
-            provide : GET_USER_URL,
+            provide : USER_REPOSITORY_LINK_CONFIG,
             useFactory: (config : ConfigService) => {
                 return {
                     get : {link : config.get(GET_USER_URL)}
@@ -22,10 +22,10 @@ import {GET_USER_URL} from "../../constants/enviroment.constants";
         },
         {
             provide : USER_REPOSITORY,
-            useFactory: (link : LinkInterface, client : StorageClientInterface) => {
-                return new UserRepository(link, client)
+            useFactory: (config : UserRepositoryLinkConfig, client : StorageClientInterface) => {
+                return new UserRepository(config, client)
             },
-            inject : [GET_USER_URL, STORAGE_CLIENT]
+            inject : [USER_REPOSITORY_LINK_CONFIG, STORAGE_CLIENT]
         }
     ],
     exports : [USER_REPOSITORY]

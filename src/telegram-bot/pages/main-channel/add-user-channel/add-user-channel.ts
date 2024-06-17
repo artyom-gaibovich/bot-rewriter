@@ -45,7 +45,7 @@ export class AddUserChannel {
         }
 
         if (this.linkValidator.validate({link : telegramContext.text})) {
-            await this.channelManager.addChannel({
+            const result = await this.channelManager.addChannel({
                 user : {
                     id : telegramContext.from.id,
                     userChannels : [

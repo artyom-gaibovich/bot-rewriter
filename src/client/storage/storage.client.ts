@@ -1,4 +1,4 @@
-import {ChannelServiceClientInterface} from "./channel-service.client.interface";
+import {StorageClientInterface} from "./storage.client.interface";
 import {GetUserRequestInterface} from "./req/get-user-request.interface";
 import {GetUserResponseInterface} from "./res/get-user.response.interface";
 import axios from "axios";
@@ -14,7 +14,7 @@ import {UserInterface} from "../../model/user.interface";
 import {GetCategoriesRequestInterface} from "./req/get-categories.request.interface";
 import {mockCategories} from "./mock/categories.mock";
 
-export class ChannelServiceClient implements ChannelServiceClientInterface {
+export class StorageClient implements StorageClientInterface {
 
     //ДЕКОМПОЗИРОВАТЬ НА BASE RESPONSE ИНТЕРФЕЙС
     async getCategories(req: GetCategoriesRequestInterface): Promise<GetCategoriesResponseInterface> {

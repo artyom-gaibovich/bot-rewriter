@@ -1,41 +1,43 @@
 import {Module} from "@nestjs/common";
-import {ChannelServiceClient} from "../../client/channel-service/channer-service.client";
-import {ChannelServiceClientInterface} from "../../client/channel-service/channel-service.client.interface";
+import {StorageClientInterface} from "../../client/storage/storage.client.interface";
 import {UserManagerLinkConfig} from "./user.manager.link.config";
 import {UserManager} from "./user.manager";
 import {ConfigModule, ConfigService} from "@nestjs/config";
+import {
+    CHECK_CHANNELS_URL,
+    CREATE_USER_URL,
+    STORAGE_CLIENT,
+    USER_MANAGER,
+    USER_MANAGER_LINK_CONFIG
+} from "../../constants/DI.constants";
+import {StorageClientModule} from "../../client/storage/storage.client.module";
 
 //CREATE_USER_URL_DOCKER
 
 @Module({
-    imports : [ConfigModule],
+    imports : [ConfigModule, StorageClientModule],
     providers : [
         {
-            provide : 'USER_MANAGER_LINK_CONFIG',
+            provide : USER_MANAGER_LINK_CONFIG,
             useFactory : (config : ConfigService) => {
                 return {
-                    createUser : {link : config.get('CREATE_USER_URL')},
-                    deleteUser : {link : config.get('CHECK_CHANNELS_URL')}
+                    createUser : {link : config.get(CREATE_USER_URL)},
+                    deleteUser : {link : config.get(CHECK_CHANNELS_URL)}
                 } as UserManagerLinkConfig
             },
             inject : [ConfigService]
         },
+
         {
-            provide : 'CHANNEL_SERVICE_CLIENT',
-            useFactory : () => {
-                return new ChannelServiceClient()
-            }
-        },
-        {
-            provide: 'USER_MANAGER',
-            useFactory : (linkConfig : UserManagerLinkConfig, channelService : ChannelServiceClientInterface ) => {
-                return new UserManager(linkConfig, channelService)
+            provide: USER_MANAGER,
+            useFactory : (linkConfig : UserManagerLinkConfig, client : StorageClientInterface ) => {
+                return new UserManager(linkConfig, client)
             },
-            inject : ['USER_MANAGER_LINK_CONFIG','CHANNEL_SERVICE_CLIENT']
+            inject : [USER_MANAGER_LINK_CONFIG,STORAGE_CLIENT]
         }
 
     ],
-    exports : ['USER_MANAGER']
+    exports : [USER_MANAGER]
 
 })
 export class UserManagerModule {

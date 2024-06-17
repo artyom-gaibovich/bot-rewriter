@@ -17,7 +17,7 @@ import {DeleteChannelRequestInterface} from "./req/delete-channel-request.interf
 import {DeleteChannelResponseInterface} from "./res/delete-channel-response.interface";
 import {GetCategoriesRequestInterface} from "./req/get-categories.request.interface";
 
-export interface ChannelServiceClientInterface {
+export interface StorageClientInterface {
     getCategories(req : GetCategoriesRequestInterface) : Promise<GetCategoriesResponseInterface>
     createUser(req: CreateUserRequestInterface) : Promise<CreateUserResponseInterface>
     getUser(req : GetUserRequestInterface) : Promise<GetUserResponseInterface>

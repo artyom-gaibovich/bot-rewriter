@@ -4,6 +4,10 @@ import {Injectable} from "@nestjs/common";
 @Injectable()
 export class LinkValidator implements LinkValidatorInterface {
     validate(link: LinkInterface): boolean {
-        return link.link.startsWith('https://');
+        return (
+            link.link.startsWith('https://') ||
+            link.link.startsWith('t.me')) ||
+            link.link.length <= 50
+            ;
     }
 }

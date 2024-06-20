@@ -4,7 +4,7 @@ import {PromptInterface} from "../../../../model/prompt.interface";
 export interface RewriteContentRequestModel {
     url : LinkInterface,
     body : {
-        prompt : PromptInterface
+        prompt : string
         links : LinkInterface[]
         limit? : number,
     }

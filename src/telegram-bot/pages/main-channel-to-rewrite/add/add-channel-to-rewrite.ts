@@ -11,6 +11,7 @@ import {ADD_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE} from "../../
 export interface AddUserChannelSceneInterface extends Record<string, any> {
     isChannelExists : boolean
     foundUserChannel : UserChannelInterface
+    channelsToRewrite : ChannelLinkInterface[]
 }
 
 export type AddUserChannelSceneContext = TelegramContextModel & StepContext<AddUserChannelSceneInterface>
@@ -46,14 +47,23 @@ export class AddChannelToRewrite {
         if (telegramContext.text === 'Отменить') {
             return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {
-                    foundUserChannel
+                    foundUserChannel: foundUserChannel
                 }
             })
         }
         else {
+            if (telegramContext.scene.state.channelsToRewrite.map(chn=>chn.link).includes(telegramContext.text)) {
+                return await telegramContext.send('Этот подканал уже был добавлен', {
+                    reply_markup : {
+                        resize_keyboard : true,
+                        keyboard : [[{text : 'Отменить'}]]
+                    }
+                })
+            }
             const isChannelExists = (await this.checker.checkByLinks([
                 {link : telegramContext.text}
             ])).checkedChannels[0].isChannelExists
+
             if (isChannelExists) {
                 const result = await this.channelManager.addChannel({
                     user : {
@@ -71,11 +81,6 @@ export class AddChannelToRewrite {
                     }
                 })
                 const newChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link ===  (foundUserChannel.userChannel as ChannelLinkInterface).link)
-                await telegramContext.send('Подканал был успешно добавлен!', {
-                    reply_markup : {
-                        remove_keyboard : true
-                    }
-                })
                 return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                     state : {
                         foundUserChannel : newChannel

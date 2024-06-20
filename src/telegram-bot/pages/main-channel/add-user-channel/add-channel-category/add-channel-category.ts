@@ -7,11 +7,13 @@ import {CategoryRepositoryInterface} from "../../../../../repository/category/ca
 import {TelegramContextModel} from "../../../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
 import {CATEGORY_REPOSITORY} from "../../../../../constants/DI.constants";
+import {UserChannelInterface} from "../../../../../model/channel.interface";
 
 export interface AddChannelCategoryInterface extends Record<string, any> {
     categories: CategoryInterface[];
     limit: number;
     currentPage: number;
+    userChannels : UserChannelInterface[]
 }
 
 export type AddChannelCategoryContext = TelegramContextModel & StepContext<AddChannelCategoryInterface>;
@@ -25,8 +27,8 @@ export class AddChannelCategory {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext: AddChannelCategoryContext) {
         if (telegramContext.scene.step.firstTime) {
-            telegramContext.scene.state.categories = await this.repository.findAll();
-            console.log(telegramContext.scene.state.categories.length)
+            telegramContext.scene.state.categories = [...await this.repository.findAll()]
+
             telegramContext.scene.state.limit = 40; // specify your limit
             telegramContext.scene.state.currentPage = 0;
             return await this.showCategories(telegramContext);
@@ -46,10 +48,13 @@ export class AddChannelCategory {
         if (telegramContext.text === 'Выйти') {
             return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
         }
+        // //Разбиваю строку по пробелу, и выдергиваю категорию
         if (telegramContext.text !== 'Добавить категорию' && telegramContext.scene.state.categories.map(chn=>chn.title).includes(telegramContext.text)) {
+
             return await telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE, {
                 state : {
-                    category : telegramContext.scene.state.categories.find(cat=>cat.title=telegramContext.text)
+                    category : telegramContext.scene.state.categories.find(cat=>cat.title===telegramContext.text),
+                    userChannels : telegramContext.scene.state.userChannels
                 }
             })
         }
@@ -69,7 +74,7 @@ export class AddChannelCategory {
         let mainKeyboard = [];
         if (currentPage === 0) {
             mainKeyboard = [
-                ...categoriesForPage.map(category => [{ text: category.title }]),
+                ...categoriesForPage.map(category => [{ text: `${category.title}` }]),
                 [{text: 'Следующая'}],
                 [{text : 'Выйти'}],
             ];

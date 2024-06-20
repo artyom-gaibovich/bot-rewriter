@@ -13,6 +13,10 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     ) {
     }
     async findAll(): Promise<CategoryInterface[]> {
+        const data = (await this.client.getCategories({
+            url: this.config.findAll
+        })).categories
+        console.log(data)
 
         return (await this.client.getCategories({
             url: this.config.findAll

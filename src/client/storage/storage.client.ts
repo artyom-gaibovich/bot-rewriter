@@ -22,7 +22,7 @@ export class StorageClient implements StorageClientInterface {
 
             return {
                 status : 'OK',
-                categories : mockCategories
+                categories : [...mockCategories]
             }
         }
         catch (error) {

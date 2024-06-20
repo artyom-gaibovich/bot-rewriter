@@ -47,8 +47,8 @@ export class MainChannel {
 
 
         //Проверяем, выбрал ли пользователь канал из ему предложенных
-        if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text)) {
-            const foundUserChannel : UserChannelInterface = telegramContext.scene.state.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link === telegramContext.text)
+        if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text.replace(`◽️ `, ''))) {
+            const foundUserChannel : UserChannelInterface = telegramContext.scene.state.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link === telegramContext.text.replace(`◽️ `, ''))
             return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {state : {foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
         //
@@ -59,7 +59,7 @@ export class MainChannel {
         const channelsLimit = 3 //ЛИМИТ ЗАХАРЖКОЖЕНО!, С БИЛЛИНГ СЕРВИСА
 
         const channelKeyboard = channels.map(chn => {
-            return [{text : (chn.userChannel as ChannelLinkInterface).link}]
+            return [{text : `◽️ ${(chn.userChannel as ChannelLinkInterface).link}`}]
         })
 
         const addChannelKeyboard = [
@@ -83,11 +83,15 @@ export class MainChannel {
         }
         switch (telegramContext.text) {
             case 'Добавить категорию':
-                return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
+                return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY, {
+                    state : {
+                        userChannels : telegramContext.scene.state.userChannels
+                    }
+                })
             case 'Повысить лимит':
                 return await telegramContext.scene.enter(IMPROVE_LIMITS, {
                     state : {
-                        flag : 'MAIN_CHANNEL'
+                        flag : 'MAIN_CHANNEL',
                     }
                 })
             case 'Техническая поддержка':

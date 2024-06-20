@@ -36,7 +36,7 @@ export class MainChannelToRewrite {
         const foundUserChannel = telegramContext.scene.state.foundUserChannel
 
         if (telegramContext.scene.step.firstTime) {
-            return await telegramContext.send(`Ваш текущий канал для переписывания${foundChannelToRewrite.link}. Если хотите его изменить, отправьте новую ссылку.`, {
+            return await telegramContext.send(`Ваш текущий канал для переписывания ${foundChannelToRewrite.link}. Если хотите его изменить, отправьте новую ссылку.`, {
                 reply_markup : {
                     resize_keyboard : true,
                     keyboard : [
@@ -45,13 +45,12 @@ export class MainChannelToRewrite {
                     ]
                 }
             })
-
         }
-
-
         if (telegramContext.text === 'Обратно') {
             return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
-                state : {foundUserChannel}
+                state : {
+                    foundUserChannel : foundUserChannel
+                }
             })
         }
 
@@ -71,8 +70,6 @@ export class MainChannelToRewrite {
             })
 
             const currentUserChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).id === foundUserChannel.userChannel.id )
-            console.log('cu', currentUserChannel)
-            await telegramContext.send(`Подканал ${foundChannelToRewrite.link} был успешно удалён`)
             return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {
                     channelsToRewrite : currentUserChannel.channelsToRewrite,

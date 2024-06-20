@@ -33,32 +33,45 @@ export class DeleteUserChannel {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : DeleteUserChannelSceneContext) {
         const userChannelToDelete = telegramContext.scene.state.userChannelToDelete
-        if (telegramContext.text === 'Отменить') {
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
-                state : {
-                    foundUserChannel : userChannelToDelete
+        if (telegramContext.scene.step.firstTime) {
+            return await telegramContext.send(`Все подканалы у канала ${(userChannelToDelete.userChannel as ChannelLinkInterface).link} удалятся. Вы уверены, что хотите его удалить?`, {
+                reply_markup : {
+                    keyboard: [
+                        [{text : 'Отменить'}],
+                        [{text : 'Удалить'}],
+                    ],
+                    resize_keyboard : true
                 }
             })
         }
-        if (telegramContext.text === 'Удалить') {
-            await this.channelManager.deleteChannel({
-                user : {
-                    id : telegramContext.from.id,
-                    userChannels : [userChannelToDelete]
-                }
-            })
-            await telegramContext.send(`Канал ${(userChannelToDelete.userChannel as ChannelLinkInterface).link} был удалён.`)
-            return telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
+        switch (telegramContext.text) {
+            case 'Отменить':
+                return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+                    state : {
+                        foundUserChannel : userChannelToDelete
+                    }
+                })
+            case 'Удалить':
+                await this.channelManager.deleteChannel({
+                    user : {
+                        id : telegramContext.from.id,
+                        userChannels : [userChannelToDelete]
+                    }
+                })
+                await telegramContext.send(`Канал ${(userChannelToDelete.userChannel as ChannelLinkInterface).link} был удалён.`)
+                return telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
+            default:
+                return await telegramContext.send(`Все подканалы у канала ${(userChannelToDelete.userChannel as ChannelLinkInterface).link} удалятся. Вы уверены, что хотите его удалить?`, {
+                    reply_markup : {
+                        keyboard: [
+                            [{text : 'Отменить'}],
+                            [{text : 'Удалить'}],
+                        ],
+                        resize_keyboard : true
+                    }
+                })
         }
-        await telegramContext.send(`Все подканалы у канала ${(userChannelToDelete.userChannel as ChannelLinkInterface).link} удалятся. Вы уверены, что хотите его удалить??`, {
-            reply_markup : {
-                keyboard: [
-                    [{text : 'Отменить'}],
-                    [{text : 'Удалить'}],
-                ],
-                resize_keyboard : true
-            }
-        })
+
 
     }
 }

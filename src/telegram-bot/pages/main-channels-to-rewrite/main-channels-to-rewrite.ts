@@ -9,7 +9,7 @@ import {ContentRewriterInterface} from "../../../rewriter/content.rewriter.inter
 import {UserRepositoryInterface} from "../../../repository/user/user.repository.interface";
 import {
     ADD_CHANNEL_TO_REWRITE_PAGE,
-    DELETE_USER_CHANNEL_PAGE,
+    DELETE_USER_CHANNEL_PAGE, IMPROVE_LIMITS,
     MAIN_CHANNEL_PAGE, MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE,
 } from "../pages.types";
 import {CONTENT_REWRITER} from "../../../constants/DI.constants";
@@ -42,15 +42,31 @@ export class MainChannelsToRewrite {
 
         if (telegramContext.text === 'Генерировать контент' || telegramContext.text === 'Перегенерировать контент') {
             //если Перегенерировать контент - я сделаю логику такую, чтобы уже другой запрос шёл.
+
+            await telegramContext.send('Контент генерируется, ожидайте...', {
+                reply_markup : {
+                    remove_keyboard : true
+                }
+            })
+
             const rewrittenContent = await this.contentRewriter.rewrite({
                 channelsToRewrite : telegramContext.scene.state.channelsToRewrite
             })
-            await telegramContext.reply(rewrittenContent.rewrittenContent)
-            await telegramContext.reply('Контент был успешно сгенерирован')
+
+            await telegramContext.send(rewrittenContent.rewrittenContent)
+            await telegramContext.send('Контент был успешно сгенерирован')
             telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent
         }
         if (telegramContext.text === 'Назад') {
-            return telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
+            return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
+        }
+        if (telegramContext.text === 'Повысить лимит') {
+            return await telegramContext.scene.enter(IMPROVE_LIMITS, {
+                state : {
+                    foundUserChannel : telegramContext.scene.state.foundUserChannel,
+                    flag : MAIN_CHANNELS_TO_REWRITE_PAGE
+                }
+            })
         }
         if (telegramContext.text === 'Удалить канал') {
             return telegramContext.scene.enter(DELETE_USER_CHANNEL_PAGE, {
@@ -61,14 +77,16 @@ export class MainChannelsToRewrite {
         }
         if (telegramContext.text === 'Добавить подканал') {
             return telegramContext.scene.enter(ADD_CHANNEL_TO_REWRITE_PAGE, {
-                state : {foundUserChannel}
+                state : {
+                    foundUserChannel : foundUserChannel,
+                    channelsToRewrite : telegramContext.scene.state.channelsToRewrite,
+                }
             })
-
 
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
-        if (telegramContext.scene.state.channelsToRewrite.map(chn=>chn.link).includes(telegramContext.text)) {
-            const foundChannelToRewrite : ChannelLinkInterface = telegramContext.scene.state.channelsToRewrite.find(chn => chn.link === telegramContext.text)
+        if (telegramContext.scene.state.channelsToRewrite.map(chn=>chn.link).includes(telegramContext.text.replace('🔷 ',''))) {
+            const foundChannelToRewrite : ChannelLinkInterface = telegramContext.scene.state.channelsToRewrite.find(chn => chn.link === telegramContext.text.replace('🔷 ',''))
             return telegramContext.scene.enter(MAIN_CHANNEL_TO_REWRITE_PAGE, {state : {foundChannelToRewrite, foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
         //
@@ -79,7 +97,7 @@ export class MainChannelsToRewrite {
         const channelsToRewriteCount = telegramContext.scene.state.channelsToRewrite.length
         const channelsToRewriteLimit = 5
         const channelKeyboard = channelsToRewrite.map(chn => {
-            return [{text : chn.link}]
+            return [{text : `🔷 ${chn.link}`}]
         })
         const rewriteContentKeyboard = [
             [{text : telegramContext.scene.state.generatedContent ? 'Перегенерировать контент' : 'Генерировать контент'}]

@@ -10,7 +10,7 @@ import {
     ADD_CHANNEL_CATEGORY,
     ADD_USER_CHANNEL_PAGE, IMPROVE_LIMITS,
     MAIN_CHANNEL_PAGE,
-    MAIN_CHANNELS_TO_REWRITE_PAGE
+    MAIN_CHANNELS_TO_REWRITE_PAGE, SUPPORT
 } from "../pages.types";
 import {USER_MANAGER, USER_REPOSITORY} from "../../../constants/DI.constants";
 
@@ -44,17 +44,8 @@ export class MainChannel {
 
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : MainChannelSceneContext) {
-        if (telegramContext.text === 'Добавить канал') {
-            return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
-        }
-        if (telegramContext.text === 'Повысить лимит') {
 
-            return await telegramContext.scene.enter(IMPROVE_LIMITS, {
-                state : {
-                    flag : 'MAIN_CHANNEL'
-                }
-            })
-        }
+
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text)) {
             const foundUserChannel : UserChannelInterface = telegramContext.scene.state.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link === telegramContext.text)
@@ -65,39 +56,54 @@ export class MainChannel {
         const channels = telegramContext.scene.state.userChannels
         const channelsCount = telegramContext.scene.state.userChannels.length
 
-        const channelsLimit = 3 //ЛИМИТ, С БИЛЛИНГ СЕРВИСА
+        const channelsLimit = 3 //ЛИМИТ ЗАХАРЖКОЖЕНО!, С БИЛЛИНГ СЕРВИСА
 
         const channelKeyboard = channels.map(chn => {
             return [{text : (chn.userChannel as ChannelLinkInterface).link}]
         })
 
         const addChannelKeyboard = [
-            [{text : 'Добавить канал'}],
-        ]
-        const backKeyboard = [
-            [{text : 'Назад'}],
+            [{text : 'Добавить категорию'}],
         ]
         const limitKeyboard = [
             [{text : 'Повысить лимит'}],
         ]
+        const techSupport = [
+            [{text : 'Техническая поддержка'}]
+        ]
         let mainKeyboard = []
         if (channelsCount === channelsLimit) {
-            mainKeyboard = [...limitKeyboard, ...channelKeyboard, ...backKeyboard]
+            mainKeyboard = [...limitKeyboard, ...channelKeyboard, ...techSupport]
         }
         if (channelsCount > 0 && channelsCount < channelsLimit) {
-            mainKeyboard = [...addChannelKeyboard, ...channelKeyboard, ...backKeyboard]
+            mainKeyboard = [...addChannelKeyboard, ...channelKeyboard, ...techSupport]
         }
         if (channelsCount === 0) {
-            mainKeyboard = [...addChannelKeyboard, ...backKeyboard]
+            mainKeyboard = [...addChannelKeyboard, ...techSupport]
+        }
+        switch (telegramContext.text) {
+            case 'Добавить категорию':
+                return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
+            case 'Повысить лимит':
+                return await telegramContext.scene.enter(IMPROVE_LIMITS, {
+                    state : {
+                        flag : 'MAIN_CHANNEL'
+                    }
+                })
+            case 'Техническая поддержка':
+                return await telegramContext.scene.enter(SUPPORT)
+            default:
+                return await telegramContext.send('Выберите дальнейшее действие', {
+                    reply_markup : {
+                        resize_keyboard : true,
+                        remove_keyboard : true,
+                        keyboard : [...mainKeyboard]
+                    }
+                })
+
+
         }
 
-        await telegramContext.send('Выберите дальнейшее действие', {
-            reply_markup : {
-                resize_keyboard : true,
-                remove_keyboard : true,
-                keyboard : [...mainKeyboard]
-            }
-        })
 
     }
 }

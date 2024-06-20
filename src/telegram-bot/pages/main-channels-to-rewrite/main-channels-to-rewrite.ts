@@ -31,7 +31,10 @@ export class MainChannelsToRewrite {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelsToRewriteSceneContext) {
         if (telegramContext.scene.step.firstTime) {
-            telegramContext.scene.state.channelsToRewrite = telegramContext.scene.state.foundUserChannel.channelsToRewrite
+            telegramContext.scene.state.channelsToRewrite = telegramContext.scene.state.foundUserChannel.channelsToRewrite.map(chn=> {
+                chn.link='|' + chn.link
+                return chn
+            })
         }
     }
 
@@ -68,9 +71,10 @@ export class MainChannelsToRewrite {
         }
         if (telegramContext.text === 'Добавить подканал') {
             return telegramContext.scene.enter(ADD_CHANNEL_TO_REWRITE_PAGE, {
-                state : {foundUserChannel}
+                state : {
+                    foundUserChannel : foundUserChannel,
+                }
             })
-
 
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных

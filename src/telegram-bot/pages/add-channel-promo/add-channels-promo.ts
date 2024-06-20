@@ -28,7 +28,7 @@ export class AddChannelsPromo {
                 reply_markup : {
                     resize_keyboard : true,
                     remove_keyboard : true,
-                    keyboard : [[{text : 'Начинаем!'}, {text : 'Техподдержка'} ], ]
+                    keyboard : [[{text : 'Начинаем!'}, {text : 'Техподдержка'} ] ]
                 }
             })
         }

@@ -6,6 +6,7 @@ import {ACTIVATE_CODE, ADD_CHANNELS_PROMO, MAIN_CHANNEL_PAGE, START} from "../pa
 
 export interface ActivateCodeInterface extends Record<string, any> {
     activateCode : string
+    isClicked : boolean
 }
 
 export type ActivateCodeScene = TelegramContextModel & StepContext<ActivateCodeInterface>
@@ -20,7 +21,17 @@ export class ActivateCode {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : ActivateCodeScene) {
         if (telegramContext.scene.step.firstTime) {
-            await telegramContext.send('Оплатите по ссылке https://localhost:/api/subcribe и введите код(код - admin).')
+            return await telegramContext.send('Вас приветсвует приложение Neweral.ai! С помощью нашего бота вы сможете автоматизирировать процесс ведения телеграм канала', {
+                reply_markup : {
+                    resize_keyboard : true,
+                    keyboard : [[{text : 'Ссылка на лендинг'}]]
+                }
+            })
+
+        }
+        if (telegramContext.text === 'Ссылка на лендинг') {
+            telegramContext.scene.state.isClicked = true
+            return await telegramContext.send('Оплатите по ссылке https://localhost:/api/subcribe и введите код(код - admin).')
         }
         if (telegramContext.scene.state.activateCode === telegramContext.text) {
             await telegramContext.send('Верный код')
@@ -30,7 +41,7 @@ export class ActivateCode {
             await telegramContext.send('Повторите попытку', {
                 reply_markup : {
                     resize_keyboard : true,
-                    keyboard : [[{text : 'Ссылка на лендинг https://localhost:/api/subcribe'}]]
+                    keyboard : [[{text : 'Ссылка на лендинг'}]]
                 }
             })
         }

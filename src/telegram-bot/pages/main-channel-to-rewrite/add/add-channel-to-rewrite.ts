@@ -35,14 +35,6 @@ export class AddChannelToRewrite {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : AddUserChannelSceneContext) {
         const foundUserChannel = telegramContext.scene.state.foundUserChannel
-
-        if (telegramContext.text === 'Отменить') {
-            return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
-                state : {
-                    foundUserChannel
-                }
-            })
-        }
         if (telegramContext.scene.step.firstTime) {
             return await telegramContext.send('Отправьте ссылку на телеграм канал, откуда будем переписывать контент', {
                 reply_markup : {
@@ -51,44 +43,56 @@ export class AddChannelToRewrite {
                 }
             })
         }
-
-        const isChannelExists = (await this.checker.checkByLinks([
-            {link : telegramContext.text}
-        ])).checkedChannels[0].isChannelExists
-
-        if (isChannelExists) {
-
-            const result = await this.channelManager.addChannel({
-                user : {
-                    id : telegramContext.from.id,
-                    userChannels : [
-                        {
-                            userChannel : {link :
-                                (foundUserChannel.userChannel as ChannelLinkInterface).link,
-                                id : (foundUserChannel.userChannel as ChannelLinkInterface).id,},
-                            channelsToRewrite : [
-                                {link : telegramContext.text}
-                            ]
-                        }
-                    ]
-                }
-            })
-
-            const newChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link ===  (foundUserChannel.userChannel as ChannelLinkInterface).link)
-            await telegramContext.send('Подканал был успешно добавлен!', {
-                reply_markup : {
-                    remove_keyboard : true
-                }
-            })
+        if (telegramContext.text === 'Отменить') {
             return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {
-                    foundUserChannel : newChannel
+                    foundUserChannel
                 }
             })
         }
         else {
-            await telegramContext.send('Подканал не был добавлен. Либо он не существует, либо вы отправили некорректную ссылку.')
+            const isChannelExists = (await this.checker.checkByLinks([
+                {link : telegramContext.text}
+            ])).checkedChannels[0].isChannelExists
+            if (isChannelExists) {
+                const result = await this.channelManager.addChannel({
+                    user : {
+                        id : telegramContext.from.id,
+                        userChannels : [
+                            {
+                                userChannel : {link :
+                                    (foundUserChannel.userChannel as ChannelLinkInterface).link,
+                                    id : (foundUserChannel.userChannel as ChannelLinkInterface).id,},
+                                channelsToRewrite : [
+                                    {link : telegramContext.text}
+                                ]
+                            }
+                        ]
+                    }
+                })
+                const newChannel = result.user.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link ===  (foundUserChannel.userChannel as ChannelLinkInterface).link)
+                await telegramContext.send('Подканал был успешно добавлен!', {
+                    reply_markup : {
+                        remove_keyboard : true
+                    }
+                })
+                return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+                    state : {
+                        foundUserChannel : newChannel
+                    }
+                })
+            }
+            else {
+                return await telegramContext.send('Подканал не был добавлен. Либо он не существует, либо вы отправили некорректную ссылку.', {
+                    reply_markup : {
+                        resize_keyboard : true,
+                        keyboard : [[{text : 'Отменить'}]]
+                    }
+                })
+            }
+
         }
+
 
 
 

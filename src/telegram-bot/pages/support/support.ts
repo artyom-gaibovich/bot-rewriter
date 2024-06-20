@@ -25,13 +25,10 @@ export class Support {
                     reply_markup : {
                         resize_keyboard : true,
                         remove_keyboard : true,
-                        keyboard : [[{text : 'Вернуться обратно'}, {text : 'Техническая поддержка'} ]]
+                        keyboard : [[{text : 'Вернуться обратно'}]]
                     }
                 })
             }
-        }
-        if (telegramContext.text === 'Техническая поддержка') {
-            await telegramContext.send(`Напишите в техподдержку @driive_xx, @ioliwok, @dreams_and_results`)
         }
         if (telegramContext.text === 'Вернуться обратно') {
             const supportFlag = telegramContext.scene.state.supportFlag

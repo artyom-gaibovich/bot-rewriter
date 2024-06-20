@@ -26,7 +26,8 @@ export class AddChannelCategory {
     async sceneEnter(@Ctx() telegramContext: AddChannelCategoryContext) {
         if (telegramContext.scene.step.firstTime) {
             telegramContext.scene.state.categories = await this.repository.findAll();
-            telegramContext.scene.state.limit = 5; // specify your limit
+            console.log(telegramContext.scene.state.categories.length)
+            telegramContext.scene.state.limit = 40; // specify your limit
             telegramContext.scene.state.currentPage = 0;
             return await this.showCategories(telegramContext);
         }
@@ -38,21 +39,22 @@ export class AddChannelCategory {
             telegramContext.scene.state.currentPage++;
             return await this.showCategories(telegramContext);
         }
-
         if (telegramContext.text === 'Назад') {
             telegramContext.scene.state.currentPage--;
             return await this.showCategories(telegramContext);
         }
-
         if (telegramContext.text === 'Выйти') {
             return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
         }
-        if (telegramContext.text !== 'Добавить канал') {
+        if (telegramContext.text !== 'Добавить категорию' && telegramContext.scene.state.categories.map(chn=>chn.title).includes(telegramContext.text)) {
             return await telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE, {
                 state : {
                     category : telegramContext.scene.state.categories.find(cat=>cat.title=telegramContext.text)
                 }
             })
+        }
+        if (!telegramContext.scene.step.firstTime) {
+            return await this.showCategories(telegramContext)
         }
 
     }
@@ -63,43 +65,33 @@ export class AddChannelCategory {
         const endIndex = startIndex + limit;
         const categoriesForPage = categories.slice(startIndex, endIndex);
 
-        const exitKeyboard = [
-            [{ text: 'Выйти' }]
-        ];
-        const nextKeyboard = [
-            [{ text: 'Следующая' }],
-        ];
-        const backKeyboard = [
-            [{ text: 'Назад' }],
-        ];
 
         let mainKeyboard = [];
-
         if (currentPage === 0) {
             mainKeyboard = [
-                ...nextKeyboard,
                 ...categoriesForPage.map(category => [{ text: category.title }]),
-                ...exitKeyboard,
+                [{text: 'Следующая'}],
+                [{text : 'Выйти'}],
             ];
         } else {
             if (categoriesForPage.length !== limit) {
                 mainKeyboard = [
-                    ...backKeyboard,
                     ...categoriesForPage.map(category => [{ text: category.title }]),
-                    ...exitKeyboard,
+                    [{text : 'Назад'}],
+                    [{text: 'Выйти'}],
                 ];
             }
             else {
                 mainKeyboard = [
-                    ...backKeyboard,
                     ...categoriesForPage.map(category => [{ text: category.title }]),
-                    ...nextKeyboard,
-                    ...exitKeyboard,
+                    [{text: 'Назад'}],
+                    [{text: 'Следующая'}],
+                    [{text : 'Выйти'}],
                 ];
             }
         }
 
-        await telegramContext.send('Выберите дальнейшее действие', {
+        return await telegramContext.send('Выберите дальнейшее действие', {
             reply_markup: {
                 resize_keyboard: true,
                 remove_keyboard: true,

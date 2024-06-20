@@ -36,7 +36,7 @@ export class MainChannelToRewrite {
         const foundUserChannel = telegramContext.scene.state.foundUserChannel
 
         if (telegramContext.scene.step.firstTime) {
-            return await telegramContext.send(`Ваш текущий канал для переписывания${foundChannelToRewrite.link}. Если хотите его изменить, отправьте новую ссылку.`, {
+            return await telegramContext.send(`Ваш текущий канал для переписывания ${foundChannelToRewrite.link}. Если хотите его изменить, отправьте новую ссылку.`, {
                 reply_markup : {
                     resize_keyboard : true,
                     keyboard : [

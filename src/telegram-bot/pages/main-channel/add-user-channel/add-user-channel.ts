@@ -31,11 +31,37 @@ export class AddUserChannel {
     }
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : AddUserChannelSceneContext) {
+        if (telegramContext.scene.step.firstTime) {
+            return await telegramContext.send(`Отправьте ссылку на ваш телеграм канал`, {
+                reply_markup : {
+                    resize_keyboard : true,
+                    keyboard : [[{text : 'Вернуться обратно'}]]
+                }
+            })
+        }
         if (telegramContext.text === 'Вернуться обратно') {
             return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
         }
-        if (telegramContext.scene.step.firstTime) {
-            return await telegramContext.send(`Отправьте в следующем формате : [название канала] [категория]`, {
+        else {
+            if (this.linkValidator.validate({link : telegramContext.text})) {
+                const result = await this.channelManager.addChannel({
+                    user : {
+                        id : telegramContext.from.id,
+                        userChannels : [
+                            {
+                                userChannel : {link : `${telegramContext.text.replace('https://', '')} | ${telegramContext.scene.state.category.title}`},
+                            }
+                        ]
+                    }
+                })
+                await telegramContext.send('Канал был успешно добавлен!', {
+                    reply_markup : {
+                        remove_keyboard : true
+                    }
+                })
+                return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
+            }
+            return await telegramContext.send('Канал не был добавлен, отправьте в корректном формате.', {
                 reply_markup : {
                     resize_keyboard : true,
                     keyboard : [[{text : 'Вернуться обратно'}]]
@@ -43,32 +69,6 @@ export class AddUserChannel {
             })
         }
 
-        if (this.linkValidator.validate({link : telegramContext.text})) {
-            const result = await this.channelManager.addChannel({
-                user : {
-                    id : telegramContext.from.id,
-                    userChannels : [
-                        {
-                            userChannel : {link : `${telegramContext.text.replace('https://', '')} | ${telegramContext.scene.state.category.title}`},
-                        }
-                    ]
-                }
-            })
-            await telegramContext.send('Канал был успешно добавлен!', {
-                reply_markup : {
-                    remove_keyboard : true
-                }
-            })
-            return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
-        }
-        else {
-            await telegramContext.send('Канал не был добавлен, отправьте в корректном формате.', {
-                reply_markup : {
-                    resize_keyboard : true,
-                    keyboard : [[{text : 'Вернуться обратно'}]]
-                }
-            })
-        }
 
     }
 }

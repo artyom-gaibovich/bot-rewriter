@@ -1,34 +1,36 @@
 import {AddStep, Ctx, Scene, SceneEnter} from "nestjs-puregram";
 import {TelegramContextModel} from "../../model/telegram-context-model";
 import {StepContext} from "@puregram/scenes";
+import {ACTIVATE_CODE, ADD_CHANNELS_PROMO, MAIN_CHANNEL_PAGE, START} from "../pages.types";
 
 
-export interface ActivateCodeSceneInterface extends Record<string, any> {
+export interface ActivateCodeInterface extends Record<string, any> {
     activateCode : string
 }
 
-export type ActivateCodeSceneContext = TelegramContextModel & StepContext<ActivateCodeSceneInterface>
-@Scene('')
-export class ActivateCodeScene {
-    @SceneEnter()
-    async sceneEnter(@Ctx() telegramContext : ActivateCodeSceneContext) {
+export type ActivateCodeScene = TelegramContextModel & StepContext<ActivateCodeInterface>
 
+@Scene(ACTIVATE_CODE)
+export class ActivateCode {
+    @SceneEnter()
+    async sceneEnter(@Ctx() telegramContext : ActivateCodeScene) {
+        telegramContext.scene.state.activateCode = 'admin'
     }
 
     @AddStep(0)
-    async zeroStep(@Ctx() telegramContext : ActivateCodeSceneContext) {
+    async zeroStep(@Ctx() telegramContext : ActivateCodeScene) {
         if (telegramContext.scene.step.firstTime) {
-            return await telegramContext.send('Введите код для активации ')
+            await telegramContext.send('Оплатите по ссылке https://localhost:/api/subcribe и введите код(код - admin).')
         }
-        telegramContext.scene.state.activateCode = telegramContext.text
-        if (telegramContext.scene.state.activateCode === 'PASSWORD') {
+        if (telegramContext.scene.state.activateCode === telegramContext.text) {
             await telegramContext.send('Верный код')
-            await telegramContext.scene.enter('MAIN_SCENE')
+            await telegramContext.scene.enter(ADD_CHANNELS_PROMO)
         }
         else {
-            await telegramContext.send('Не верный код. Повторите попытку', {
+            await telegramContext.send('Повторите попытку', {
                 reply_markup : {
-                    keyboard : [[{text : 'Ссылка на лендинг(ещё не работает)'}]]
+                    resize_keyboard : true,
+                    keyboard : [[{text : 'Ссылка на лендинг https://localhost:/api/subcribe'}]]
                 }
             })
         }

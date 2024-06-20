@@ -8,7 +8,7 @@ import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {UserManagerInterface} from "../../../manager/user/user.manager.interface";
 import {
     ADD_CHANNEL_CATEGORY,
-    ADD_USER_CHANNEL_PAGE,
+    ADD_USER_CHANNEL_PAGE, IMPROVE_LIMITS,
     MAIN_CHANNEL_PAGE,
     MAIN_CHANNELS_TO_REWRITE_PAGE
 } from "../pages.types";
@@ -32,7 +32,6 @@ export class MainChannel {
         if (telegramContext.scene.step.firstTime) {
             let user = (await this.repository.get(telegramContext.from.id))
             if (!user) {
-                console.log(user)
                 user = await this.userManager.createUser({
                     user : {
                         id : telegramContext.from.id
@@ -46,7 +45,15 @@ export class MainChannel {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.text === 'Добавить канал') {
-            return telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
+            return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY)
+        }
+        if (telegramContext.text === 'Повысить лимит') {
+
+            return await telegramContext.scene.enter(IMPROVE_LIMITS, {
+                state : {
+                    flag : 'MAIN_CHANNEL'
+                }
+            })
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text)) {
@@ -57,10 +64,13 @@ export class MainChannel {
         //ПЕРЕВОДИМ НА ДРУГУЮ СЦЕНУ, ИЛИ ШАГ, ГДЕ ДОБАВЛЯЕТ КАНАЛ, А ЗАТЕМ НАЗАД ИДЁМ
         const channels = telegramContext.scene.state.userChannels
         const channelsCount = telegramContext.scene.state.userChannels.length
-        const channelsLimit = 3
+
+        const channelsLimit = 3 //ЛИМИТ, С БИЛЛИНГ СЕРВИСА
+
         const channelKeyboard = channels.map(chn => {
             return [{text : (chn.userChannel as ChannelLinkInterface).link}]
         })
+
         const addChannelKeyboard = [
             [{text : 'Добавить канал'}],
         ]

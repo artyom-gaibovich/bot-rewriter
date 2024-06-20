@@ -1,4 +1,4 @@
-export interface AddChannelsConfig {
+export interface AddChannelsPromoConfig {
     zeroStep : {
         message : string
     }

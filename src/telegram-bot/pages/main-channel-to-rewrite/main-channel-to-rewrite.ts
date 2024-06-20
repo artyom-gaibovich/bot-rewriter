@@ -45,10 +45,7 @@ export class MainChannelToRewrite {
                     ]
                 }
             })
-
         }
-
-
         if (telegramContext.text === 'Обратно') {
             return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
                 state : {foundUserChannel}

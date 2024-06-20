@@ -27,8 +27,7 @@ export class AddUserChannel {
 
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : AddUserChannelSceneContext) {
-        if (telegramContext.scene.step.firstTime) {
-        }
+
     }
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : AddUserChannelSceneContext) {

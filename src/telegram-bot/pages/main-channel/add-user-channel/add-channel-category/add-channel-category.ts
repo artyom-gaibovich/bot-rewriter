@@ -77,8 +77,9 @@ export class AddChannelCategory {
 
         if (currentPage === 0) {
             mainKeyboard = [
-                ...categoriesForPage.map(category => [{ text: category.title }]),
                 ...nextKeyboard,
+                ...categoriesForPage.map(category => [{ text: category.title }]),
+                ...exitKeyboard,
             ];
         } else {
             if (categoriesForPage.length !== limit) {

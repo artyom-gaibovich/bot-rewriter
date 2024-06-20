@@ -11,9 +11,16 @@ import {ADD_CHANNEL_CATEGORY} from "./pages/pages.types";
 import {
     AddChannelCategoryModule
 } from "./pages/main-channel/add-user-channel/add-channel-category/add-channel-category.module";
+import {ActivateCodeModule} from "./pages/activate-code/activate-code.module";
+import {AddChannelsPromo} from "./pages/add-channel-promo/add-channels-promo";
+import {Support} from "./pages/support/support";
+import {ImproveLimits} from "./pages/improve-limits/improve-limits";
+import {AddChannelsPromoModule} from "./pages/add-channel-promo/add-channels-promo.module";
+import {ImproveLimitsModule} from "./pages/improve-limits/improve-limits.module";
+import {SupportModule} from "./pages/support/support.module";
 
 @Module({
-    imports : [DeleteUserChannelModule, AddChannelToRewriteModule, AddUserChannelModule, MainChannelRewriteModule, MainChannelModule, MainChannelsToRewriteModule],
+    imports : [AddChannelsPromoModule, SupportModule, ImproveLimitsModule, ActivateCodeModule, DeleteUserChannelModule, AddChannelToRewriteModule, AddUserChannelModule, MainChannelRewriteModule, MainChannelModule, MainChannelsToRewriteModule],
     providers : [{
         provide : 'MAIN_KEYBOARD',
         useFactory : () => {

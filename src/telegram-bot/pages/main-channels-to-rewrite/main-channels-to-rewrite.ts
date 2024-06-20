@@ -9,7 +9,7 @@ import {ContentRewriterInterface} from "../../../rewriter/content.rewriter.inter
 import {UserRepositoryInterface} from "../../../repository/user/user.repository.interface";
 import {
     ADD_CHANNEL_TO_REWRITE_PAGE,
-    DELETE_USER_CHANNEL_PAGE,
+    DELETE_USER_CHANNEL_PAGE, IMPROVE_LIMITS,
     MAIN_CHANNEL_PAGE, MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE,
 } from "../pages.types";
 import {CONTENT_REWRITER} from "../../../constants/DI.constants";
@@ -51,6 +51,13 @@ export class MainChannelsToRewrite {
         }
         if (telegramContext.text === 'Назад') {
             return telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
+        }
+        if (telegramContext.text === 'Повысить лимит') {
+            return telegramContext.scene.enter(IMPROVE_LIMITS, {
+                state : {
+                    flag : 'MAIN_CHANNELS_TO_REWRITE'
+                }
+            })
         }
         if (telegramContext.text === 'Удалить канал') {
             return telegramContext.scene.enter(DELETE_USER_CHANNEL_PAGE, {

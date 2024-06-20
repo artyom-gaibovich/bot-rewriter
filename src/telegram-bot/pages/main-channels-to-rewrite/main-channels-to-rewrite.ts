@@ -13,6 +13,7 @@ import {
     MAIN_CHANNEL_PAGE, MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE,
 } from "../pages.types";
 import {CONTENT_REWRITER} from "../../../constants/DI.constants";
+import {PromptInterface} from "../../../model/prompt.interface";
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
     foundUserChannel : UserChannelInterface
@@ -42,16 +43,24 @@ export class MainChannelsToRewrite {
 
         if (telegramContext.text === 'Генерировать контент' || telegramContext.text === 'Перегенерировать контент') {
             //если Перегенерировать контент - я сделаю логику такую, чтобы уже другой запрос шёл.
+            let prompt : PromptInterface = {
+                prompt : "PromptConnectText"
+            };
+            if (telegramContext.text === 'Генерировать контент') {
+                prompt.prompt = 'PromptConnectText'
+            }
+            if (telegramContext.text === 'Перегенерировать контент') {
+                prompt.prompt = 'PromptChangeText'
+            }
 
             await telegramContext.send('Контент генерируется, ожидайте...', {
                 reply_markup : {
                     remove_keyboard : true
                 }
             })
-
             const rewrittenContent = await this.contentRewriter.rewrite({
                 channelsToRewrite : telegramContext.scene.state.channelsToRewrite
-            })
+            }, prompt)
 
             await telegramContext.send(rewrittenContent.rewrittenContent)
             await telegramContext.send('Контент был успешно сгенерирован')

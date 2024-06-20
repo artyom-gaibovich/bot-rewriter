@@ -24,11 +24,11 @@ export class Support {
                     reply_markup : {
                         resize_keyboard : true,
                         remove_keyboard : true,
-                        keyboard : [[{text : '🟦 Вернуться обратно'}]]
+                        keyboard : [[{text : 'Вернуться обратно'}]]
                     }
                 })
         }
-        if (telegramContext.text === '🟦 Вернуться обратно') {
+        if (telegramContext.text === 'Вернуться обратно') {
             const supportFlag = telegramContext.scene.state.supportFlag
             await telegramContext.scene.enter(supportFlag === 'addChannelPromo' ? ADD_CHANNELS_PROMO : MAIN_CHANNEL_PAGE)
         }

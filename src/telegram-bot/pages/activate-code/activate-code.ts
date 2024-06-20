@@ -21,29 +21,17 @@ export class ActivateCode {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : ActivateCodeScene) {
         if (telegramContext.scene.step.firstTime) {
-            return await telegramContext.send('Вас приветсвует приложение Neweral.ai! С помощью нашего бота вы сможете автоматизирировать процесс ведения телеграм канала', {
-                reply_markup : {
-                    resize_keyboard : true,
-                    keyboard : [[{text : 'Ссылка на лендинг'}]]
-                }
-            })
+            return await telegramContext.send('Вас приветсвует приложение Neweral.ai! С помощью нашего бота вы сможете автоматизирировать процесс ведения телеграм канала. Ссылка на лендинг https://lcalhost')
 
         }
-        if (telegramContext.text === 'Ссылка на лендинг') {
-            telegramContext.scene.state.isClicked = true
-            return await telegramContext.send('Оплатите по ссылке https://localhost:/api/subcribe и введите код(код - admin).')
-        }
+
         if (telegramContext.scene.state.activateCode === telegramContext.text) {
             await telegramContext.send('Верный код')
             await telegramContext.scene.enter(ADD_CHANNELS_PROMO)
         }
         else {
-            await telegramContext.send('Повторите попытку', {
-                reply_markup : {
-                    resize_keyboard : true,
-                    keyboard : [[{text : 'Ссылка на лендинг'}]]
-                }
-            })
+            await telegramContext.send('Не верный код')
+
         }
 
     }

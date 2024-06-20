@@ -71,9 +71,11 @@ export class AddUserChannel {
                 })
                 await telegramContext.send('Канал был успешно добавлен!', {
                     reply_markup : {
+                        one_time_keyboard : true,
                         remove_keyboard : true
                     }
                 })
+
                 return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
             }
             else {

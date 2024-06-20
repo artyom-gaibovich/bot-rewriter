@@ -29,7 +29,7 @@ export class AddChannelCategory {
         if (telegramContext.scene.step.firstTime) {
             telegramContext.scene.state.categories = [...await this.repository.findAll()]
 
-            telegramContext.scene.state.limit = 40; // specify your limit
+            telegramContext.scene.state.limit = 17; // specify your limit
             telegramContext.scene.state.currentPage = 0;
             return await this.showCategories(telegramContext);
         }

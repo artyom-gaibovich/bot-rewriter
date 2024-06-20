@@ -50,7 +50,7 @@ export class MainChannelsToRewrite {
                 prompt.prompt = 'PromptConnectText'
             }
             if (telegramContext.text === 'Перегенерировать контент') {
-                prompt.prompt = 'PromptChangeText'
+                prompt.prompt = 'PromptConnectText'
             }
 
             await telegramContext.send('Контент генерируется, ожидайте...', {
@@ -58,9 +58,10 @@ export class MainChannelsToRewrite {
                     remove_keyboard : true
                 }
             })
+
             const rewrittenContent = await this.contentRewriter.rewrite({
                 channelsToRewrite : telegramContext.scene.state.channelsToRewrite
-            }, prompt)
+            }, prompt) //ЕСЛИ СЕРВИС НЕ РАБОТАЕТ, НАДО УВЕДОМЛЯТЬ ПОЛЬЗАКА !!!
 
             await telegramContext.send(rewrittenContent.rewrittenContent)
             await telegramContext.send('Контент был успешно сгенерирован')

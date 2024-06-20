@@ -19,7 +19,7 @@ export class ContentRewriter implements ContentRewriterInterface {
         const response = await this.client.rewriteContent({
             url : this.config.rewriteLink,
             body: {
-                prompt : prompt,
+                prompt : prompt.prompt,
                 links : channelsToRewrite.channelsToRewrite,
                 limit : this.config.limit // вот тут задается лимит на посты.
             }

@@ -1,26 +1,4 @@
 services:
-  db_postgresql:
-    container_name: db_postgresql
-    image: postgres:14.3-alpine
-    ports:
-      - "2020:5432"
-    environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=admin
-    networks:
-      - internal
-  parser-server:
-    build:
-      context: .
-      dockerfile: ./docker/dev/parser-server/Dockerfile
-    container_name: parser-server
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db_postgresql
-    networks:
-      - internal
-
   bot-rewriter:
     ports:
       - "3000:3000"
@@ -30,10 +8,3 @@ services:
       context: .
       dockerfile: ./docker/dev/bot-rewriter/Dockerfile
     container_name: app-bot-rewriter
-    depends_on:
-      - parser-server
-    networks:
-      - internal
-networks:
-  internal:
-    name: ${APP_NAME}-net

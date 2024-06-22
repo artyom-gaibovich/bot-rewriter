@@ -95,7 +95,8 @@ export class MainChannelsToRewrite {
 
         }
         //Проверяем, выбрал ли пользователь канал из ему предложенных
-        if (telegramContext.scene.state.channelsToRewrite.map(chn=>chn.link).includes(telegramContext.text.replace('🔷 ',''))) {
+        if (telegramContext.text.includes(`🔷`) &&
+            telegramContext.scene.state.channelsToRewrite.map(chn=>chn.link).includes(telegramContext.text.replace('🔷 ',''))) {
             const foundChannelToRewrite : ChannelLinkInterface = telegramContext.scene.state.channelsToRewrite.find(chn => chn.link === telegramContext.text.replace('🔷 ',''))
             return telegramContext.scene.enter(MAIN_CHANNEL_TO_REWRITE_PAGE, {state : {foundChannelToRewrite, foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
@@ -134,7 +135,7 @@ export class MainChannelsToRewrite {
         if (channelsToRewriteCount === 0) {
             mainKeyboard = [...addChannelKeyboard]
         }
-        await telegramContext.send('Выберите дальнейшее действие', {
+        return await telegramContext.send('Выберите дальнейшее действие', {
             reply_markup : {
                 resize_keyboard : true,
                 remove_keyboard : true,

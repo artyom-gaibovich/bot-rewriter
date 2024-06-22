@@ -16,6 +16,8 @@ import {USER_MANAGER, USER_REPOSITORY} from "../../../constants/DI.constants";
 
 export interface MainChannelSceneInterface extends Record<string, any> {
     userChannels : UserChannelInterface[]
+    countToJoinMainPage : number
+
 }
 
 export type MainChannelSceneContext = TelegramContextModel & StepContext<MainChannelSceneInterface>
@@ -44,13 +46,17 @@ export class MainChannel {
 
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : MainChannelSceneContext) {
-
-
+        const defaultMessage = telegramContext.scene.state.countToJoinMainPage === 1 ? 'Для того, чтобы начать работу вам нужно добавить основные каналы для которых будет генерироваться контент. \n' +
+            '\n' +
+            'Нажмите кнопку «Добавить основной канал» и выберите его категорию из предложенных. После этого отправьте ссылку на канал. \n' +
+            '\n' +
+            'Категория, впоследствии, будет отображаться в меню рядом с каналом.' : 'Выберите дальнейшее действие:'
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text.replace(`◽️ `, ''))) {
             const foundUserChannel : UserChannelInterface = telegramContext.scene.state.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link === telegramContext.text.replace(`◽️ `, ''))
             return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {state : {foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
+        telegramContext.scene.state.countToJoinMainPage = 0
         //
         //ПЕРЕВОДИМ НА ДРУГУЮ СЦЕНУ, ИЛИ ШАГ, ГДЕ ДОБАВЛЯЕТ КАНАЛ, А ЗАТЕМ НАЗАД ИДЁМ
         const channels = telegramContext.scene.state.userChannels
@@ -95,9 +101,13 @@ export class MainChannel {
                     }
                 })
             case 'Техническая поддержка':
-                return await telegramContext.scene.enter(SUPPORT)
+                return await telegramContext.scene.enter(SUPPORT, {
+                    state : {
+                        supportFlag : 'mainChannel'
+                    }
+                })
             default:
-                return await telegramContext.send('Выберите дальнейшее действие', {
+                return await telegramContext.send(defaultMessage, {
                     reply_markup : {
                         resize_keyboard : true,
                         remove_keyboard : true,

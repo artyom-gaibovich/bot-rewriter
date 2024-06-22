@@ -19,7 +19,9 @@ export class Start {
     @AddStep(0)
     async zeroStep(@Ctx() telegramContext : StartContext) {
         if (telegramContext.scene.step.firstTime) {
-            return await telegramContext.send('Всё отлично, можете пользоваться!', {
+            return await telegramContext.send('😎 Код введён верно! Приступим к генерации контента? \n' +
+                '\n' +
+                'Добавляется свои основные каналы для которых будет генерироваться контент и дополнительные каналы с которых будет парситься материал для генерации. Если вы запутались и не понимаете что делать — напишите в поддержку или посмотрите наш видео-туториал', {
                 reply_markup : {
                     resize_keyboard : true,
                     remove_keyboard : true,
@@ -32,6 +34,15 @@ export class Start {
         }
         if (telegramContext.text === 'Повысить лимиты') {
             return await telegramContext.scene.enter(IMPROVE_LIMITS)
+        }
+        else {
+            return await telegramContext.send('Выберите дальнейшее действие', {
+                reply_markup : {
+                    resize_keyboard : true,
+                    remove_keyboard : true,
+                    keyboard : [{text : 'Хорошо, поехали!'}, [{text : 'Повысить лимиты'}]]
+                }
+            })
         }
     }
 

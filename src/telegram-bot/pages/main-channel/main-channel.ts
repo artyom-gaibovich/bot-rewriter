@@ -8,7 +8,7 @@ import {ChannelLinkInterface} from "../../../model/link/channel.link.interface";
 import {UserManagerInterface} from "../../../manager/user/user.manager.interface";
 import {
     ADD_CHANNEL_CATEGORY,
-    ADD_USER_CHANNEL_PAGE, IMPROVE_LIMITS,
+    ADD_USER_CHANNEL_PAGE, EDIT_PROMPT, IMPROVE_LIMITS,
     MAIN_CHANNEL_PAGE,
     MAIN_CHANNELS_TO_REWRITE_PAGE, SUPPORT
 } from "../pages.types";
@@ -17,6 +17,7 @@ import {USER_MANAGER, USER_REPOSITORY} from "../../../constants/DI.constants";
 export interface MainChannelSceneInterface extends Record<string, any> {
     userChannels : UserChannelInterface[]
     countToJoinMainPage : number
+    currentPrompt : string
 
 }
 
@@ -32,6 +33,7 @@ export class MainChannel {
     @SceneEnter()
     async sceneEnter(@Ctx() telegramContext : MainChannelSceneContext) {
         if (telegramContext.scene.step.firstTime) {
+
             let user = (await this.repository.get(telegramContext.from.id))
             if (!user) {
                 user = await this.userManager.createUser({
@@ -54,7 +56,7 @@ export class MainChannel {
         //Проверяем, выбрал ли пользователь канал из ему предложенных
         if (telegramContext.scene.state.userChannels.map(chn=>(chn.userChannel as ChannelLinkInterface).link).includes(telegramContext.text.replace(`◽️ `, ''))) {
             const foundUserChannel : UserChannelInterface = telegramContext.scene.state.userChannels.find(chn => (chn.userChannel as ChannelLinkInterface).link === telegramContext.text.replace(`◽️ `, ''))
-            return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {state : {foundUserChannel}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
+            return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {state : {foundUserChannel : foundUserChannel, currentPrompt : telegramContext.scene.state.currentPrompt ? telegramContext.scene.state.currentPrompt : ''}}) //УРАА, УДАЛОСЬ ПРОКИНУТЬ
         }
         telegramContext.scene.state.countToJoinMainPage = 0
         //
@@ -77,6 +79,17 @@ export class MainChannel {
         const techSupport = [
             [{text : 'Техническая поддержка'}]
         ]
+
+
+
+
+
+        const editPromptKeyboard = [
+            [{text : 'Изменить промпт'}],
+        ]
+
+
+
         let mainKeyboard = []
         if (channelsCount === channelsLimit) {
             mainKeyboard = [...limitKeyboard, ...channelKeyboard, ...techSupport]
@@ -87,7 +100,10 @@ export class MainChannel {
         if (channelsCount === 0) {
             mainKeyboard = [...addChannelKeyboard, ...techSupport]
         }
+
         switch (telegramContext.text) {
+            case 'Изменить промпт':
+                return await telegramContext.scene.enter(EDIT_PROMPT)
             case 'Добавить категорию':
                 return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY, {
                     state : {
@@ -111,7 +127,7 @@ export class MainChannel {
                     reply_markup : {
                         resize_keyboard : true,
                         remove_keyboard : true,
-                        keyboard : [...mainKeyboard]
+                        keyboard : [...editPromptKeyboard, ...mainKeyboard]
                     }
                 })
 

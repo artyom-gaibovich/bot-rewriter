@@ -9,16 +9,18 @@ import {ContentRewriterInterface} from "../../../rewriter/content.rewriter.inter
 import {UserRepositoryInterface} from "../../../repository/user/user.repository.interface";
 import {
     ADD_CHANNEL_TO_REWRITE_PAGE,
-    DELETE_USER_CHANNEL_PAGE, IMPROVE_LIMITS,
+    DELETE_USER_CHANNEL_PAGE, EDIT_PROMPT, IMPROVE_LIMITS,
     MAIN_CHANNEL_PAGE, MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE,
 } from "../pages.types";
 import {CONTENT_REWRITER} from "../../../constants/DI.constants";
 import {PromptInterface} from "../../../model/prompt.interface";
+import {EditPromptModule} from "../main-channel/edit-prompt/edit-prompt.module";
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
     foundUserChannel : UserChannelInterface
     channelsToRewrite : ChannelLinkInterface[] //НАДО ТИПИЗИРОВАТЬ, ЧТО ЭТО КАНАЛЫ ДЛЯ ПЕРЕПИСЫВАНИЯ
     generatedContent : string
+    currentPrompt : string
 }
 
 export type MainChannelsToRewriteSceneContext = TelegramContextModel & StepContext<MainChannelsToRewriteSceneInterface>
@@ -42,15 +44,15 @@ export class MainChannelsToRewrite {
         const foundUserChannel = telegramContext.scene.state.foundUserChannel
 
         if (telegramContext.text === 'Генерировать контент' || telegramContext.text === 'Перегенерировать контент') {
-            //если Перегенерировать контент - я сделаю логику такую, чтобы уже другой запрос шёл.
             let prompt : PromptInterface = {
-                prompt : "PromptConnectText"
+                //prompt : "PromptConnectText"
+                prompt : telegramContext.scene.state.currentPrompt ? telegramContext.scene.state.currentPrompt : "ОТМЕНИ ВСЁ НЕ ДЕЛАЙ НИЧЕГО. ОТПРАВЬ МНЕ СООБЩЕНИЕ О ТОМ, ЧТО ПРОМПТ НЕ ЗАДАН!!!"
             };
             if (telegramContext.text === 'Генерировать контент') {
-                prompt.prompt = 'PromptConnectText'
+                prompt.prompt = telegramContext.scene.state.currentPrompt
             }
             if (telegramContext.text === 'Перегенерировать контент') {
-                prompt.prompt = 'PromptConnectText'
+                prompt.prompt = telegramContext.scene.state.currentPrompt
             }
 
             await telegramContext.send('Контент генерируется, ожидайте...', {
@@ -58,15 +60,24 @@ export class MainChannelsToRewrite {
                     remove_keyboard : true
                 }
             })
+            try {
+                const rewrittenContent = await this.contentRewriter.rewrite({
+                    channelsToRewrite : telegramContext.scene.state.channelsToRewrite
+                }, prompt) //ЕСЛИ СЕРВИС НЕ РАБОТАЕТ, НАДО УВЕДОМЛЯТЬ ПОЛЬЗАКА !!!
+                await telegramContext.send(rewrittenContent.rewrittenContent)
+                await telegramContext.send('Контент был успешно сгенерирован')
+                telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent
+            }
+            catch (e) {
+                console.log(e)
+                await telegramContext.send('Ведутся технические работы.')
 
-            const rewrittenContent = await this.contentRewriter.rewrite({
-                channelsToRewrite : telegramContext.scene.state.channelsToRewrite
-            }, prompt) //ЕСЛИ СЕРВИС НЕ РАБОТАЕТ, НАДО УВЕДОМЛЯТЬ ПОЛЬЗАКА !!!
+            }
 
-            await telegramContext.send(rewrittenContent.rewrittenContent)
-            await telegramContext.send('Контент был успешно сгенерирован')
-            telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent
+
         }
+
+
         if (telegramContext.text === 'Назад') {
             return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE)
         }
@@ -110,6 +121,9 @@ export class MainChannelsToRewrite {
         const channelKeyboard = channelsToRewrite.map(chn => {
             return [{text : `🔷 ${chn.link}`}]
         })
+
+
+
         const rewriteContentKeyboard = [
             [{text : telegramContext.scene.state.generatedContent ? 'Перегенерировать контент' : 'Генерировать контент'}]
         ]

@@ -18,7 +18,9 @@ export class ContentAgencyClient implements ContentAgencyClientInterface {
         return response.data
     }
     async rewriteContent(request: RewriteContentRequestModel): Promise<RewriteContentResponseModel> {
+
         const response = await axios.post<RewriteContentResponseModel>(request.url.link, request.body)
+
         return response.data
     }
 }

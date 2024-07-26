@@ -1,8 +1,8 @@
 interface CheckedChannel {
-    channelLink: string;
-    isChannelExists: boolean;
+	channelLink: string;
+	isChannelExists: boolean;
 }
 
 interface CheckedChannelsModel {
-    checkedChannels: CheckedChannel[];
+	checkedChannels: CheckedChannel[];
 }

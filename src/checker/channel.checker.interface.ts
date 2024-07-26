@@ -1,5 +1,5 @@
-import {LinkInterface} from "../model/link/link.interface";
+import { LinkInterface } from '../model/link/link.interface';
 
 export interface ChannelCheckerInterface {
-    checkByLinks(links : LinkInterface[]) : Promise<CheckedChannelsModel>
+	checkByLinks(links: LinkInterface[]): Promise<CheckedChannelsModel>;
 }

@@ -1,13 +1,13 @@
-import {LinkValidatorInterface} from "./link.validator.interface";
-import {LinkInterface} from "../model/link/link.interface";
-import {Injectable} from "@nestjs/common";
+import { LinkValidatorInterface } from './link.validator.interface';
+import { LinkInterface } from '../model/link/link.interface';
+import { Injectable } from '@nestjs/common';
+
 @Injectable()
 export class LinkValidator implements LinkValidatorInterface {
-    validate(link: LinkInterface): boolean {
-        return (
-            link.link.length <= 50) &&
-            (link.link.startsWith('https://') && link.link.length >= 9) ||
-            (link.link.startsWith('t.me') && link.link.length >= 5)
-            ;
-    }
+	validate(link: LinkInterface): boolean {
+		return (
+			(link.link.length <= 50 && link.link.startsWith('https://') && link.link.length >= 9) ||
+			(link.link.startsWith('t.me') && link.link.length >= 5)
+		);
+	}
 }

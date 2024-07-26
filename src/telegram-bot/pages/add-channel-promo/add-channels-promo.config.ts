@@ -1,5 +1,5 @@
 export interface AddChannelsPromoConfig {
-    zeroStep : {
-        message : string
-    }
+	zeroStep: {
+		message: string;
+	};
 }

@@ -1,7 +1,6 @@
-import {LinkInterface} from "../model/link/link.interface";
-
+import { LinkInterface } from '../model/link/link.interface';
 
 export interface ContentRewriterConfig {
-    rewriteLink : LinkInterface
-    limit : number
+	rewriteLink: LinkInterface;
+	limit: number;
 }

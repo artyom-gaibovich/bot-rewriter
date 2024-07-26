@@ -1,3 +1,3 @@
 export interface RewrittenContentModel {
-    rewrittenContent : string
+	rewrittenContent: string;
 }

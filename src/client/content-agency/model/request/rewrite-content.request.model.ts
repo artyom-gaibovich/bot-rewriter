@@ -1,12 +1,10 @@
-import {LinkInterface} from "../../../../model/link/link.interface";
-import {PromptInterface} from "../../../../model/prompt.interface";
+import { LinkInterface } from '../../../../model/link/link.interface';
 
 export interface RewriteContentRequestModel {
-    url : LinkInterface,
-    body : {
-        prompt : string
-        links : LinkInterface[]
-        limit? : number,
-    }
-
+	url: LinkInterface;
+	body: {
+		prompt: string;
+		links: LinkInterface[];
+		limit?: number;
+	};
 }

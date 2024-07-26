@@ -1,5 +1,4 @@
-
 interface GetCategoriesResponseInterface {
-    status : 'OK' | 'ERROR'
-    categories? : CategoryInterface[] | []
+	status: 'OK' | 'ERROR';
+	categories?: CategoryInterface[] | [];
 }

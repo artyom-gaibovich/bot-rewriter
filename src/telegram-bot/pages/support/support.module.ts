@@ -1,10 +1,8 @@
-import {Module} from "@nestjs/common";
-import {Support} from "./support";
-import {SUPPORT} from "../pages.types";
+import { Module } from '@nestjs/common';
+import { Support } from './support';
+import { SUPPORT } from '../pages.types';
 
 @Module({
-    providers : [Support]
+	providers: [Support],
 })
-export class SupportModule {
-
-}
+export class SupportModule {}

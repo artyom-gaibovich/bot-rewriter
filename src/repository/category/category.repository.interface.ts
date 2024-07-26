@@ -1,3 +1,3 @@
 export interface CategoryRepositoryInterface {
-    findAll() : Promise<CategoryInterface[]>
+	findAll(): Promise<CategoryInterface[]>;
 }

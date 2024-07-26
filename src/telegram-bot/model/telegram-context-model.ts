@@ -1,6 +1,4 @@
-import {MessageContext} from "puregram";
-import {StepContext} from "@puregram/scenes";
+import { MessageContext } from 'puregram';
+import { StepContext } from '@puregram/scenes';
 
-export interface TelegramContextModel extends MessageContext, StepContext {
-
-}
+export interface TelegramContextModel extends MessageContext, StepContext {}

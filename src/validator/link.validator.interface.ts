@@ -1,5 +1,5 @@
-import {LinkInterface} from "../model/link/link.interface";
+import { LinkInterface } from '../model/link/link.interface';
 
 export interface LinkValidatorInterface {
-    validate(link : LinkInterface) : boolean
+	validate(link: LinkInterface): boolean;
 }

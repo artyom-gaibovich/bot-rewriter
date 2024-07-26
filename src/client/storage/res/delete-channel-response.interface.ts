@@ -1,5 +1,5 @@
-import {UserInterface} from "../../../model/user.interface";
+import { UserInterface } from '../../../model/user.interface';
 
 export interface DeleteChannelResponseInterface {
-    body : UserInterface | false
+	body: UserInterface | false;
 }

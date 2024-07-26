@@ -1,10 +1,8 @@
-import {Module} from "@nestjs/common";
-import {START} from "../pages.types";
-import {Start} from "./start";
+import { Module } from '@nestjs/common';
+import { START } from '../pages.types';
+import { Start } from './start';
 
 @Module({
-    providers : [Start]
+	providers: [Start],
 })
-export class StartModule {
-
-}
+export class StartModule {}

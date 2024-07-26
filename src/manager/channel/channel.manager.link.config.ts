@@ -1,7 +1,7 @@
-import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
+import { ChannelLinkInterface } from '../../model/link/channel.link.interface';
 
 export interface ChannelManagerLinkConfig {
-    addChannel : ChannelLinkInterface
-    deleteChannel  : ChannelLinkInterface
-    deleteChannelToRewrite :  ChannelLinkInterface
+	addChannel: ChannelLinkInterface;
+	deleteChannel: ChannelLinkInterface;
+	deleteChannelToRewrite: ChannelLinkInterface;
 }

@@ -1,6 +1,6 @@
-import {ChannelLinkInterface} from "../../model/link/channel.link.interface";
+import { ChannelLinkInterface } from '../../model/link/channel.link.interface';
 
 export interface UserManagerLinkConfig {
-    createUser  : ChannelLinkInterface
-    deleteUser :  ChannelLinkInterface
+	createUser: ChannelLinkInterface;
+	deleteUser: ChannelLinkInterface;
 }

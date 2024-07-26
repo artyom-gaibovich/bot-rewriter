@@ -1,5 +1,5 @@
-import {UserInterface} from "../../model/user.interface";
+import { UserInterface } from '../../model/user.interface';
 
 export interface UserRepositoryInterface {
-    get(telegramId : number) : Promise<UserInterface>
+	get(telegramId: number): Promise<UserInterface>;
 }

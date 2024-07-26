@@ -1,4 +1,3 @@
 export interface LinkInterface {
-    link : string
+	link: string;
 }
-

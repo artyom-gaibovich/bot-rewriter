@@ -1,5 +1,5 @@
-import {UserInterface} from "../../../model/user.interface";
+import { UserInterface } from '../../../model/user.interface';
 
 export interface DeleteChannelToRewriteResponseInterface {
-    body : UserInterface
+	body: UserInterface;
 }

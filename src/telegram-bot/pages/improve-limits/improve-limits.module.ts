@@ -1,11 +1,7 @@
-import {Module} from "@nestjs/common";
-import {ImproveLimits} from "./improve-limits";
+import { Module } from '@nestjs/common';
+import { ImproveLimits } from './improve-limits';
 
 @Module({
-    providers : [
-        ImproveLimits
-    ]
+	providers: [ImproveLimits],
 })
-export class ImproveLimitsModule {
-
-}
+export class ImproveLimitsModule {}

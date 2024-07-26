@@ -1,8 +1,7 @@
-import {LinkInterface} from "../../../model/link/link.interface";
-import {UserInterface} from "../../../model/user.interface";
+import { LinkInterface } from '../../../model/link/link.interface';
+import { UserInterface } from '../../../model/user.interface';
 
-//ПОДУМАТЬ ПРО ОБЯЗАТЕЛЬНОСТЬ ОПРЕДЕЛЕННЫХ СВОЙСТВ У UserInterface В ЭТОМ КЕЙСЕ
 export interface AddChannelRequestInterface {
-    url : LinkInterface
-    body :  UserInterface
+	url: LinkInterface;
+	body: UserInterface;
 }

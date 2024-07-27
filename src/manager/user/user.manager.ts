@@ -2,14 +2,14 @@ import { UserManagerInterface } from './user.manager.interface';
 import { UserInterface } from '../../model/user.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserManagerLinkConfig } from './user.manager.link.config';
-import { StorageClientInterface } from '../../client/storage/storage.client.interface';
+import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
 import { STORAGE_CLIENT, USER_MANAGER_LINK_CONFIG } from '../../constants/DI.constants';
 
 @Injectable()
 export class UserManager implements UserManagerInterface {
 	constructor(
 		@Inject(USER_MANAGER_LINK_CONFIG) private config: UserManagerLinkConfig,
-		@Inject(STORAGE_CLIENT) private client: StorageClientInterface,
+		@Inject(STORAGE_CLIENT) private client: StorageClientInterfaceOld,
 	) {}
 
 	async createUser(user: UserInterface): Promise<UserInterface> {

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { StorageClientInterface } from '../../client/storage/storage.client.interface';
+import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
 import { UserManagerLinkConfig } from './user.manager.link.config';
 import { UserManager } from './user.manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -10,10 +10,10 @@ import {
 	USER_MANAGER,
 	USER_MANAGER_LINK_CONFIG,
 } from '../../constants/DI.constants';
-import { StorageClientModule } from '../../client/storage/storage.client.module';
+import { StorageClientModuleOld } from '../../client/storage/storage.client.module.old';
 
 @Module({
-	imports: [ConfigModule, StorageClientModule],
+	imports: [ConfigModule, StorageClientModuleOld],
 	providers: [
 		{
 			provide: USER_MANAGER_LINK_CONFIG,
@@ -28,7 +28,7 @@ import { StorageClientModule } from '../../client/storage/storage.client.module'
 
 		{
 			provide: USER_MANAGER,
-			useFactory: (linkConfig: UserManagerLinkConfig, client: StorageClientInterface) => {
+			useFactory: (linkConfig: UserManagerLinkConfig, client: StorageClientInterfaceOld) => {
 				return new UserManager(linkConfig, client);
 			},
 			inject: [USER_MANAGER_LINK_CONFIG, STORAGE_CLIENT],

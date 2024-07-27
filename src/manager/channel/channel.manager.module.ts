@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UserManagerLinkConfig } from '../user/user.manager.link.config';
-import { StorageClientInterface } from '../../client/storage/storage.client.interface';
+import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
 import { UserManager } from '../user/user.manager';
 import { ChannelManagerLinkConfig } from './channel.manager.link.config';
 import { ChannelManager } from './channel.manager';
@@ -10,16 +10,16 @@ import {
 	CHANNEL_MANAGER_LINK_CONFIG,
 	STORAGE_CLIENT,
 } from '../../constants/DI.constants';
-import { StorageClient } from '../../client/storage/storage.client';
+import { StorageClientOld } from '../../client/storage/storage.client.old';
 import {
 	ADD_CHANNEL_URL,
 	DELETE_CHANNEL_TO_REWRITE_URL,
 	DELETE_CHANNEL_URL,
 } from '../../constants/enviroment.constants';
-import { StorageClientModule } from '../../client/storage/storage.client.module';
+import { StorageClientModuleOld } from '../../client/storage/storage.client.module.old';
 
 @Module({
-	imports: [StorageClientModule, ConfigModule],
+	imports: [StorageClientModuleOld, ConfigModule],
 	providers: [
 		{
 			provide: CHANNEL_MANAGER_LINK_CONFIG,
@@ -37,7 +37,7 @@ import { StorageClientModule } from '../../client/storage/storage.client.module'
 			provide: CHANNEL_MANAGER,
 			useFactory: (
 				linkConfig: ChannelManagerLinkConfig,
-				channelService: StorageClientInterface,
+				channelService: StorageClientInterfaceOld,
 			) => {
 				return new ChannelManager(linkConfig, channelService);
 			},

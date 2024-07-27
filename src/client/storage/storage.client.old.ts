@@ -1,4 +1,4 @@
-import { StorageClientInterface } from './storage.client.interface';
+import { StorageClientInterfaceOld } from './storage.client.interface.old';
 import { GetUserRequestInterface } from './req/get-user-request.interface';
 import { GetUserResponseInterface } from './res/get-user.response.interface';
 import axios from 'axios';
@@ -14,8 +14,7 @@ import { UserInterface } from '../../model/user.interface';
 import { GetCategoriesRequestInterface } from './req/get-categories.request.interface';
 import { mockCategories } from './mock/categories.mock';
 
-export class StorageClient implements StorageClientInterface {
-	//ДЕКОМПОЗИРОВАТЬ НА BASE RESPONSE ИНТЕРФЕЙС
+export class StorageClientOld implements StorageClientInterfaceOld {
 	async getCategories(req: GetCategoriesRequestInterface): Promise<GetCategoriesResponseInterface> {
 		try {
 			return {
@@ -56,6 +55,7 @@ export class StorageClient implements StorageClientInterface {
 			};
 		}
 	}
+
 	async deleteUser(req: DeleteUserRequestInterface): Promise<DeleteUserResponseInterface> {
 		try {
 			const request = await axios.post<UserInterface>(req.url.link, req.body);

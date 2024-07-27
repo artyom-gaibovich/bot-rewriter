@@ -5,14 +5,14 @@ import {
 	CATEGORY_REPOSITORY_LINK_CONFIG,
 	STORAGE_CLIENT,
 } from '../../constants/DI.constants';
-import { StorageClientModule } from '../../client/storage/storage.client.module';
+import { StorageClientModuleOld } from '../../client/storage/storage.client.module.old';
 import { CategoryRepositoryLinkConfig } from './category.repository.link.config';
-import { StorageClientInterface } from '../../client/storage/storage.client.interface';
+import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GET_CATEGORIES_URL } from '../../constants/enviroment.constants';
 
 @Module({
-	imports: [StorageClientModule, ConfigModule],
+	imports: [StorageClientModuleOld, ConfigModule],
 	providers: [
 		{
 			provide: CATEGORY_REPOSITORY_LINK_CONFIG,
@@ -25,7 +25,7 @@ import { GET_CATEGORIES_URL } from '../../constants/enviroment.constants';
 		},
 		{
 			provide: CATEGORY_REPOSITORY,
-			useFactory: (config: CategoryRepositoryLinkConfig, client: StorageClientInterface) => {
+			useFactory: (config: CategoryRepositoryLinkConfig, client: StorageClientInterfaceOld) => {
 				return new CategoryRepository(config, client);
 			},
 			inject: [CATEGORY_REPOSITORY_LINK_CONFIG, STORAGE_CLIENT],

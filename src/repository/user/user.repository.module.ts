@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { LinkInterface } from '../../model/link/link.interface';
-import { StorageClientInterface } from '../../client/storage/storage.client.interface';
-import { StorageClientModule } from '../../client/storage/storage.client.module';
+import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
+import { StorageClientModuleOld } from '../../client/storage/storage.client.module.old';
 import { STORAGE_CLIENT, USER_REPOSITORY } from '../../constants/DI.constants';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserRepositoryLinkConfig } from './user.repository.link.config';
 import { GET_USER_URL, USER_REPOSITORY_LINK_CONFIG } from '../../constants/enviroment.constants';
 
 @Module({
-	imports: [StorageClientModule, ConfigModule],
+	imports: [StorageClientModuleOld, ConfigModule],
 	providers: [
 		{
 			provide: USER_REPOSITORY_LINK_CONFIG,
@@ -22,7 +22,7 @@ import { GET_USER_URL, USER_REPOSITORY_LINK_CONFIG } from '../../constants/envir
 		},
 		{
 			provide: USER_REPOSITORY,
-			useFactory: (config: UserRepositoryLinkConfig, client: StorageClientInterface) => {
+			useFactory: (config: UserRepositoryLinkConfig, client: StorageClientInterfaceOld) => {
 				return new UserRepository(config, client);
 			},
 			inject: [USER_REPOSITORY_LINK_CONFIG, STORAGE_CLIENT],

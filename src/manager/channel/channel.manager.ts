@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UserManagerLinkConfig } from '../user/user.manager.link.config';
 import { UserInterface } from '../../model/user.interface';
 import { ChannelManagerLinkConfig } from './channel.manager.link.config';
-import { StorageClientInterface } from '../../client/storage/storage.client.interface';
+import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
 import {
 	CHANNEL_MANAGER,
 	CHANNEL_MANAGER_LINK_CONFIG,
@@ -14,7 +14,7 @@ import {
 export class ChannelManager implements ChannelManagerInterface {
 	constructor(
 		@Inject(CHANNEL_MANAGER_LINK_CONFIG) private linkConfig: ChannelManagerLinkConfig,
-		@Inject(STORAGE_CLIENT) private client: StorageClientInterface,
+		@Inject(STORAGE_CLIENT) private client: StorageClientInterfaceOld,
 	) {}
 
 	async addChannel(user: UserInterface): Promise<UserInterface> {

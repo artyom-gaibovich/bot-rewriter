@@ -1,5 +1,3 @@
-import { CategoryRepositoryLinkConfig } from '../repository/category/category.repository.link.config';
-
 export const CONTENT_AGENCY_CLIENT = 'CONTENT_AGENCY_CLIENT';
 
 export const STORAGE_CLIENT = 'STORAGE_CLIENT';
@@ -30,3 +28,24 @@ export const CONTENT_REWRITER = 'CONTENT_REWRITER';
 export const LINK_VALIDATOR = 'LINK_VALIDATOR';
 
 export const ADD_CHANNELS_PROMO_CONFIG = 'ADD_CHANNELS_PROMO_CONFIG';
+
+export const STORAGE_CONFIG = 'STORAGE_CONFIG';
+export const STORAGE_SERVICE = 'STORAGE_SERVICE';
+
+export const CHANNEL_SERVICE = 'CHANNEL_SERVICE';
+
+export const USER_SERVICE = 'USER_SERVICE';
+
+export const CATEGORY_SERVICE = 'CATEGORY_SERVICE';
+
+export enum DIConstants {
+	CustomLogger = 'CustomLogger',
+
+	CategoryServiceConfig = 'CategoryServiceConfig',
+	ChannelServiceConfig = 'ChannelServiceConfig',
+	UserServiceConfig = 'UserServiceConfig',
+
+	CategoryService = 'CategoryService',
+	ChannelService = 'ChannelService',
+	UserService = 'UserService',
+}

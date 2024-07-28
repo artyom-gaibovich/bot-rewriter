@@ -44,7 +44,6 @@ export class StorageClientOld implements StorageClientInterfaceOld {
 
 	async createUser(req: CreateUserRequestInterface): Promise<CreateUserResponseInterface> {
 		try {
-			console.log(req);
 			const request = await axios.post<UserInterface>(req.url.link, req.body);
 			return {
 				body: request.data,

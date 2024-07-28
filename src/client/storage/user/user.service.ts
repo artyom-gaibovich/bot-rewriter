@@ -5,21 +5,42 @@ import { DIConstants } from '../../../constants/DI.constants';
 import { HttpService } from '@nestjs/axios';
 import { UserServiceConfig } from '../../../config/user.service.config';
 import axios from 'axios';
+import { UserInterface } from '../../../model/user.interface';
+import { Logger } from 'tslog';
+import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
+import { CustomLoggerService } from '../../../logger/custom-logger.service';
 
 @Injectable()
 export class UserService implements UserServiceInterface {
-	constructor(@Inject(DIConstants.UserServiceConfig) private config: UserServiceConfig) {}
+	constructor(
+		@Inject(DIConstants.UserServiceConfig) private config: UserServiceConfig,
+		private logger: CustomLoggerService,
+	) {}
 
-	create(req: { user: User }): Promise<{ user: User }> {
-		throw new Error('Method not implemented.');
+	async create(req: { user: User }): Promise<{ user: User }> {
+		try {
+			const { data } = await axios.post<{ user: User }>(this.config.getUrl, req);
+			return data;
+		} catch (error) {
+			this.logger.error(error);
+		}
 	}
 
 	async get(req: { user: User }): Promise<{ user: User }> {
-		const { data } = await axios.post<{ user: User }>(this.config.getUrl, {});
-		return data;
+		try {
+			const { data } = await axios.post<{ user: User }>(this.config.getUrl, req);
+			return data;
+		} catch (error) {
+			this.logger.error(error);
+		}
 	}
 
-	delete(req: { user: User }): Promise<{ user: User }> {
-		throw new Error('Method not implemented.');
+	async delete(req: { user: User }): Promise<{ user: User }> {
+		try {
+			const { data } = await axios.post<{ user: User }>(this.config.getUrl, req);
+			return data;
+		} catch (error) {
+			this.logger.error(error);
+		}
 	}
 }

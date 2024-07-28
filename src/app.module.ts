@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { StorageModule } from './client/storage/storage.module';
+import { CustomLoggerModule } from './logger/custom-logger.module';
 
 @Module({
 	imports: [

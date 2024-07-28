@@ -9,24 +9,24 @@ import { ChannelService } from './channel/channel.service';
 import { CategoryService } from './category/category.service';
 import { CustomLoggerModule } from '../../logger/custom-logger.module';
 import { CustomLoggerService } from '../../logger/custom-logger.service';
-import { CustomLoggerInterface } from '../../logger/custom-logger.interface';
 
 @Module({})
 export class StorageModule {
 	static forRoot(): DynamicModule {
 		return {
+			controllers: [],
 			imports: [ConfigModule, CustomLoggerModule],
 			module: StorageModule,
 			providers: [
 				{
 					provide: DIConstants.UserServiceConfig,
-					useFactory: (configService: ConfigService, logger: CustomLoggerInterface) =>
+					useFactory: (configService: ConfigService, logger: CustomLoggerService) =>
 						userServiceConfig(configService, logger),
 					inject: [ConfigService, CustomLoggerService],
 				},
 				{
 					provide: DIConstants.ChannelServiceConfig,
-					useFactory: (configService: ConfigService, logger: CustomLoggerInterface) =>
+					useFactory: (configService: ConfigService, logger: CustomLoggerService) =>
 						channelServiceConfig(configService, logger),
 					inject: [ConfigService, CustomLoggerService],
 				},

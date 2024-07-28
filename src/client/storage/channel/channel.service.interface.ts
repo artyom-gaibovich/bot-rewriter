@@ -4,4 +4,6 @@ export interface ChannelServiceInterface {
 	create(req: { user: User }): Promise<{ user: User }>;
 
 	delete(req: { user: User }): Promise<{ user: User }>;
+
+	deleteSecondary(req: { user: User }): Promise<{ user: User }>;
 }

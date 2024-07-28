@@ -18,15 +18,15 @@ export const categoryServiceConfig = (
 	const getAllCategoriesUrl = configService.get<string>(UrlConstants.GetAllCategoriesUrl);
 	const deleteCategoryUrl = configService.get<string>(UrlConstants.DeleteCategoryUrl);
 	const updateCategoryUrl = configService.get<string>(UrlConstants.UpdateCategoryUrl);
+	const storageURL = configService.get<string>(UrlConstants.StorageUrl);
+
 	const context = `[categoryServiceConfig]`;
+	if (!storageURL) {
+		throw new Error(`${context} Environment variable ${UrlConstants.StorageUrl} is not defined`);
+	}
 	if (!createCategoryUrl) {
 		throw new Error(
 			`${context} Environment variable ${UrlConstants.CreateCategoryUrl} is not defined`,
-		);
-	}
-	if (!getAllCategoriesUrl) {
-		throw new Error(
-			`${context} Environment variable ${UrlConstants.GetAllCategoriesUrl} is not defined`,
 		);
 	}
 	if (!deleteCategoryUrl) {
@@ -41,9 +41,9 @@ export const categoryServiceConfig = (
 	}
 
 	return {
-		createUrl: createCategoryUrl,
-		getAllUrl: getAllCategoriesUrl,
-		deleteUrl: deleteCategoryUrl,
-		updateUrl: updateCategoryUrl,
+		createUrl: `${storageURL}${createCategoryUrl}`,
+		getAllUrl: `${storageURL}${getAllCategoriesUrl}`,
+		deleteUrl: `${storageURL}${deleteCategoryUrl}`,
+		updateUrl: `${storageURL}${updateCategoryUrl}`,
 	};
 };

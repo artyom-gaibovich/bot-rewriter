@@ -7,7 +7,7 @@ import { DIConstants } from '../../../constants/DI.constants';
 export class ChannelService implements ChannelServiceInterface {
 	constructor(@Inject(DIConstants.ChannelServiceConfig) private config) {}
 
-	add(req: { user: User }): Promise<{ user: User }> {
+	create(req: { user: User }): Promise<{ user: User }> {
 		throw new Error('Method not implemented.');
 	}
 

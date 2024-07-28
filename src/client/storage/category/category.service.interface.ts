@@ -7,4 +7,3 @@ export interface CategoryServiceInterface {
 
 	update(req: { categories: CategoryInterface[] }): Promise<{ categories: CategoryInterface[] }>;
 }
-

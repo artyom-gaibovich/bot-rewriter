@@ -3,7 +3,7 @@ import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { Inject } from '@nestjs/common';
 import { SupportConfig } from './support.config';
-import { DIConstants } from '../../../constants/DI.constants'; // Импортируем конфиг
+import { DIConstants } from '../../../constants/DI.constants';
 
 export interface SupportInterface extends Record<string, any> {
 	supportFlag: DIConstants.ActivateCode | DIConstants.MainChannel | DIConstants.AddChannelPromo;
@@ -16,9 +16,6 @@ export class Support {
 	constructor(
 		@Inject(DIConstants.SupportConfig) private config: SupportConfig, // Внедряем конфиг
 	) {}
-
-	/*@SceneEnter()
-	async sceneEnter(@Ctx() telegramContext: SupportContext) {}*/
 
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: SupportContext) {

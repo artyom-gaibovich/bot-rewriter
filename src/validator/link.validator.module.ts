@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { LinkValidator } from './link.validator';
-import { LINK_VALIDATOR } from '../constants/DI.constants';
+import { DIConstants } from '../constants/DI.constants';
 
 @Module({
 	providers: [
 		{
-			provide: LINK_VALIDATOR,
+			provide: DIConstants.LinkValidator,
 			useFactory: () => {
 				return new LinkValidator();
 			},
 		},
 	],
-	exports: [LINK_VALIDATOR],
+	exports: [DIConstants.LinkValidator],
 })
 export class LinkValidatorModule {}

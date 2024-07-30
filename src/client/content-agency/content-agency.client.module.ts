@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
-import { CONTENT_AGENCY_CLIENT } from '../../constants/DI.constants';
+import { DIConstants } from '../../constants/DI.constants';
 import { ContentAgencyClient } from './content-agency.client';
 
 @Module({
 	providers: [
 		{
-			provide: CONTENT_AGENCY_CLIENT,
-			useFactory: () => {
-				return new ContentAgencyClient();
-			},
+			provide: DIConstants.ContentAgencyClient,
+			useClass: ContentAgencyClient,
 		},
 	],
-	exports: [CONTENT_AGENCY_CLIENT],
+	exports: [DIConstants.ContentAgencyClient],
 })
 export class ContentAgencyClientModule {}

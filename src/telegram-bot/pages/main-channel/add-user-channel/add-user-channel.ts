@@ -1,11 +1,10 @@
 import { TelegramContextModel } from '../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
-import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
+import { AddStep, Ctx, Scene } from 'nestjs-puregram';
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { LinkValidatorInterface } from '../../../../validator/link.validator.interface';
-import { ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE } from '../../pages.types';
-import { CHANNEL_MANAGER, DIConstants, LINK_VALIDATOR } from '../../../../constants/DI.constants';
+import { DIConstants } from '../../../../constants/DI.constants';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
 import { CategoryInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
 import { AddUserChannelConfig } from './add-user-channel.config'; // Импортируем конфиг
@@ -21,7 +20,7 @@ export type AddUserChannelSceneContext = TelegramContextModel &
 @Scene(DIConstants.AddUserChannel) // Обновляем декоратор
 export class AddUserChannel {
 	constructor(
-		@Inject(LINK_VALIDATOR) private linkValidator: LinkValidatorInterface,
+		@Inject(DIConstants.LinkValidator) private linkValidator: LinkValidatorInterface,
 		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
 		@Inject(DIConstants.AddUserChannelConfig) private config: AddUserChannelConfig, // Внедряем конфиг
 	) {}

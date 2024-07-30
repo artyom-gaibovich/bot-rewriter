@@ -1,25 +1,17 @@
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
-
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
 import { Inject } from '@nestjs/common';
 import { ContentRewriterInterface } from '../../../rewriter/content.rewriter.interface';
-import {
-	ADD_CHANNEL_TO_REWRITE_PAGE,
-	DELETE_USER_CHANNEL_PAGE,
-	IMPROVE_LIMITS,
-	MAIN_CHANNEL_PAGE,
-	MAIN_CHANNEL_TO_REWRITE_PAGE,
-	MAIN_CHANNELS_TO_REWRITE_PAGE,
-} from '../pages.types';
-import { CONTENT_REWRITER } from '../../../constants/DI.constants';
+import { DIConstants } from '../../../constants/DI.constants';
 import { PromptInterface } from '../../../model/prompt.interface';
 import { UserChannelInterface } from '../../../client/storage/storage.model';
+import { MainChannelsToRewriteConfig } from './main-channels-to-rewrite.config'; // Импортируем конфиг
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
 	foundUserChannel: UserChannelInterface;
-	channelsToRewrite?: ChannelLinkInterface[] | any; //НАДО ТИПИЗИРОВАТЬ, ЧТО ЭТО КАНАЛЫ ДЛЯ ПЕРЕПИСЫВАНИЯ
+	channelsToRewrite?: ChannelLinkInterface[] | any; // Необходимо типизировать
 	generatedContent: string;
 	currentPrompt: string;
 }
@@ -27,9 +19,12 @@ export interface MainChannelsToRewriteSceneInterface extends Record<string, any>
 export type MainChannelsToRewriteSceneContext = TelegramContextModel &
 	StepContext<MainChannelsToRewriteSceneInterface>;
 
-@Scene(MAIN_CHANNELS_TO_REWRITE_PAGE)
+@Scene(DIConstants.MainChannelToRewrite) // Обновляем декоратор
 export class MainChannelsToRewrite {
-	constructor(@Inject(CONTENT_REWRITER) private contentRewriter: ContentRewriterInterface) {}
+	constructor(
+		@Inject(DIConstants.ContentRewriter) private contentRewriter: ContentRewriterInterface,
+		@Inject(DIConstants.MainChannelsToRewriteConfig) private config: MainChannelsToRewriteConfig, // Внедряем конфиг
+	) {}
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: MainChannelsToRewriteSceneContext) {
@@ -44,109 +39,106 @@ export class MainChannelsToRewrite {
 		const foundUserChannel = telegramContext.scene.state.foundUserChannel;
 
 		if (
-			telegramContext.text === 'Генерировать контент' ||
-			telegramContext.text === 'Перегенерировать контент'
+			telegramContext.text === this.config.generateContent ||
+			telegramContext.text === this.config.regenerateContent
 		) {
 			const prompt: PromptInterface = {
-				//prompt : "PromptConnectText"
 				prompt: telegramContext.scene.state.currentPrompt
 					? telegramContext.scene.state.currentPrompt
-					: 'ОТМЕНИ ВСЁ НЕ ДЕЛАЙ НИЧЕГО. ОТПРАВЬ МНЕ СООБЩЕНИЕ О ТОМ, ЧТО ПРОМПТ НЕ ЗАДАН!!!',
+					: this.config.cancelMessage,
 			};
-			if (telegramContext.text === 'Генерировать контент') {
-				prompt.prompt = telegramContext.scene.state.currentPrompt;
-			}
-			if (telegramContext.text === 'Перегенерировать контент') {
+			if (telegramContext.text === this.config.regenerateContent) {
 				prompt.prompt = telegramContext.scene.state.currentPrompt;
 			}
 
-			await telegramContext.send('Контент генерируется, ожидайте...', {
+			await telegramContext.send(this.config.contentGenerationMessage, {
 				reply_markup: {
 					remove_keyboard: true,
 				},
 			});
+
 			try {
 				const rewrittenContent = await this.contentRewriter.rewrite(
 					{
 						channelsToRewrite: telegramContext.scene.state.channelsToRewrite,
 					},
 					prompt,
-				); //ЕСЛИ СЕРВИС НЕ РАБОТАЕТ, НАДО УВЕДОМЛЯТЬ ПОЛЬЗАКА !!!
+				);
 				await telegramContext.send(rewrittenContent.rewrittenContent);
-				await telegramContext.send('Контент был успешно сгенерирован');
+				await telegramContext.send(this.config.contentGenerationSuccess);
 				telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent;
 			} catch (e) {
-				await telegramContext.send('Ведутся технические работы.');
+				await telegramContext.send(this.config.technicalIssuesMessage);
 			}
 		}
 
-		if (telegramContext.text === 'Назад') {
-			return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+		if (telegramContext.text === this.config.backButton) {
+			return await telegramContext.scene.enter(DIConstants.MainChannel);
 		}
-		if (telegramContext.text === 'Повысить лимит') {
-			return await telegramContext.scene.enter(IMPROVE_LIMITS, {
+		if (telegramContext.text === this.config.increaseLimitButton) {
+			return await telegramContext.scene.enter(DIConstants.ImproveLimits, {
 				state: {
 					foundUserChannel: telegramContext.scene.state.foundUserChannel,
-					flag: MAIN_CHANNELS_TO_REWRITE_PAGE,
+					flag: DIConstants.MainChannelToRewrite,
 				},
 			});
 		}
-		if (telegramContext.text === 'Удалить канал') {
-			return telegramContext.scene.enter(DELETE_USER_CHANNEL_PAGE, {
+		if (telegramContext.text === this.config.deleteChannelButton) {
+			return telegramContext.scene.enter(DIConstants.DeleteUserChannel, {
 				state: {
 					userChannelToDelete: foundUserChannel,
 				},
 			});
 		}
-		if (telegramContext.text === 'Добавить подканал') {
-			return telegramContext.scene.enter(ADD_CHANNEL_TO_REWRITE_PAGE, {
+		if (telegramContext.text === this.config.addSubchannelButton) {
+			return telegramContext.scene.enter(DIConstants.AddChannelToRewrite, {
 				state: {
 					foundUserChannel: foundUserChannel,
 					channelsToRewrite: telegramContext.scene.state.channelsToRewrite,
 				},
 			});
 		}
-		//Проверяем, выбрал ли пользователь канал из ему предложенных
+
 		if (
-			telegramContext.text.includes(`🔷`) &&
+			telegramContext.text.startsWith(this.config.channelToRewritePrefix) &&
 			telegramContext.scene.state.channelsToRewrite
 				.map((chn) => chn.link)
-				.includes(telegramContext.text.replace('🔷 ', ''))
+				.includes(telegramContext.text.replace(this.config.channelToRewritePrefix, ''))
 		) {
 			const foundChannelToRewrite: ChannelLinkInterface =
 				telegramContext.scene.state.channelsToRewrite.find(
-					(chn) => chn.link === telegramContext.text.replace('🔷 ', ''),
+					(chn) =>
+						chn.link === telegramContext.text.replace(this.config.channelToRewritePrefix, ''),
 				);
-			return telegramContext.scene.enter(MAIN_CHANNEL_TO_REWRITE_PAGE, {
+			return telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
 				state: {
 					foundChannelToRewrite,
 					foundUserChannel,
 				},
-			}); //УРАА, УДАЛОСЬ ПРОКИНУТЬ
+			});
 		}
-		//
 
-		//ПЕРЕВОДИМ НА ДРУГУЮ СЦЕНУ, ИЛИ ШАГ, ГДЕ ДОБАВЛЯЕТ КАНАЛ, А ЗАТЕМ НАЗАД ИДЁМ
 		const channelsToRewrite = telegramContext.scene.state.channelsToRewrite;
-		const channelsToRewriteCount = telegramContext.scene.state.channelsToRewrite.length;
+		const channelsToRewriteCount = channelsToRewrite.length;
 		const channelsToRewriteLimit = 5;
-		const channelKeyboard = channelsToRewrite.map((chn) => {
-			return [{ text: `🔷 ${chn.link}` }];
-		});
+
+		const channelKeyboard = channelsToRewrite.map((chn) => [
+			{ text: `${this.config.channelToRewritePrefix}${chn.link}` },
+		]);
 
 		const rewriteContentKeyboard = [
 			[
 				{
 					text: telegramContext.scene.state.generatedContent
-						? 'Перегенерировать контент'
-						: 'Генерировать контент',
+						? this.config.regenerateContent
+						: this.config.generateContent,
 				},
 			],
 		];
-		const addChannelKeyboard = [[{ text: 'Добавить подканал' }]];
-		const backKeyboard = [[{ text: 'Назад' }]];
-		const limitKeyboard = [[{ text: 'Повысить лимит' }]];
-		const deleteChannelKeyboard = [[{ text: 'Удалить канал' }]];
+		const addChannelKeyboard = [[{ text: this.config.addSubchannelButton }]];
+		const backKeyboard = [[{ text: this.config.backButton }]];
+		const limitKeyboard = [[{ text: this.config.increaseLimitButton }]];
+		const deleteChannelKeyboard = [[{ text: this.config.deleteChannelButton }]];
 		let mainKeyboard = [];
 		if (channelsToRewriteCount === channelsToRewriteLimit) {
 			mainKeyboard = [...rewriteContentKeyboard, ...limitKeyboard, ...channelKeyboard];
@@ -157,7 +149,8 @@ export class MainChannelsToRewrite {
 		if (channelsToRewriteCount === 0) {
 			mainKeyboard = [...addChannelKeyboard];
 		}
-		return await telegramContext.send('Выберите дальнейшее действие', {
+
+		return await telegramContext.send(this.config.requestActionMessage, {
 			reply_markup: {
 				resize_keyboard: true,
 				remove_keyboard: true,

@@ -5,7 +5,6 @@ import { ChannelLinkInterface } from '../../../../model/link/channel.link.interf
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { ChannelCheckerInterface } from '../../../../checker/channel.checker.interface';
-import { ADD_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../../pages.types';
 import { UserChannelInterface } from '../../../../client/storage/storage.model';
 import { DIConstants } from '../../../../constants/DI.constants';
 import { AddChannelToRewriteConfig } from './add-channel-to-rewrite.config';
@@ -46,7 +45,7 @@ export class AddChannelToRewrite {
 			});
 		}
 		if (telegramContext.text === this.config.cancelButton) {
-			return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+			return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 				state: {
 					foundUserChannel: foundUserChannel,
 				},
@@ -87,7 +86,7 @@ export class AddChannelToRewrite {
 						(chn.userChannel as ChannelLinkInterface).link ===
 						(foundUserChannel.userChannel as ChannelLinkInterface).link,
 				);
-				return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+				return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 					state: {
 						foundUserChannel: newChannel,
 					},

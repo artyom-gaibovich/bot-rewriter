@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { Support } from './support';
-import { SUPPORT } from '../pages.types';
 import { supportConfig } from './support.config';
 import { DIConstants } from '../../../constants/DI.constants';
 

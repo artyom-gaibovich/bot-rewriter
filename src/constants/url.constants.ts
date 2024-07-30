@@ -13,4 +13,6 @@ export enum UrlConstants {
 	GetAllCategoriesUrl = 'GET_ALL_CATEGORIES_ENDPOINT',
 	DeleteCategoryUrl = 'DELETE_CATEGORY_ENDPOINT',
 	UpdateCategoryUrl = 'UPDATE_CATEGORY_ENDPOINT',
+
+	ContentRewriterUrl = 'ContentRewriterUrl',
 }

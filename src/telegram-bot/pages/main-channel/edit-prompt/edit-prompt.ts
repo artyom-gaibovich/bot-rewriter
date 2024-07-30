@@ -1,11 +1,9 @@
 import { TelegramContextModel } from '../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
-import { EDIT_PROMPT, MAIN_CHANNEL_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../../pages.types';
 import { CategoryInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
 import { Inject } from '@nestjs/common';
 import { DIConstants } from '../../../../constants/DI.constants';
-import { MainChannelConfig } from '../../../../config/pages/main-channel.config';
 import { EditPromptConfig } from '../../../../config/pages/edit-prompt.config';
 
 export interface EditPromptSceneInterface extends Record<string, any> {
@@ -35,7 +33,7 @@ export class EditPrompt {
 			});
 		}
 		if (telegramContext.text === this.config.comeBack) {
-			return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+			return await telegramContext.scene.enter(DIConstants.MainChannel);
 		}
 
 		await telegramContext.send(this.config.success, {
@@ -44,7 +42,7 @@ export class EditPrompt {
 				remove_keyboard: true,
 			},
 		});
-		return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE, {
+		return await telegramContext.scene.enter(DIConstants.MainChannel, {
 			state: {
 				currentPrompt: telegramContext.text,
 			},

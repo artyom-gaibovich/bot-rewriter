@@ -4,12 +4,7 @@ import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
-import {
-	DELETE_USER_CHANNEL_PAGE,
-	MAIN_CHANNEL_PAGE,
-	MAIN_CHANNELS_TO_REWRITE_PAGE,
-} from '../../pages.types';
-import { CHANNEL_MANAGER, DIConstants } from '../../../../constants/DI.constants';
+import { DIConstants } from '../../../../constants/DI.constants';
 import { UserChannelInterface } from '../../../../client/storage/storage.model';
 import { DeleteUserChannelConfig } from '../../../../config/pages/delete-user-channel';
 
@@ -52,7 +47,7 @@ export class DeleteUserChannel {
 
 		switch (telegramContext.text) {
 			case this.config.cancelButton:
-				return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+				return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 					state: {
 						foundUserChannel: userChannelToDelete,
 					},
@@ -65,7 +60,7 @@ export class DeleteUserChannel {
 					},
 				});
 				await telegramContext.send(deletionSuccessMessage);
-				return telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+				return telegramContext.scene.enter(DIConstants.MainChannel);
 			default:
 				return await telegramContext.send(confirmationMessage, {
 					reply_markup: {

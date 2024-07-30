@@ -3,7 +3,7 @@ import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { Inject } from '@nestjs/common';
 import { StartConfig } from './start.config';
-import { DIConstants } from '../../../constants/DI.constants'; // Импортируем конфиг
+import { DIConstants } from '../../../constants/DI.constants';
 
 export interface StartInterface extends Record<string, any> {
 	activateCode: string;

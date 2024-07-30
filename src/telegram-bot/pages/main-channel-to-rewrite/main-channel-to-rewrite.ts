@@ -4,7 +4,6 @@ import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../manager/channel/channel.manager.interface';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
-import { MAIN_CHANNELS_TO_REWRITE_PAGE } from '../pages.types';
 import { DIConstants } from '../../../constants/DI.constants';
 import { MainChannelToRewriteConfig } from './main-channel-to-rewrite.config';
 
@@ -54,7 +53,7 @@ export class MainChannelToRewrite {
 		}
 
 		if (telegramContext.text === this.config.backButton) {
-			return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+			return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 				state: {
 					foundUserChannel: foundUserChannel,
 				},
@@ -80,7 +79,7 @@ export class MainChannelToRewrite {
 
 			await telegramContext.send(this.config.deleteSubChannelMessage);
 
-			return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+			return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 				state: {
 					channelsToRewrite: currentUserChannel.channelsToRewrite,
 					foundUserChannel: currentUserChannel,

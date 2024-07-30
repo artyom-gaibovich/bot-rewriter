@@ -5,15 +5,7 @@ import { Inject } from '@nestjs/common';
 import { UserRepositoryInterface } from '../../../repository/user/user.repository.interface';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
 import { UserManagerInterface } from '../../../manager/user/user.manager.interface';
-import {
-	ADD_CHANNEL_CATEGORY,
-	EDIT_PROMPT,
-	IMPROVE_LIMITS,
-	MAIN_CHANNEL_PAGE,
-	MAIN_CHANNELS_TO_REWRITE_PAGE,
-	SUPPORT,
-} from '../pages.types';
-import { DIConstants, USER_MANAGER, USER_REPOSITORY } from '../../../constants/DI.constants';
+import { DIConstants } from '../../../constants/DI.constants';
 import { UserChannelInterface } from '../../../client/storage/storage.model';
 import { MainChannelConfig } from '../../../config/pages/main-channel.config';
 
@@ -25,7 +17,7 @@ export interface MainChannelSceneInterface extends Record<string, any> {
 
 export type MainChannelSceneContext = TelegramContextModel & StepContext<MainChannelSceneInterface>;
 
-@Scene(MAIN_CHANNEL_PAGE)
+@Scene(DIConstants.MainChannel)
 export class MainChannel {
 	constructor(
 		@Inject(DIConstants.UserManager) private userManager: UserManagerInterface,
@@ -73,7 +65,8 @@ export class MainChannel {
 					(chn.userChannel as ChannelLinkInterface).link ===
 					telegramContext.text.replace(`◽️ `, ''),
 			);
-			return telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+
+			return telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
 				state: {
 					foundUserChannel: foundUserChannel,
 					currentPrompt: telegramContext.scene.state.currentPrompt
@@ -113,21 +106,21 @@ export class MainChannel {
 
 		switch (telegramContext.text) {
 			case this.config.changePrompt:
-				return await telegramContext.scene.enter(EDIT_PROMPT);
+				return await telegramContext.scene.enter(DIConstants.EditPrompt);
 			case this.config.addCategory:
-				return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY, {
+				return await telegramContext.scene.enter(DIConstants.AddChannelCategory, {
 					state: {
 						userChannels: telegramContext.scene.state.userChannels,
 					},
 				});
 			case this.config.improveLimits:
-				return await telegramContext.scene.enter(IMPROVE_LIMITS, {
+				return await telegramContext.scene.enter(DIConstants.ImproveLimits, {
 					state: {
 						flag: 'MAIN_CHANNEL',
 					},
 				});
 			case this.config.support:
-				return await telegramContext.scene.enter(SUPPORT, {
+				return await telegramContext.scene.enter(DIConstants.Support, {
 					state: {
 						supportFlag: 'mainChannel',
 					},

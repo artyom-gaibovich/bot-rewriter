@@ -2,13 +2,6 @@ import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { Inject } from '@nestjs/common';
-import {
-	ACTIVATE_CODE,
-	ADD_CHANNELS_PROMO,
-	MAIN_CHANNEL_PAGE,
-	START,
-	SUPPORT,
-} from '../pages.types';
 import { ActivateCodeConfig } from './activate-code.config';
 import { DIConstants } from '../../../constants/DI.constants';
 

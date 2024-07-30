@@ -1,14 +1,13 @@
-import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
+import { AddStep, Ctx, Scene } from 'nestjs-puregram';
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
-import { MAIN_CHANNEL_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../pages.types';
 import { UserChannelInterface } from '../../../client/storage/storage.model';
 import { ImproveLimitsConfig } from './improve-limits.config'; // Импортируем конфиг
 import { Inject } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
 
 export interface ImproveLimitsInterface extends Record<string, any> {
-	flag: 'MAIN_CHANNELS_TO_REWRITE_PAGE' | 'MAIN_CHANNEL';
+	flag: DIConstants.MainChannelsToRewrite | DIConstants.MainChannel;
 	foundUserChannel: UserChannelInterface;
 }
 
@@ -39,14 +38,14 @@ export class ImproveLimits {
 		}
 		if (telegramContext.text === this.config.backButton) {
 			const flag = telegramContext.scene.state.flag;
-			if (flag === MAIN_CHANNELS_TO_REWRITE_PAGE) {
-				return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
+			if (flag === DIConstants.MainChannelsToRewrite) {
+				return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 					state: {
 						foundUserChannel: telegramContext.scene.state.foundUserChannel,
 					},
 				});
 			}
-			return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+			return await telegramContext.scene.enter(DIConstants.MainChannel);
 		} else {
 			return await telegramContext.send(
 				`${this.config.currentPlanMessage} ${this.config.subscribeLink}`,

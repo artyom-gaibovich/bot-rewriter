@@ -17,15 +17,14 @@ import { StartModule } from './telegram-bot/pages/start/start.module';
 
 @Module({
 	imports: [
-		StartModule,
-		/*TelegramBotModule,
+		TelegramBotModule,
 		TelegramModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
 			useFactory: (configService: ConfigService) => ({
 				token: configService.get('BOT_TOKEN'),
 			}),
-		}),*/
+		}),
 		ConfigModule.forRoot({ isGlobal: true }),
 	],
 	providers: [],

@@ -1,18 +1,14 @@
-import {
-	ADD_CHANNEL_CATEGORY,
-	ADD_USER_CHANNEL_PAGE,
-	MAIN_CHANNEL_PAGE,
-} from '../../../pages.types';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { Inject } from '@nestjs/common';
 import { CategoryRepositoryInterface } from '../../../../../repository/category/category.repository.interface';
 import { TelegramContextModel } from '../../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
-import { CATEGORY_REPOSITORY, DIConstants } from '../../../../../constants/DI.constants';
+import { DIConstants } from '../../../../../constants/DI.constants';
 import {
 	CategoryInterface,
 	UserChannelInterface,
 } from '../../../../../client/storage/storage.model';
+import { AddChannelCategoryConfig } from './add-channel-category.config'; // Импортируем конфиг
 
 export interface AddChannelCategoryInterface extends Record<string, any> {
 	categories: CategoryInterface[];
@@ -24,10 +20,11 @@ export interface AddChannelCategoryInterface extends Record<string, any> {
 export type AddChannelCategoryContext = TelegramContextModel &
 	StepContext<AddChannelCategoryInterface>;
 
-@Scene(ADD_CHANNEL_CATEGORY)
+@Scene(DIConstants.AddChannelCategory) // Обновляем декоратор
 export class AddChannelCategory {
 	constructor(
 		@Inject(DIConstants.CategoryRepository) private repository: CategoryRepositoryInterface,
+		@Inject(DIConstants.AddChannelCategoryConfig) private config: AddChannelCategoryConfig, // Внедряем конфиг
 	) {}
 
 	@SceneEnter()
@@ -43,23 +40,22 @@ export class AddChannelCategory {
 
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: AddChannelCategoryContext) {
-		if (telegramContext.text === 'Следующая') {
+		if (telegramContext.text === this.config.nextButton) {
 			telegramContext.scene.state.currentPage++;
 			return await this.showCategories(telegramContext);
 		}
-		if (telegramContext.text === 'Назад') {
+		if (telegramContext.text === this.config.backButton) {
 			telegramContext.scene.state.currentPage--;
 			return await this.showCategories(telegramContext);
 		}
-		if (telegramContext.text === 'Выйти') {
-			return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+		if (telegramContext.text === this.config.exitButton) {
+			return await telegramContext.scene.enter(DIConstants.MainChannel);
 		}
-		// //Разбиваю строку по пробелу, и выдергиваю категорию
 		if (
-			telegramContext.text !== 'Добавить категорию' &&
+			telegramContext.text !== this.config.addCategoryButton &&
 			telegramContext.scene.state.categories.map((chn) => chn.title).includes(telegramContext.text)
 		) {
-			return await telegramContext.scene.enter(ADD_USER_CHANNEL_PAGE, {
+			return await telegramContext.scene.enter(DIConstants.AddUserChannel, {
 				state: {
 					category: telegramContext.scene.state.categories.find(
 						(cat) => cat.title === telegramContext.text,
@@ -83,27 +79,27 @@ export class AddChannelCategory {
 		if (currentPage === 0) {
 			mainKeyboard = [
 				...categoriesForPage.map((category) => [{ text: `${category.title}` }]),
-				[{ text: 'Следующая' }],
-				[{ text: 'Выйти' }],
+				[{ text: this.config.nextButton }],
+				[{ text: this.config.exitButton }],
 			];
 		} else {
 			if (categoriesForPage.length !== limit) {
 				mainKeyboard = [
 					...categoriesForPage.map((category) => [{ text: category.title }]),
-					[{ text: 'Назад' }],
-					[{ text: 'Выйти' }],
+					[{ text: this.config.backButton }],
+					[{ text: this.config.exitButton }],
 				];
 			} else {
 				mainKeyboard = [
 					...categoriesForPage.map((category) => [{ text: category.title }]),
-					[{ text: 'Назад' }],
-					[{ text: 'Следующая' }],
-					[{ text: 'Выйти' }],
+					[{ text: this.config.backButton }],
+					[{ text: this.config.nextButton }],
+					[{ text: this.config.exitButton }],
 				];
 			}
 		}
 
-		return await telegramContext.send('Выберите дальнейшее действие', {
+		return await telegramContext.send(this.config.selectActionMessage, {
 			reply_markup: {
 				resize_keyboard: true,
 				remove_keyboard: true,

@@ -15,6 +15,7 @@ import {
 } from '../pages.types';
 import { DIConstants, USER_MANAGER, USER_REPOSITORY } from '../../../constants/DI.constants';
 import { UserChannelInterface } from '../../../client/storage/storage.model';
+import { MainChannelConfig } from '../../../config/pages/main-channel.config';
 
 export interface MainChannelSceneInterface extends Record<string, any> {
 	userChannels: UserChannelInterface[];
@@ -29,6 +30,7 @@ export class MainChannel {
 	constructor(
 		@Inject(DIConstants.UserManager) private userManager: UserManagerInterface,
 		@Inject(DIConstants.UserRepository) private repository: UserRepositoryInterface,
+		@Inject(DIConstants.MainChannelConfig) private config: MainChannelConfig,
 	) {}
 
 	@SceneEnter()
@@ -48,7 +50,7 @@ export class MainChannel {
 					});
 					telegramContext.scene.state.userChannels = user.user.userChannels;
 				} catch (e) {
-					telegramContext.send('На сервере ведутся технические работы');
+					await telegramContext.send(this.config.isNotWork);
 				}
 			}
 		}
@@ -58,12 +60,8 @@ export class MainChannel {
 	async zeroStep(@Ctx() telegramContext: MainChannelSceneContext) {
 		const defaultMessage =
 			telegramContext.scene.state.countToJoinMainPage === 1
-				? 'Для того, чтобы начать работу вам нужно добавить основные каналы для которых будет генерироваться контент. \n' +
-				  '\n' +
-				  'Нажмите кнопку «Добавить основной канал» и выберите его категорию из предложенных. После этого отправьте ссылку на канал. \n' +
-				  '\n' +
-				  'Категория, впоследствии, будет отображаться в меню рядом с каналом.'
-				: 'Выберите дальнейшее действие:';
+				? this.config.startMessage
+				: this.config.chooseNextAction;
 		//Проверяем, выбрал ли пользователь канал из ему предложенных
 		if (
 			telegramContext.scene.state.userChannels
@@ -82,7 +80,7 @@ export class MainChannel {
 						? telegramContext.scene.state.currentPrompt
 						: '',
 				},
-			}); //УРАА, УДАЛОСЬ ПРОКИНУТЬ
+			});
 		}
 		telegramContext.scene.state.countToJoinMainPage = 0;
 		//
@@ -90,17 +88,17 @@ export class MainChannel {
 		const channels = telegramContext.scene.state.userChannels;
 		const channelsCount = telegramContext.scene.state.userChannels.length;
 
-		const channelsLimit = 3; //ЛИМИТ ЗАХАРЖКОЖЕНО!, С БИЛЛИНГ СЕРВИСА
+		const channelsLimit = this.config.channelsLimit;
 
 		const channelKeyboard = channels.map((chn) => {
 			return [{ text: `◽️ ${(chn.userChannel as ChannelLinkInterface).link}` }];
 		});
 
-		const addChannelKeyboard = [[{ text: 'Добавить категорию' }]];
-		const limitKeyboard = [[{ text: 'Повысить лимит' }]];
-		const techSupport = [[{ text: 'Техническая поддержка' }]];
+		const addChannelKeyboard = [[{ text: this.config.addCategory }]];
+		const limitKeyboard = [[{ text: this.config.improveLimits }]];
+		const techSupport = [[{ text: this.config.support }]];
 
-		const editPromptKeyboard = [[{ text: 'Изменить промпт' }]];
+		const editPromptKeyboard = [[{ text: this.config.changePrompt }]];
 
 		let mainKeyboard = [];
 		if (channelsCount === channelsLimit) {
@@ -114,21 +112,21 @@ export class MainChannel {
 		}
 
 		switch (telegramContext.text) {
-			case 'Изменить промпт':
+			case this.config.changePrompt:
 				return await telegramContext.scene.enter(EDIT_PROMPT);
-			case 'Добавить категорию':
+			case this.config.addCategory:
 				return await telegramContext.scene.enter(ADD_CHANNEL_CATEGORY, {
 					state: {
 						userChannels: telegramContext.scene.state.userChannels,
 					},
 				});
-			case 'Повысить лимит':
+			case this.config.improveLimits:
 				return await telegramContext.scene.enter(IMPROVE_LIMITS, {
 					state: {
 						flag: 'MAIN_CHANNEL',
 					},
 				});
-			case 'Техническая поддержка':
+			case this.config.support:
 				return await telegramContext.scene.enter(SUPPORT, {
 					state: {
 						supportFlag: 'mainChannel',

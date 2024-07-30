@@ -5,6 +5,7 @@ import { DIConstants } from '../../../constants/DI.constants';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 import { channelServiceConfig } from '../../../config/channel.service.config';
 import { UserService } from './user.service';
+import { userServiceConfig } from '../../../config/user.service.config';
 
 @Module({
 	imports: [ConfigModule, CustomLoggerModule],
@@ -12,7 +13,7 @@ import { UserService } from './user.service';
 		{
 			provide: DIConstants.UserServiceConfig,
 			useFactory: (configService: ConfigService, logger: CustomLoggerService) =>
-				channelServiceConfig(configService, logger),
+				userServiceConfig(configService, logger),
 			inject: [ConfigService, CustomLoggerService],
 		},
 		{

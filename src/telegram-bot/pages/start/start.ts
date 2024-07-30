@@ -1,13 +1,9 @@
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
-import {
-	ACTIVATE_CODE,
-	ADD_CHANNELS_PROMO,
-	IMPROVE_LIMITS,
-	MAIN_CHANNEL_PAGE,
-	START,
-} from '../pages.types';
+import { Inject } from '@nestjs/common';
+import { StartConfig } from './start.config';
+import { DIConstants } from '../../../constants/DI.constants'; // Импортируем конфиг
 
 export interface StartInterface extends Record<string, any> {
 	activateCode: string;
@@ -15,40 +11,45 @@ export interface StartInterface extends Record<string, any> {
 
 export type StartContext = TelegramContextModel & StepContext<StartInterface>;
 
-@Scene(START)
+@Scene(DIConstants.Start)
 export class Start {
+	constructor(
+		@Inject(DIConstants.StartConfig) private config: StartConfig, // Внедряем конфиг
+	) {}
+
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: StartContext) {
-		telegramContext.scene.state.activateCode = 'PASSWORD';
+		telegramContext.scene.state.activateCode = this.config.activateCode;
 	}
 
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: StartContext) {
 		if (telegramContext.scene.step.firstTime) {
-			return await telegramContext.send(
-				'😎 Код введён верно! Приступим к генерации контента? \n' +
-					'\n' +
-					'Добавляется свои основные каналы для которых будет генерироваться контент и дополнительные каналы с которых будет парситься материал для генерации. Если вы запутались и не понимаете что делать — напишите в поддержку или посмотрите наш видео-туториал',
-				{
-					reply_markup: {
-						resize_keyboard: true,
-						remove_keyboard: true,
-						keyboard: [{ text: 'Хорошо, поехали!' }, [{ text: 'Повысить лимиты' }]],
-					},
-				},
-			);
-		}
-		if (telegramContext.text === 'Хорошо, поехали!') {
-			return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
-		}
-		if (telegramContext.text === 'Повысить лимиты') {
-			return await telegramContext.scene.enter(IMPROVE_LIMITS);
-		} else {
-			return await telegramContext.send('Выберите дальнейшее действие', {
+			return await telegramContext.send(this.config.initialMessage, {
 				reply_markup: {
 					resize_keyboard: true,
 					remove_keyboard: true,
-					keyboard: [{ text: 'Хорошо, поехали!' }, [{ text: 'Повысить лимиты' }]],
+					keyboard: [
+						[{ text: this.config.proceedButton }],
+						[{ text: this.config.improveLimitsButton }],
+					],
+				},
+			});
+		}
+		if (telegramContext.text === this.config.proceedButton) {
+			return await telegramContext.scene.enter(DIConstants.MainChannel);
+		}
+		if (telegramContext.text === this.config.improveLimitsButton) {
+			return await telegramContext.scene.enter(DIConstants.ImproveLimits);
+		} else {
+			return await telegramContext.send(this.config.backButton, {
+				reply_markup: {
+					resize_keyboard: true,
+					remove_keyboard: true,
+					keyboard: [
+						[{ text: this.config.proceedButton }],
+						[{ text: this.config.improveLimitsButton }],
+					],
 				},
 			});
 		}

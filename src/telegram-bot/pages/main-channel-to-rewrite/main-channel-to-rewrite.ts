@@ -1,12 +1,12 @@
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
-
-import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../manager/channel/channel.manager.interface';
-import { MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../pages.types';
+import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
+import { MAIN_CHANNELS_TO_REWRITE_PAGE } from '../pages.types';
 import { DIConstants } from '../../../constants/DI.constants';
+import { MainChannelToRewriteConfig } from './main-channel-to-rewrite.config';
 
 export interface MainChannelToRewriteSceneInterface extends Record<string, any> {
 	isChannelAdded: boolean;
@@ -17,35 +17,43 @@ export interface MainChannelToRewriteSceneInterface extends Record<string, any> 
 export type MainChannelToRewriteSceneContext = TelegramContextModel &
 	StepContext<MainChannelToRewriteSceneInterface>;
 
-@Scene(MAIN_CHANNEL_TO_REWRITE_PAGE)
+@Scene(DIConstants.MainChannelToRewrite)
 export class MainChannelToRewrite {
 	constructor(
+		@Inject(DIConstants.MainChannelToRewriteConfig) private config: MainChannelToRewriteConfig,
 		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
 	) {}
 
 	@SceneEnter()
-	async sceneEnter(@Ctx() telegramContext: MainChannelToRewriteSceneInterface) {
+	async sceneEnter(@Ctx() telegramContext: MainChannelToRewriteSceneContext) {
 		if (telegramContext.scene.step.firstTime) {
+			// Initialize any necessary state or perform setup tasks
 		}
 	}
 
 	@AddStep(0)
-	async zeroStep(@Ctx() telegramContext: MainChannelToRewriteSceneInterface) {
-		const foundChannelToRewrite = telegramContext.scene.state.foundChannelToRewrite;
-		const foundUserChannel = telegramContext.scene.state.foundUserChannel;
+	async zeroStep(@Ctx() telegramContext: MainChannelToRewriteSceneContext) {
+		const { foundChannelToRewrite, foundUserChannel } = telegramContext.scene.state;
 
 		if (telegramContext.scene.step.firstTime) {
 			return await telegramContext.send(
-				`Ваш текущий канал для переписывания ${foundChannelToRewrite.link}. Если хотите его изменить, отправьте новую ссылку.`,
+				this.config.initialMessage.replace(
+					'${foundChannelToRewrite.link}',
+					foundChannelToRewrite.link,
+				),
 				{
 					reply_markup: {
 						resize_keyboard: true,
-						keyboard: [[{ text: 'Обратно' }], [{ text: 'Удалить подканал' }]],
+						keyboard: [
+							[{ text: this.config.backButton }],
+							[{ text: this.config.deleteSubChannelButton }],
+						],
 					},
 				},
 			);
 		}
-		if (telegramContext.text === 'Обратно') {
+
+		if (telegramContext.text === this.config.backButton) {
 			return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
 				state: {
 					foundUserChannel: foundUserChannel,
@@ -53,16 +61,14 @@ export class MainChannelToRewrite {
 			});
 		}
 
-		if (telegramContext.text === 'Удалить подканал') {
+		if (telegramContext.text === this.config.deleteSubChannelButton) {
 			const result = await this.channelManager.deleteSecondary({
 				user: {
 					id: telegramContext.from.id,
 					userChannels: [
 						{
 							userChannel: {},
-							channelsToRewrite: [
-								foundChannelToRewrite, //ID у него должен быть, иначе не удалится
-							],
+							channelsToRewrite: [foundChannelToRewrite],
 						},
 					],
 				},
@@ -71,6 +77,9 @@ export class MainChannelToRewrite {
 			const currentUserChannel = result.user.userChannels.find(
 				(chn) => (chn.userChannel as ChannelLinkInterface).id === foundUserChannel.userChannel.id,
 			);
+
+			await telegramContext.send(this.config.deleteSubChannelMessage);
+
 			return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
 				state: {
 					channelsToRewrite: currentUserChannel.channelsToRewrite,

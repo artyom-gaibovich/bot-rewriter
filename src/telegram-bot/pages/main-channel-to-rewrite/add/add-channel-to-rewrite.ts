@@ -1,6 +1,6 @@
+import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { TelegramContextModel } from '../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
-import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
@@ -8,6 +8,7 @@ import { ChannelCheckerInterface } from '../../../../checker/channel.checker.int
 import { ADD_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../../pages.types';
 import { UserChannelInterface } from '../../../../client/storage/storage.model';
 import { DIConstants } from '../../../../constants/DI.constants';
+import { AddChannelToRewriteConfig } from './add-channel-to-rewrite.config';
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	isChannelExists: boolean;
@@ -18,11 +19,12 @@ export interface AddUserChannelSceneInterface extends Record<string, any> {
 export type AddUserChannelSceneContext = TelegramContextModel &
 	StepContext<AddUserChannelSceneInterface>;
 
-@Scene(ADD_CHANNEL_TO_REWRITE_PAGE)
+@Scene(DIConstants.AddChannelToRewrite) // Обновляем декоратор
 export class AddChannelToRewrite {
 	constructor(
 		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
 		@Inject('CUSTOM_CHANNEL_CHECKER') private checker: ChannelCheckerInterface,
+		@Inject(DIConstants.AddChannelToRewriteConfig) private config: AddChannelToRewriteConfig, // Внедряем конфиг
 	) {}
 
 	@SceneEnter()
@@ -36,17 +38,14 @@ export class AddChannelToRewrite {
 	async zeroStep(@Ctx() telegramContext: AddUserChannelSceneContext) {
 		const foundUserChannel = telegramContext.scene.state.foundUserChannel;
 		if (telegramContext.scene.step.firstTime) {
-			return await telegramContext.send(
-				'Отправьте ссылку на телеграм канал, откуда будем переписывать контент',
-				{
-					reply_markup: {
-						resize_keyboard: true,
-						keyboard: [[{ text: 'Отменить' }]],
-					},
+			return await telegramContext.send(this.config.requestLinkMessage, {
+				reply_markup: {
+					resize_keyboard: true,
+					keyboard: [[{ text: this.config.cancelButton }]],
 				},
-			);
+			});
 		}
-		if (telegramContext.text === 'Отменить') {
+		if (telegramContext.text === this.config.cancelButton) {
 			return await telegramContext.scene.enter(MAIN_CHANNELS_TO_REWRITE_PAGE, {
 				state: {
 					foundUserChannel: foundUserChannel,
@@ -58,10 +57,10 @@ export class AddChannelToRewrite {
 					.map((chn) => chn.link)
 					.includes(telegramContext.text)
 			) {
-				return await telegramContext.send('Этот подканал уже был добавлен', {
+				return await telegramContext.send(this.config.alreadyAddedMessage, {
 					reply_markup: {
 						resize_keyboard: true,
-						keyboard: [[{ text: 'Отменить' }]],
+						keyboard: [[{ text: this.config.cancelButton }]],
 					},
 				});
 			}
@@ -94,15 +93,12 @@ export class AddChannelToRewrite {
 					},
 				});
 			} else {
-				return await telegramContext.send(
-					'Подканал не был добавлен. Либо он не существует, либо вы отправили некорректную ссылку.',
-					{
-						reply_markup: {
-							resize_keyboard: true,
-							keyboard: [[{ text: 'Отменить' }]],
-						},
+				return await telegramContext.send(this.config.notAddedMessage, {
+					reply_markup: {
+						resize_keyboard: true,
+						keyboard: [[{ text: this.config.cancelButton }]],
 					},
-				);
+				});
 			}
 		}
 	}

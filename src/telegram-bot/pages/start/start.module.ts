@@ -1,8 +1,18 @@
 import { Module } from '@nestjs/common';
-import { START } from '../pages.types';
+import { startConfig } from './start.config';
+import { DIConstants } from '../../../constants/DI.constants';
 import { Start } from './start';
 
 @Module({
-	providers: [Start],
+	providers: [
+		{
+			provide: DIConstants.StartConfig,
+			useValue: startConfig(),
+		},
+		{
+			provide: DIConstants.Start,
+			useClass: Start,
+		},
+	],
 })
 export class StartModule {}

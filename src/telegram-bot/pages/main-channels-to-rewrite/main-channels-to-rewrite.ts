@@ -19,7 +19,7 @@ import { UserChannelInterface } from '../../../client/storage/storage.model';
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
 	foundUserChannel: UserChannelInterface;
-	channelsToRewrite: ChannelLinkInterface[]; //НАДО ТИПИЗИРОВАТЬ, ЧТО ЭТО КАНАЛЫ ДЛЯ ПЕРЕПИСЫВАНИЯ
+	channelsToRewrite?: ChannelLinkInterface[] | any; //НАДО ТИПИЗИРОВАТЬ, ЧТО ЭТО КАНАЛЫ ДЛЯ ПЕРЕПИСЫВАНИЯ
 	generatedContent: string;
 	currentPrompt: string;
 }
@@ -47,7 +47,7 @@ export class MainChannelsToRewrite {
 			telegramContext.text === 'Генерировать контент' ||
 			telegramContext.text === 'Перегенерировать контент'
 		) {
-			let prompt: PromptInterface = {
+			const prompt: PromptInterface = {
 				//prompt : "PromptConnectText"
 				prompt: telegramContext.scene.state.currentPrompt
 					? telegramContext.scene.state.currentPrompt

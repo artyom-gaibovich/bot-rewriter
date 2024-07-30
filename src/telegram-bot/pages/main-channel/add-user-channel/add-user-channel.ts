@@ -8,6 +8,7 @@ import { ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE } from '../../pages.types';
 import { CHANNEL_MANAGER, DIConstants, LINK_VALIDATOR } from '../../../../constants/DI.constants';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
 import { CategoryInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
+import { AddUserChannelConfig } from './add-user-channel.config'; // Импортируем конфиг
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	category: CategoryInterface;
@@ -17,73 +18,68 @@ export interface AddUserChannelSceneInterface extends Record<string, any> {
 export type AddUserChannelSceneContext = TelegramContextModel &
 	StepContext<AddUserChannelSceneInterface>;
 
-@Scene(ADD_USER_CHANNEL_PAGE)
+@Scene(DIConstants.AddUserChannel) // Обновляем декоратор
 export class AddUserChannel {
 	constructor(
 		@Inject(LINK_VALIDATOR) private linkValidator: LinkValidatorInterface,
 		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
+		@Inject(DIConstants.AddUserChannelConfig) private config: AddUserChannelConfig, // Внедряем конфиг
 	) {}
 
-	@SceneEnter()
-	async sceneEnter(@Ctx() telegramContext: AddUserChannelSceneContext) {}
-
 	@AddStep(0)
-	async zeroStep(@Ctx() telegramContext: AddUserChannelSceneContext) {
+	async zeroStep(@Ctx() telegramContext: AddUserChannelSceneContext): Promise<unknown> {
 		if (telegramContext.scene.step.firstTime) {
-			return await telegramContext.send(`Отправьте ссылку на ваш телеграм канал`, {
+			return await telegramContext.send(this.config.requestLinkMessage, {
 				reply_markup: {
 					remove_keyboard: true,
 					resize_keyboard: true,
-					keyboard: [[{ text: 'Вернуться обратно' }]],
+					keyboard: [[{ text: this.config.goBackButton }]],
 				},
 			});
 		}
-		if (telegramContext.text === 'Вернуться обратно') {
-			return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+
+		if (telegramContext.text === this.config.goBackButton) {
+			return await telegramContext.scene.enter(DIConstants.MainChannel);
 		} else {
-			let error = 'Канал не был добавлен, отправьте в корректном формате';
-			console.log(
-				telegramContext.scene.state.userChannels.map(
-					(chn) => (chn.userChannel as ChannelLinkInterface).link,
-				),
+			let error = this.config.channelNotAddedError;
+			const userChannelLinks = telegramContext.scene.state.userChannels.map(
+				(chn) => (chn.userChannel as ChannelLinkInterface).link,
 			);
-			if (
-				telegramContext.scene.state.userChannels
-					.map((chn) => (chn.userChannel as ChannelLinkInterface).link)
-					.includes(telegramContext.text)
-			) {
-				error = 'Вы уже добавили этот канал';
+
+			if (userChannelLinks.includes(telegramContext.text)) {
+				error = this.config.channelAlreadyAddedError;
 				return await telegramContext.send(error, {
 					reply_markup: {
 						resize_keyboard: true,
-						keyboard: [[{ text: 'Вернуться обратно' }]],
+						keyboard: [[{ text: this.config.goBackButton }]],
 					},
 				});
 			}
+
 			if (this.linkValidator.validate({ link: telegramContext.text })) {
-				const result = await this.channelManager.create({
+				await this.channelManager.create({
 					user: {
 						id: telegramContext.from.id,
 						userChannels: [
 							{
-								userChannel: { link: `${telegramContext.text}` }, //| ${telegramContext.scene.state.category.title}
+								userChannel: { link: `${telegramContext.text}` },
 							},
 						],
 					},
 				});
-				await telegramContext.send('Канал был успешно добавлен!', {
+				await telegramContext.send(this.config.successMessage, {
 					reply_markup: {
 						one_time_keyboard: true,
 						remove_keyboard: true,
 					},
 				});
 
-				return await telegramContext.scene.enter(MAIN_CHANNEL_PAGE);
+				return await telegramContext.scene.enter(DIConstants.MainChannel);
 			} else {
 				return await telegramContext.send(error, {
 					reply_markup: {
 						resize_keyboard: true,
-						keyboard: [[{ text: 'Вернуться обратно' }]],
+						keyboard: [[{ text: this.config.goBackButton }]],
 					},
 				});
 			}

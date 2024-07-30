@@ -2,10 +2,12 @@ export interface ActivateCodeConfig {
 	welcomeMessage: string;
 	invalidCodeMessage: string;
 	supportButton: string;
+	activateCode: string;
 }
 
 export const activateCodeConfig = (): ActivateCodeConfig => {
 	return {
+		activateCode: 'admin',
 		welcomeMessage:
 			`Вас приветствует приложение Neweral AI! С помощью нашего бота вы сможете автоматизировать создание контента для ваших каналов.  \n` +
 			`\n` +

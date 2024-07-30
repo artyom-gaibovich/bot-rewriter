@@ -33,6 +33,7 @@ export class MainChannel {
 					id: telegramContext.from.id,
 				},
 			});
+			telegramContext.scene.state.userChannels = user.user.userChannels;
 			if (!user) {
 				try {
 					user = await this.userManager.create({
@@ -54,7 +55,7 @@ export class MainChannel {
 			telegramContext.scene.state.countToJoinMainPage === 1
 				? this.config.startMessage
 				: this.config.chooseNextAction;
-		//Проверяем, выбрал ли пользователь канал из ему предложенных
+		console.log(telegramContext.scene.state.userChannels);
 		if (
 			telegramContext.scene.state.userChannels
 				.map((chn) => (chn.userChannel as ChannelLinkInterface).link)

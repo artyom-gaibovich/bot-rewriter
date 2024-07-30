@@ -18,7 +18,7 @@ export class ActivateCode {
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: ActivateCodeScene) {
-		telegramContext.scene.state.activateCode = 'admin'; // Лучше хранить в конфиге, если это переменное значение
+		telegramContext.scene.state.activateCode = this.config.activateCode; // Лучше хранить в конфиге, если это переменное значение
 	}
 
 	@AddStep(0)
@@ -36,7 +36,7 @@ export class ActivateCode {
 		if (telegramContext.text === this.config.supportButton) {
 			return await telegramContext.scene.enter(DIConstants.Support, {
 				state: {
-					supportFlag: 'activateCode',
+					supportFlag: DIConstants.ActivateCode,
 				},
 			});
 		} else {

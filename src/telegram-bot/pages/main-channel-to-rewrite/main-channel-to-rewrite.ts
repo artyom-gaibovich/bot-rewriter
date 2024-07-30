@@ -6,7 +6,7 @@ import { ChannelLinkInterface } from '../../../model/link/channel.link.interface
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../manager/channel/channel.manager.interface';
 import { MAIN_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../pages.types';
-import { CHANNEL_MANAGER } from '../../../constants/DI.constants';
+import { DIConstants } from '../../../constants/DI.constants';
 
 export interface MainChannelToRewriteSceneInterface extends Record<string, any> {
 	isChannelAdded: boolean;
@@ -19,7 +19,9 @@ export type MainChannelToRewriteSceneContext = TelegramContextModel &
 
 @Scene(MAIN_CHANNEL_TO_REWRITE_PAGE)
 export class MainChannelToRewrite {
-	constructor(@Inject(CHANNEL_MANAGER) private channelManager: ChannelManagerInterface) {}
+	constructor(
+		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
+	) {}
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: MainChannelToRewriteSceneInterface) {
@@ -52,7 +54,7 @@ export class MainChannelToRewrite {
 		}
 
 		if (telegramContext.text === 'Удалить подканал') {
-			const result = await this.channelManager.deleteChannel({
+			const result = await this.channelManager.deleteSecondary({
 				user: {
 					id: telegramContext.from.id,
 					userChannels: [

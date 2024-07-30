@@ -1,5 +1,6 @@
 import { UserInterface } from '../../model/user.interface';
+import { User } from '../../client/storage/storage.model';
 
 export interface UserRepositoryInterface {
-	get(telegramId: number): Promise<UserInterface>;
+	findOne(user: { user: User }): Promise<{ user: User }>;
 }

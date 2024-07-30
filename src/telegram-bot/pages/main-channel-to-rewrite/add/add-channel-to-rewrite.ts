@@ -5,8 +5,9 @@ import { ChannelLinkInterface } from '../../../../model/link/channel.link.interf
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { ChannelCheckerInterface } from '../../../../checker/channel.checker.interface';
-import { UserChannelInterface } from '../../../../model/channel.interface';
 import { ADD_CHANNEL_TO_REWRITE_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../../pages.types';
+import { UserChannelInterface } from '../../../../client/storage/storage.model';
+import { DIConstants } from '../../../../constants/DI.constants';
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	isChannelExists: boolean;
@@ -20,7 +21,7 @@ export type AddUserChannelSceneContext = TelegramContextModel &
 @Scene(ADD_CHANNEL_TO_REWRITE_PAGE)
 export class AddChannelToRewrite {
 	constructor(
-		@Inject('CHANNEL_MANAGER') private channelManager: ChannelManagerInterface,
+		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
 		@Inject('CUSTOM_CHANNEL_CHECKER') private checker: ChannelCheckerInterface,
 	) {}
 
@@ -68,7 +69,7 @@ export class AddChannelToRewrite {
 				.checkedChannels[0].isChannelExists;
 
 			if (isChannelExists) {
-				const result = await this.channelManager.addChannel({
+				const result = await this.channelManager.create({
 					user: {
 						id: telegramContext.from.id,
 						userChannels: [

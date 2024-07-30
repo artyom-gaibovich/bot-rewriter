@@ -1,9 +1,9 @@
-import { UserInterface } from '../../model/user.interface';
+import { User } from '../../client/storage/storage.model';
 
 export interface ChannelManagerInterface {
-	addChannel(user: UserInterface): Promise<UserInterface>;
+	create(user: { user: User }): Promise<{ user: User }>;
 
-	deleteChannel(user: UserInterface): Promise<UserInterface>;
+	delete(user: { user: User }): Promise<{ user: User }>;
 
-	deleteChannelToRewrite(user: UserInterface): Promise<UserInterface>;
+	deleteSecondary(user: { user: User }): Promise<{ user: User }>;
 }

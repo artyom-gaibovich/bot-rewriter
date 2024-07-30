@@ -4,10 +4,10 @@ import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { LinkValidatorInterface } from '../../../../validator/link.validator.interface';
-import { ADD_CHANNEL_CATEGORY, ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE } from '../../pages.types';
-import { CHANNEL_MANAGER, LINK_VALIDATOR } from '../../../../constants/DI.constants';
-import { UserChannelInterface } from '../../../../model/channel.interface';
+import { ADD_USER_CHANNEL_PAGE, MAIN_CHANNEL_PAGE } from '../../pages.types';
+import { CHANNEL_MANAGER, DIConstants, LINK_VALIDATOR } from '../../../../constants/DI.constants';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
+import { CategoryInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	category: CategoryInterface;
@@ -21,11 +21,12 @@ export type AddUserChannelSceneContext = TelegramContextModel &
 export class AddUserChannel {
 	constructor(
 		@Inject(LINK_VALIDATOR) private linkValidator: LinkValidatorInterface,
-		@Inject(CHANNEL_MANAGER) private channelManager: ChannelManagerInterface,
+		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
 	) {}
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: AddUserChannelSceneContext) {}
+
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: AddUserChannelSceneContext) {
 		if (telegramContext.scene.step.firstTime) {
@@ -60,7 +61,7 @@ export class AddUserChannel {
 				});
 			}
 			if (this.linkValidator.validate({ link: telegramContext.text })) {
-				const result = await this.channelManager.addChannel({
+				const result = await this.channelManager.create({
 					user: {
 						id: telegramContext.from.id,
 						userChannels: [

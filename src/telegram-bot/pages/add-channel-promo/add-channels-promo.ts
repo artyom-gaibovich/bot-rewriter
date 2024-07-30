@@ -21,7 +21,6 @@ export class AddChannelsPromo {
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: StartContext) {
 		if (telegramContext.scene.step.firstTime) {
-			console.log(this.config.zeroStep);
 			return await telegramContext.send(
 				`😎 Код введён верно! Приступим к генерации контента? 
 

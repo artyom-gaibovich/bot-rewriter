@@ -1,21 +1,21 @@
 export interface User {
 	id: number;
-	userChannels?: UserChannel[];
+	userChannels?: UserChannelInterface[];
 }
 
-export interface UserChannel {
-	userChannel: NewChannelInterface;
-	channelsToRewrite: NewChannelInterface[];
+export interface UserChannelInterface {
+	userChannel?: ChannelInterface | {};
+	channelsToRewrite?: ChannelInterface[];
 }
 
-export interface NewCategoryInterface {
-	value?: string;
-	sequence?: string;
-	title?: string;
+export interface CategoryInterface {
+	title: string;
+	value: string;
+	sequence?: number;
 	prompt?: string;
 }
 
-export interface NewChannelInterface {
+export interface ChannelInterface {
 	link: string;
-	category?: NewCategoryInterface;
+	category?: CategoryInterface;
 }

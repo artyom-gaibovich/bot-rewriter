@@ -3,14 +3,11 @@ import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
-import { UserChannelInterface } from '../../../model/channel.interface';
 import { Inject } from '@nestjs/common';
 import { ContentRewriterInterface } from '../../../rewriter/content.rewriter.interface';
-import { UserRepositoryInterface } from '../../../repository/user/user.repository.interface';
 import {
 	ADD_CHANNEL_TO_REWRITE_PAGE,
 	DELETE_USER_CHANNEL_PAGE,
-	EDIT_PROMPT,
 	IMPROVE_LIMITS,
 	MAIN_CHANNEL_PAGE,
 	MAIN_CHANNEL_TO_REWRITE_PAGE,
@@ -18,7 +15,7 @@ import {
 } from '../pages.types';
 import { CONTENT_REWRITER } from '../../../constants/DI.constants';
 import { PromptInterface } from '../../../model/prompt.interface';
-import { EditPromptModule } from '../main-channel/edit-prompt/edit-prompt.module';
+import { UserChannelInterface } from '../../../client/storage/storage.model';
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
 	foundUserChannel: UserChannelInterface;
@@ -79,7 +76,6 @@ export class MainChannelsToRewrite {
 				await telegramContext.send('Контент был успешно сгенерирован');
 				telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent;
 			} catch (e) {
-				console.log(e);
 				await telegramContext.send('Ведутся технические работы.');
 			}
 		}

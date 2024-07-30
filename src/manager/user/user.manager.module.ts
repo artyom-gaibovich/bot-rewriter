@@ -1,39 +1,17 @@
 import { Module } from '@nestjs/common';
-import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
-import { UserManagerLinkConfig } from './user.manager.link.config';
+import { ConfigModule } from '@nestjs/config';
+import { DIConstants } from '../../constants/DI.constants';
 import { UserManager } from './user.manager';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-	CHECK_CHANNELS_URL,
-	CREATE_USER_URL,
-	STORAGE_CLIENT,
-	USER_MANAGER,
-	USER_MANAGER_LINK_CONFIG,
-} from '../../constants/DI.constants';
-import { StorageClientModuleOld } from '../../client/storage/storage.client.module.old';
+import { UserServiceModule } from '../../client/storage/user/user.service.module';
 
 @Module({
-	imports: [ConfigModule, StorageClientModuleOld],
+	imports: [ConfigModule, UserServiceModule],
 	providers: [
 		{
-			provide: USER_MANAGER_LINK_CONFIG,
-			useFactory: (config: ConfigService) => {
-				return {
-					createUser: { link: config.get(CREATE_USER_URL) },
-					deleteUser: { link: config.get(CHECK_CHANNELS_URL) },
-				} as UserManagerLinkConfig;
-			},
-			inject: [ConfigService],
-		},
-
-		{
-			provide: USER_MANAGER,
-			useFactory: (linkConfig: UserManagerLinkConfig, client: StorageClientInterfaceOld) => {
-				return new UserManager(linkConfig, client);
-			},
-			inject: [USER_MANAGER_LINK_CONFIG, STORAGE_CLIENT],
+			provide: DIConstants.UserManager,
+			useClass: UserManager,
 		},
 	],
-	exports: [USER_MANAGER],
+	exports: [DIConstants.UserManager],
 })
 export class UserManagerModule {}

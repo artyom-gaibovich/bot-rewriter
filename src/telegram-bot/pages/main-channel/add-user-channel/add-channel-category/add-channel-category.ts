@@ -8,8 +8,11 @@ import { Inject } from '@nestjs/common';
 import { CategoryRepositoryInterface } from '../../../../../repository/category/category.repository.interface';
 import { TelegramContextModel } from '../../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
-import { CATEGORY_REPOSITORY } from '../../../../../constants/DI.constants';
-import { UserChannelInterface } from '../../../../../model/channel.interface';
+import { CATEGORY_REPOSITORY, DIConstants } from '../../../../../constants/DI.constants';
+import {
+	CategoryInterface,
+	UserChannelInterface,
+} from '../../../../../client/storage/storage.model';
 
 export interface AddChannelCategoryInterface extends Record<string, any> {
 	categories: CategoryInterface[];
@@ -23,12 +26,14 @@ export type AddChannelCategoryContext = TelegramContextModel &
 
 @Scene(ADD_CHANNEL_CATEGORY)
 export class AddChannelCategory {
-	constructor(@Inject(CATEGORY_REPOSITORY) private repository: CategoryRepositoryInterface) {}
+	constructor(
+		@Inject(DIConstants.CategoryRepository) private repository: CategoryRepositoryInterface,
+	) {}
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: AddChannelCategoryContext) {
 		if (telegramContext.scene.step.firstTime) {
-			telegramContext.scene.state.categories = [...(await this.repository.findAll())];
+			telegramContext.scene.state.categories = [...(await this.repository.findAll()).categories];
 
 			telegramContext.scene.state.limit = 17; // specify your limit
 			telegramContext.scene.state.currentPage = 0;

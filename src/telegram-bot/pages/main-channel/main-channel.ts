@@ -1,21 +1,20 @@
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
-import { UserChannelInterface } from '../../../model/channel.interface';
 import { Inject } from '@nestjs/common';
 import { UserRepositoryInterface } from '../../../repository/user/user.repository.interface';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
 import { UserManagerInterface } from '../../../manager/user/user.manager.interface';
 import {
 	ADD_CHANNEL_CATEGORY,
-	ADD_USER_CHANNEL_PAGE,
 	EDIT_PROMPT,
 	IMPROVE_LIMITS,
 	MAIN_CHANNEL_PAGE,
 	MAIN_CHANNELS_TO_REWRITE_PAGE,
 	SUPPORT,
 } from '../pages.types';
-import { USER_MANAGER, USER_REPOSITORY } from '../../../constants/DI.constants';
+import { DIConstants, USER_MANAGER, USER_REPOSITORY } from '../../../constants/DI.constants';
+import { UserChannelInterface } from '../../../client/storage/storage.model';
 
 export interface MainChannelSceneInterface extends Record<string, any> {
 	userChannels: UserChannelInterface[];
@@ -28,22 +27,30 @@ export type MainChannelSceneContext = TelegramContextModel & StepContext<MainCha
 @Scene(MAIN_CHANNEL_PAGE)
 export class MainChannel {
 	constructor(
-		@Inject(USER_MANAGER) private userManager: UserManagerInterface,
-		@Inject(USER_REPOSITORY) private repository: UserRepositoryInterface,
+		@Inject(DIConstants.UserManager) private userManager: UserManagerInterface,
+		@Inject(DIConstants.UserRepository) private repository: UserRepositoryInterface,
 	) {}
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: MainChannelSceneContext) {
 		if (telegramContext.scene.step.firstTime) {
-			let user = await this.repository.get(telegramContext.from.id);
+			let user = await this.repository.findOne({
+				user: {
+					id: telegramContext.from.id,
+				},
+			});
 			if (!user) {
-				user = await this.userManager.createUser({
-					user: {
-						id: telegramContext.from.id,
-					},
-				});
+				try {
+					user = await this.userManager.create({
+						user: {
+							id: telegramContext.from.id,
+						},
+					});
+					telegramContext.scene.state.userChannels = user.user.userChannels;
+				} catch (e) {
+					telegramContext.send('На сервере ведутся технические работы');
+				}
 			}
-			telegramContext.scene.state.userChannels = user.user.userChannels;
 		}
 	}
 

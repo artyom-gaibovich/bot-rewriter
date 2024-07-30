@@ -48,4 +48,12 @@ export enum DIConstants {
 	CategoryService = 'CategoryService',
 	ChannelService = 'ChannelService',
 	UserService = 'UserService',
+
+	CategoryRepository = 'CategoryRepository',
+	ChannelRepository = 'ChannelRepository',
+	UserRepository = 'UserRepository',
+
+	CategoryManager = 'CategoryManager',
+	ChannelManager = 'ChannelManager',
+	UserManager = 'UserManager',
 }

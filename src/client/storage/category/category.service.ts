@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
 import { CategoryServiceInterface } from './category.service.interface';
 import axios from 'axios';
-import { User } from '../storage.model';
+import { CategoryInterface, User } from '../storage.model';
 import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
 import { CategoryServiceConfig } from '../../../config/category.service.config';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';

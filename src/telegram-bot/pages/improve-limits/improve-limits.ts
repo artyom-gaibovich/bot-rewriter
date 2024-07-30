@@ -2,8 +2,7 @@ import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { IMPROVE_LIMITS, MAIN_CHANNEL_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../pages.types';
-import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
-import { UserChannelInterface } from '../../../model/channel.interface';
+import { UserChannelInterface } from '../../../client/storage/storage.model';
 
 export interface ImproveLimitsInterface extends Record<string, any> {
 	flag: 'MAIN_CHANNELS_TO_REWRITE_PAGE' | 'MAIN_CHANNEL';

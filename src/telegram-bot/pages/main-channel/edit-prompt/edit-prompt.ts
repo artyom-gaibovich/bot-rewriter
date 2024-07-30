@@ -2,7 +2,7 @@ import { TelegramContextModel } from '../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { EDIT_PROMPT, MAIN_CHANNEL_PAGE, MAIN_CHANNELS_TO_REWRITE_PAGE } from '../../pages.types';
-import { UserChannelInterface } from '../../../../model/channel.interface';
+import { CategoryInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
 
 export interface EditPromptSceneInterface extends Record<string, any> {
 	category: CategoryInterface;

@@ -1,7 +1,6 @@
 import { TelegramContextModel } from '../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
-import { UserChannelInterface } from '../../../../model/channel.interface';
 import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
@@ -10,7 +9,8 @@ import {
 	MAIN_CHANNEL_PAGE,
 	MAIN_CHANNELS_TO_REWRITE_PAGE,
 } from '../../pages.types';
-import { CHANNEL_MANAGER } from '../../../../constants/DI.constants';
+import { CHANNEL_MANAGER, DIConstants } from '../../../../constants/DI.constants';
+import { UserChannelInterface } from '../../../../client/storage/storage.model';
 
 export interface DeleteUserChannelSceneInterface extends Record<string, any> {
 	userChannelToDelete: UserChannelInterface;
@@ -21,7 +21,9 @@ export type DeleteUserChannelSceneContext = TelegramContextModel &
 
 @Scene(DELETE_USER_CHANNEL_PAGE)
 export class DeleteUserChannel {
-	constructor(@Inject(CHANNEL_MANAGER) private channelManager: ChannelManagerInterface) {}
+	constructor(
+		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
+	) {}
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: DeleteUserChannelSceneContext) {
@@ -54,7 +56,7 @@ export class DeleteUserChannel {
 					},
 				});
 			case 'Удалить':
-				await this.channelManager.deleteChannel({
+				await this.channelManager.delete({
 					user: {
 						id: telegramContext.from.id,
 						userChannels: [userChannelToDelete],

@@ -1,4 +1,4 @@
-import { UserChannelInterface } from './channel.interface';
+import { UserChannelInterface } from '../client/storage/storage.model';
 
 export interface UserInterface {
 	user: {

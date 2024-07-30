@@ -1,5 +1,6 @@
 import { CustomLoggerService } from './custom-logger.service';
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { DIConstants } from '../constants/DI.constants';
 
 @Module({
 	providers: [CustomLoggerService],

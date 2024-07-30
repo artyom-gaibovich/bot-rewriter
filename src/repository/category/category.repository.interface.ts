@@ -1,3 +1,5 @@
+import { CategoryInterface } from '../../client/storage/storage.model';
+
 export interface CategoryRepositoryInterface {
-	findAll(): Promise<CategoryInterface[]>;
+	findAll(): Promise<{ categories: CategoryInterface[] }>;
 }

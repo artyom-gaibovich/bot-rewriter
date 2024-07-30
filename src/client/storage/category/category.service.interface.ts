@@ -1,3 +1,5 @@
+import { CategoryInterface } from '../storage.model';
+
 export interface CategoryServiceInterface {
 	getAll(): Promise<{ categories: CategoryInterface[] }>;
 
@@ -7,4 +9,3 @@ export interface CategoryServiceInterface {
 
 	update(req: { categories: CategoryInterface[] }): Promise<{ categories: CategoryInterface[] }>;
 }
-

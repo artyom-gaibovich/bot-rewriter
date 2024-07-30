@@ -1,7 +1,7 @@
-import { UserInterface } from '../../model/user.interface';
+import { User } from '../../client/storage/storage.model';
 
 export interface UserManagerInterface {
-	createUser(user: UserInterface): Promise<UserInterface>;
+	create(user: { user: User }): Promise<{ user: User }>;
 
-	deleteUser(user: UserInterface): Promise<UserInterface>;
+	delete(user: { user: User }): Promise<{ user: User }>;
 }

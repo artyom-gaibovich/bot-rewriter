@@ -12,10 +12,14 @@ export const userServiceConfig = (
 	configService: ConfigService,
 	logger: CustomLoggerInterface,
 ): UserServiceConfig => {
+	const storageURL = configService.get<string>(UrlConstants.StorageUrl);
 	const createUserUrl = configService.get<string>(UrlConstants.CreateUserUrl);
 	const getUserUrl = configService.get<string>(UrlConstants.GetUserUrl);
 	const deleteUserUrl = configService.get<string>(UrlConstants.DeleteUserUrl);
 	const context = `[userServiceConfig]`;
+	if (!storageURL) {
+		throw new Error(`${context} Environment variable ${UrlConstants.StorageUrl} is not defined`);
+	}
 	if (!createUserUrl) {
 		throw new Error(`${context} Environment variable ${UrlConstants.CreateUserUrl} is not defined`);
 	}
@@ -26,8 +30,8 @@ export const userServiceConfig = (
 		throw new Error(`${context} Environment variable ${UrlConstants.DeleteUserUrl} is not defined`);
 	}
 	return {
-		createUrl: createUserUrl,
-		getUrl: getUserUrl,
-		deleteUrl: deleteUserUrl,
+		createUrl: `${storageURL}${createUserUrl}`,
+		getUrl: `${storageURL}${getUserUrl}`,
+		deleteUrl: `${storageURL}${deleteUserUrl}`,
 	};
 };

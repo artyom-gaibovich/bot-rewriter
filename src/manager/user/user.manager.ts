@@ -1,32 +1,18 @@
 import { UserManagerInterface } from './user.manager.interface';
-import { UserInterface } from '../../model/user.interface';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserManagerLinkConfig } from './user.manager.link.config';
-import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
-import { STORAGE_CLIENT, USER_MANAGER_LINK_CONFIG } from '../../constants/DI.constants';
+import { DIConstants } from '../../constants/DI.constants';
+import { User } from '../../client/storage/storage.model';
+import { UserServiceInterface } from '../../client/storage/user/user.service.interface';
 
 @Injectable()
 export class UserManager implements UserManagerInterface {
-	constructor(
-		@Inject(USER_MANAGER_LINK_CONFIG) private config: UserManagerLinkConfig,
-		@Inject(STORAGE_CLIENT) private client: StorageClientInterfaceOld,
-	) {}
+	constructor(@Inject(DIConstants.UserService) private userService: UserServiceInterface) {}
 
-	async createUser(user: UserInterface): Promise<UserInterface> {
-		return (
-			await this.client.createUser({
-				url: this.config.createUser,
-				body: user,
-			})
-		).body as UserInterface;
+	async create(user: { user: User }): Promise<{ user: User }> {
+		return this.userService.create(user);
 	}
 
-	async deleteUser(user: UserInterface): Promise<UserInterface> {
-		return (
-			await this.client.deleteUser({
-				url: this.config.createUser,
-				body: user,
-			})
-		).body as UserInterface;
+	async delete(user: { user: User }): Promise<{ user: User }> {
+		return this.userService.delete(user);
 	}
 }

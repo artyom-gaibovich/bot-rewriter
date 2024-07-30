@@ -1,45 +1,24 @@
 import { ChannelManagerInterface } from './channel.manager.interface';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserManagerLinkConfig } from '../user/user.manager.link.config';
-import { UserInterface } from '../../model/user.interface';
-import { ChannelManagerLinkConfig } from './channel.manager.link.config';
-import { StorageClientInterfaceOld } from '../../client/storage/storage.client.interface.old';
-import {
-	CHANNEL_MANAGER,
-	CHANNEL_MANAGER_LINK_CONFIG,
-	STORAGE_CLIENT,
-} from '../../constants/DI.constants';
+import { DIConstants } from '../../constants/DI.constants';
+import { ChannelServiceInterface } from '../../client/storage/channel/channel.service.interface';
+import { User } from '../../client/storage/storage.model';
 
 @Injectable()
 export class ChannelManager implements ChannelManagerInterface {
 	constructor(
-		@Inject(CHANNEL_MANAGER_LINK_CONFIG) private linkConfig: ChannelManagerLinkConfig,
-		@Inject(STORAGE_CLIENT) private client: StorageClientInterfaceOld,
+		@Inject(DIConstants.ChannelService) private channelService: ChannelServiceInterface,
 	) {}
 
-	async addChannel(user: UserInterface): Promise<UserInterface> {
-		const result = await this.client.addChannel({
-			url: this.linkConfig.addChannel,
-			body: user,
-		});
-		return result.body as UserInterface;
+	async create(user: { user: User }): Promise<{ user: User }> {
+		return this.channelService.create(user);
 	}
 
-	async deleteChannel(user: UserInterface): Promise<UserInterface> {
-		return (
-			await this.client.deleteChannel({
-				url: this.linkConfig.deleteChannel,
-				body: user,
-			})
-		).body as UserInterface;
+	async delete(user: { user: User }): Promise<{ user: User }> {
+		return this.channelService.delete(user);
 	}
 
-	async deleteChannelToRewrite(user: UserInterface): Promise<UserInterface> {
-		return (
-			await this.client.deleteChannelToRewrite({
-				url: this.linkConfig.deleteChannelToRewrite,
-				body: user,
-			})
-		).body as UserInterface;
+	async deleteSecondary(user: { user: User }): Promise<{ user: User }> {
+		return this.channelService.deleteSecondary(user);
 	}
 }

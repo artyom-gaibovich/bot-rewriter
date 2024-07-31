@@ -3,7 +3,6 @@ export interface AddChannelsPromoConfig {
 	startButton: string;
 	supportButton: string;
 	backButton: string;
-	supportFlag: string;
 }
 
 export const addChannelsPromoConfig = (): AddChannelsPromoConfig => {
@@ -16,6 +15,5 @@ export const addChannelsPromoConfig = (): AddChannelsPromoConfig => {
 		startButton: 'Начинаем!',
 		supportButton: 'Техподдержка',
 		backButton: 'Вернуться назад',
-		supportFlag: 'addChannelsPromo',
 	};
 };

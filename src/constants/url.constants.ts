@@ -1,18 +1,23 @@
 export enum UrlConstants {
-	StorageUrl = 'STORAGE_URL',
+	ContentAgency = 'CONTENT_AGENCY_URL',
 
-	CreateUserUrl = 'CREATE_USER_ENDPOINT',
-	GetUserUrl = 'GET_USER_ENDPOINT',
-	DeleteUserUrl = 'DELETE_URL_ENDPOINT',
+	Storage = 'STORAGE_URL',
 
-	CreateChannelUrl = 'DELETE_CHANNEL_ENDPOINT',
-	DeleteChannelUrl = 'DELETE_CHANNEL_ENDPOINT',
-	DeleteChannelRewriteUrl = 'DELETE_CHANNEL_REWRITE_ENDPOINT',
+	CreateUser = 'CREATE_USER_ENDPOINT',
+	GetUser = 'GET_USER_ENDPOINT',
+	DeleteUser = 'DELETE_URL_ENDPOINT',
 
-	CreateCategoryUrl = 'CREATE_CATEGORY_ENDPOINT',
-	GetAllCategoriesUrl = 'GET_ALL_CATEGORIES_ENDPOINT',
-	DeleteCategoryUrl = 'DELETE_CATEGORY_ENDPOINT',
-	UpdateCategoryUrl = 'UPDATE_CATEGORY_ENDPOINT',
+	CreateChannel = 'CREATE_CHANNEL_ENDPOINT',
+	DeleteChannel = 'DELETE_CHANNEL_ENDPOINT',
+	DeleteChannelRewrite = 'DELETE_CHANNEL_REWRITE_ENDPOINT',
+	CheckChannel = 'REWRITE_CONTENT_ENDPOINT',
 
-	ContentRewriterUrl = 'ContentRewriterUrl',
+	CreateCategory = 'CREATE_CATEGORY_ENDPOINT',
+	GetAllCategories = 'GET_ALL_CATEGORIES_ENDPOINT',
+	DeleteCategory = 'DELETE_CATEGORY_ENDPOINT',
+	UpdateCategory = 'UPDATE_CATEGORY_ENDPOINT',
+
+	RewriteText = 'REWRITE_TEXT_ENDPOINT',
+
+	UpdateCategoryUrl = 'UpdateCategoryUrl',
 }

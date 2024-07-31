@@ -4,23 +4,23 @@ import { CustomLoggerModule } from '../../../logger/custom-logger.module';
 import { DIConstants } from '../../../constants/DI.constants';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 import { channelServiceConfig } from '../channel/channel.service.config';
-import { UserService } from './user.service';
-import { userServiceConfig } from '../../../config/user.service.config';
+import { ChannelService } from '../channel/channel.service';
+import { textServiceConfig } from './text.service.config';
 
 @Module({
 	imports: [ConfigModule, CustomLoggerModule],
 	providers: [
 		{
-			provide: DIConstants.UserServiceConfig,
+			provide: DIConstants.TextServiceConfig,
 			useFactory: (configService: ConfigService, logger: CustomLoggerService) =>
-				userServiceConfig(configService, logger),
+				textServiceConfig(configService, logger),
 			inject: [ConfigService, CustomLoggerService],
 		},
 		{
-			provide: DIConstants.UserService,
-			useClass: UserService,
+			provide: DIConstants.TextService,
+			useClass: ChannelService,
 		},
 	],
-	exports: [DIConstants.UserService],
+	exports: [DIConstants.TextService],
 })
-export class UserServiceModule {}
+export class TextServiceModule {}

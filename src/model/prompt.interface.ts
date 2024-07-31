@@ -1,4 +1,4 @@
 export interface PromptInterface {
-	prompt: 'PromptConnectText' | 'PromptDelAdvText' | 'PromptChangeText' | string;
+	prompt: string;
 	text?: string;
 }

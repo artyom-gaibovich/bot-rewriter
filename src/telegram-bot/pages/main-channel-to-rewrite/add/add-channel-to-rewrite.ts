@@ -2,12 +2,13 @@ import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { TelegramContextModel } from '../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
-import { Inject } from '@nestjs/common';
+import { Inject, UseInterceptors } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { ChannelCheckerInterface } from '../../../../checker/channel.checker.interface';
 import { UserChannelInterface } from '../../../../client/storage/storage.model';
 import { DIConstants } from '../../../../constants/DI.constants';
 import { AddChannelToRewriteConfig } from './add-channel-to-rewrite.config';
+import { ErrorInterceptor } from '../../../../interceptors/telegram-bot.interceptor';
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	isChannelExists: boolean;

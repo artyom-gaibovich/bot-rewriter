@@ -43,7 +43,7 @@ export class AddChannelsPromo {
 			case this.config.supportButton:
 				return await telegramContext.scene.enter(DIConstants.Support, {
 					state: {
-						supportFlag: this.config.supportFlag,
+						supportFlag: DIConstants.AddChannelPromo,
 					},
 				});
 

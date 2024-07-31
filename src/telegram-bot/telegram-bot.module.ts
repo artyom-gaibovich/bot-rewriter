@@ -10,9 +10,11 @@ import { ActivateCodeModule } from './pages/activate-code/activate-code.module';
 import { AddChannelsPromoModule } from './pages/add-channel-promo/add-channels-promo.module';
 import { ImproveLimitsModule } from './pages/improve-limits/improve-limits.module';
 import { SupportModule } from './pages/support/support.module';
+import { AddChannelCategoryModule } from './pages/main-channel/add-user-channel/add-channel-category/add-channel-category.module';
 
 @Module({
 	imports: [
+		AddChannelCategoryModule,
 		AddChannelsPromoModule,
 		SupportModule,
 		ImproveLimitsModule,

@@ -28,22 +28,22 @@ export class MainChannel {
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: MainChannelSceneContext) {
 		if (telegramContext.scene.step.firstTime) {
-			let user = await this.repository.findOne({
-				user: {
-					id: telegramContext.from.id,
-				},
-			});
-			if (!user) {
-				try {
+			try {
+				let user = await this.repository.findOne({
+					user: {
+						id: telegramContext.from.id,
+					},
+				});
+				if (!user) {
 					user = await this.userManager.create({
 						user: {
 							id: telegramContext.from.id,
 						},
 					});
-					telegramContext.scene.state.userChannels = user.user.userChannels;
-				} catch (e) {
-					await telegramContext.send(this.config.isNotWork);
 				}
+				telegramContext.scene.state.userChannels = user.user.userChannels;
+			} catch (e) {
+				await telegramContext.send(this.config.isNotWork);
 			}
 		}
 	}
@@ -54,7 +54,6 @@ export class MainChannel {
 			telegramContext.scene.state.countToJoinMainPage === 1
 				? this.config.startMessage
 				: this.config.chooseNextAction;
-		//Проверяем, выбрал ли пользователь канал из ему предложенных
 		if (
 			telegramContext.scene.state.userChannels
 				.map((chn) => (chn.userChannel as ChannelLinkInterface).link)
@@ -116,13 +115,13 @@ export class MainChannel {
 			case this.config.improveLimits:
 				return await telegramContext.scene.enter(DIConstants.ImproveLimits, {
 					state: {
-						flag: 'MAIN_CHANNEL',
+						flag: DIConstants.MainChannel,
 					},
 				});
 			case this.config.support:
 				return await telegramContext.scene.enter(DIConstants.Support, {
 					state: {
-						supportFlag: 'mainChannel',
+						supportFlag: DIConstants.MainChannel,
 					},
 				});
 			default:

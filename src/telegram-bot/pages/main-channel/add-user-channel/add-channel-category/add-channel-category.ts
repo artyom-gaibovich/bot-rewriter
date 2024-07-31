@@ -1,5 +1,5 @@
-import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
-import { Inject } from '@nestjs/common';
+import { AddStep, Ctx, Scene, SceneEnter, TelegramException } from 'nestjs-puregram';
+import { Inject, UseInterceptors } from '@nestjs/common';
 import { CategoryRepositoryInterface } from '../../../../../repository/category/category.repository.interface';
 import { TelegramContextModel } from '../../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
@@ -8,7 +8,8 @@ import {
 	CategoryInterface,
 	UserChannelInterface,
 } from '../../../../../client/storage/storage.model';
-import { AddChannelCategoryConfig } from './add-channel-category.config'; // Импортируем конфиг
+import { AddChannelCategoryConfig } from './add-channel-category.config';
+import { ErrorInterceptor } from '../../../../../interceptors/telegram-bot.interceptor'; // Импортируем конфиг
 
 export interface AddChannelCategoryInterface extends Record<string, any> {
 	categories: CategoryInterface[];
@@ -31,8 +32,7 @@ export class AddChannelCategory {
 	async sceneEnter(@Ctx() telegramContext: AddChannelCategoryContext) {
 		if (telegramContext.scene.step.firstTime) {
 			telegramContext.scene.state.categories = [...(await this.repository.findAll()).categories];
-
-			telegramContext.scene.state.limit = 17; // specify your limit
+			telegramContext.scene.state.limit = 17;
 			telegramContext.scene.state.currentPage = 0;
 			return await this.showCategories(telegramContext);
 		}

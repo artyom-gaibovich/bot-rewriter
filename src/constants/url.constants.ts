@@ -5,7 +5,7 @@ export enum UrlConstants {
 	GetUserUrl = 'GET_USER_ENDPOINT',
 	DeleteUserUrl = 'DELETE_URL_ENDPOINT',
 
-	CreateChannelUrl = 'DELETE_CHANNEL_ENDPOINT',
+	CreateChannelUrl = 'CREATE_CHANNEL_ENDPOINT',
 	DeleteChannelUrl = 'DELETE_CHANNEL_ENDPOINT',
 	DeleteChannelRewriteUrl = 'DELETE_CHANNEL_REWRITE_ENDPOINT',
 

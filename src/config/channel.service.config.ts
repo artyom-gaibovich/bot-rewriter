@@ -36,8 +36,8 @@ export const channelServiceConfig = (
 		);
 	}
 	return {
-		createUrl: `${storageURL}/${createChannelUrl}`,
-		deleteSecondaryUrl: `${storageURL}/${deleteChannelRewriteUrl}`,
-		deleteUrl: `${storageURL}/${deleteChannelUrl}`,
+		createUrl: `${storageURL}${createChannelUrl}`,
+		deleteSecondaryUrl: `${storageURL}${deleteChannelRewriteUrl}`,
+		deleteUrl: `${storageURL}${deleteChannelUrl}`,
 	};
 };

@@ -24,16 +24,16 @@ export class UserService implements UserServiceInterface {
 
 	async get(req: { user: User }): Promise<{ user: User }> {
 		try {
-			const { data } = await axios.post<{ user: User }>(this.config.getUrl, req);
+			const { data } = await axios.post<{ user: User }>(this.config.createUrl, req);
 			return data;
 		} catch (error) {
-			this.logger.error(error);
+			this.logger.error();
 		}
 	}
 
 	async delete(req: { user: User }): Promise<{ user: User }> {
 		try {
-			const { data } = await axios.post<{ user: User }>(this.config.getUrl, req);
+			const { data } = await axios.post<{ user: User }>(this.config.deleteUrl, req);
 			return data;
 		} catch (error) {
 			this.logger.error(error);

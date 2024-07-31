@@ -5,6 +5,7 @@ import { CustomLoggerModule } from '../../../logger/custom-logger.module';
 import { DIConstants } from '../../../constants/DI.constants';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 import { channelServiceConfig } from '../../../config/channel.service.config';
+import { categoryServiceConfig } from '../../../config/category.service.config';
 
 @Module({
 	imports: [ConfigModule, CustomLoggerModule],
@@ -12,7 +13,7 @@ import { channelServiceConfig } from '../../../config/channel.service.config';
 		{
 			provide: DIConstants.CategoryServiceConfig,
 			useFactory: (configService: ConfigService, logger: CustomLoggerService) =>
-				channelServiceConfig(configService, logger),
+				categoryServiceConfig(configService, logger),
 			inject: [ConfigService, CustomLoggerService],
 		},
 		{

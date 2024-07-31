@@ -3,7 +3,7 @@ import { User } from '../storage.model';
 import { ChannelServiceInterface } from './channel.service.interface';
 import { DIConstants } from '../../../constants/DI.constants';
 import axios from 'axios';
-import { ChannelServiceConfig } from '../../../config/channel.service.config';
+import { ChannelServiceConfig } from './channel.service.config';
 import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 
@@ -35,6 +35,19 @@ export class ChannelService implements ChannelServiceInterface {
 	async deleteSecondary(req: { user: User }): Promise<{ user: User }> {
 		try {
 			const { data } = await axios.post<{ user: User }>(this.config.deleteSecondaryUrl, req);
+			return data;
+		} catch (error) {
+			this.logger.error(error);
+		}
+	}
+
+	async checkChannel(req: { links: { link: string }[] }): Promise<{
+		checkedChannels: { status: string; channelLink: string; isChannelExists: boolean }[];
+	}> {
+		try {
+			const { data } = await axios.post<{
+				checkedChannels: { status: string; channelLink: string; isChannelExists: boolean }[];
+			}>(this.config.checkUrl, req);
 			return data;
 		} catch (error) {
 			this.logger.error(error);

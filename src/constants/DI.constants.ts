@@ -3,17 +3,21 @@ export enum DIConstants {
 
 	LinkValidator = 'LinkValidator',
 
-	ContentRewriter = 'ContentRewriter',
+	UpdateCategory = 'UpdateCategory',
 
 	CustomLogger = 'CustomLogger',
 
 	CategoryServiceConfig = 'CategoryServiceConfig',
 	ChannelServiceConfig = 'ChannelServiceConfig',
 	UserServiceConfig = 'UserServiceConfig',
+	TextServiceConfig = 'TextServiceConfig',
 
 	CategoryService = 'CategoryService',
 	ChannelService = 'ChannelService',
 	UserService = 'UserService',
+	TextService = 'TextService',
+
+	TextRewriter = 'TextRewriter',
 
 	CategoryRepository = 'CategoryRepository',
 	ChannelRepository = 'ChannelRepository',
@@ -40,7 +44,8 @@ export enum DIConstants {
 
 	//Configs
 
-	ContentRewriterLinkConfig = 'ContentRewriterLinkConfig',
+	UpdateCategoryLinkConfig = 'UpdateCategoryLinkConfig',
+	TextRewriterConfig = 'TextRewriterConfig',
 
 	Support = 'Support',
 	Start = 'Start',

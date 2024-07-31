@@ -3,7 +3,7 @@ import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
 import { Inject } from '@nestjs/common';
-import { ContentRewriterInterface } from '../../../rewriter/content.rewriter.interface';
+import { UpdateCategoryInterface } from '../../../rewriter/text.rewriter.interface';
 import { DIConstants } from '../../../constants/DI.constants';
 import { PromptInterface } from '../../../model/prompt.interface';
 import { UserChannelInterface } from '../../../client/storage/storage.model';
@@ -22,7 +22,7 @@ export type MainChannelsToRewriteSceneContext = TelegramContextModel &
 @Scene(DIConstants.MainChannelToRewrite) // Обновляем декоратор
 export class MainChannelsToRewrite {
 	constructor(
-		@Inject(DIConstants.ContentRewriter) private contentRewriter: ContentRewriterInterface,
+		@Inject(DIConstants.UpdateCategory) private UpdateCategory: UpdateCategoryInterface,
 		@Inject(DIConstants.MainChannelsToRewriteConfig) private config: MainChannelsToRewriteConfig, // Внедряем конфиг
 	) {}
 
@@ -58,7 +58,7 @@ export class MainChannelsToRewrite {
 			});
 
 			try {
-				const rewrittenContent = await this.contentRewriter.rewrite(
+				const rewrittenContent = await this.UpdateCategory.rewrite(
 					{
 						channelsToRewrite: telegramContext.scene.state.channelsToRewrite,
 					},

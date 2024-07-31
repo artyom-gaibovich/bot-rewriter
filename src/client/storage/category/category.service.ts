@@ -4,7 +4,7 @@ import { CategoryServiceInterface } from './category.service.interface';
 import axios from 'axios';
 import { CategoryInterface, User } from '../storage.model';
 import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
-import { CategoryServiceConfig } from '../../../config/category.service.config';
+import { CategoryServiceConfig } from './category.service.config';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 
 @Injectable()

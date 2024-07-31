@@ -12,26 +12,26 @@ export const userServiceConfig = (
 	configService: ConfigService,
 	logger: CustomLoggerInterface,
 ): UserServiceConfig => {
-	const storageURL = configService.get<string>(UrlConstants.StorageUrl);
-	const createUserUrl = configService.get<string>(UrlConstants.CreateUserUrl);
-	const getUserUrl = configService.get<string>(UrlConstants.GetUserUrl);
-	const deleteUserUrl = configService.get<string>(UrlConstants.DeleteUserUrl);
+	const Storage = configService.get<string>(UrlConstants.Storage);
+	const CreateUser = configService.get<string>(UrlConstants.CreateUser);
+	const GetUser = configService.get<string>(UrlConstants.GetUser);
+	const DeleteUser = configService.get<string>(UrlConstants.DeleteUser);
 	const context = `[userServiceConfig]`;
-	if (!storageURL) {
-		throw new Error(`${context} Environment variable ${UrlConstants.StorageUrl} is not defined`);
+	if (!Storage) {
+		throw new Error(`${context} Environment variable ${UrlConstants.Storage} is not defined`);
 	}
-	if (!createUserUrl) {
-		throw new Error(`${context} Environment variable ${UrlConstants.CreateUserUrl} is not defined`);
+	if (!CreateUser) {
+		throw new Error(`${context} Environment variable ${UrlConstants.CreateUser} is not defined`);
 	}
-	if (!getUserUrl) {
-		throw new Error(`${context} Environment variable ${UrlConstants.GetUserUrl} is not defined`);
+	if (!GetUser) {
+		throw new Error(`${context} Environment variable ${UrlConstants.GetUser} is not defined`);
 	}
-	if (!deleteUserUrl) {
-		throw new Error(`${context} Environment variable ${UrlConstants.DeleteUserUrl} is not defined`);
+	if (!DeleteUser) {
+		throw new Error(`${context} Environment variable ${UrlConstants.DeleteUser} is not defined`);
 	}
 	return {
-		createUrl: `${storageURL}${createUserUrl}`,
-		getUrl: `${storageURL}${getUserUrl}`,
-		deleteUrl: `${storageURL}${deleteUserUrl}`,
+		createUrl: `${Storage}${CreateUser}`,
+		getUrl: `${Storage}${GetUser}`,
+		deleteUrl: `${Storage}${DeleteUser}`,
 	};
 };

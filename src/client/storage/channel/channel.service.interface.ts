@@ -6,4 +6,12 @@ export interface ChannelServiceInterface {
 	delete(req: { user: User }): Promise<{ user: User }>;
 
 	deleteSecondary(req: { user: User }): Promise<{ user: User }>;
+
+	checkChannel(req: { links: { link: string }[] }): Promise<{
+		checkedChannels: {
+			status: string;
+			channelLink: string;
+			isChannelExists: boolean;
+		}[];
+	}>;
 }

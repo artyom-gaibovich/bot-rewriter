@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
-import { channelServiceConfig } from '../../../config/channel.service.config';
+import { channelServiceConfig } from './channel.service.config';
 import { CustomLoggerModule } from '../../../logger/custom-logger.module';
 import { ChannelService } from './channel.service';
 

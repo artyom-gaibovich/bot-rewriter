@@ -23,12 +23,12 @@ export class MainChannelToRewrite {
 		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
 	) {}
 
-	@SceneEnter()
+	/*@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: MainChannelToRewriteSceneContext) {
 		if (telegramContext.scene.step.firstTime) {
 			// Initialize any necessary state or perform setup tasks
 		}
-	}
+	}*/
 
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: MainChannelToRewriteSceneContext) {

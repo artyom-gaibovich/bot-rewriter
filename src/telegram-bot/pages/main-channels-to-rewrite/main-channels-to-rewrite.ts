@@ -3,11 +3,10 @@ import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
 import { Inject } from '@nestjs/common';
-import { UpdateCategoryInterface } from '../../../rewriter/text.rewriter.interface';
 import { DIConstants } from '../../../constants/DI.constants';
-import { PromptInterface } from '../../../model/prompt.interface';
 import { UserChannelInterface } from '../../../client/storage/storage.model';
-import { MainChannelsToRewriteConfig } from './main-channels-to-rewrite.config'; // Импортируем конфиг
+import { MainChannelsToRewriteConfig } from './main-channels-to-rewrite.config';
+import { TextRewriterInterface } from '../../../rewriter/text.rewriter.interface'; // Импортируем конфиг
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
 	foundUserChannel: UserChannelInterface;
@@ -19,10 +18,10 @@ export interface MainChannelsToRewriteSceneInterface extends Record<string, any>
 export type MainChannelsToRewriteSceneContext = TelegramContextModel &
 	StepContext<MainChannelsToRewriteSceneInterface>;
 
-@Scene(DIConstants.MainChannelToRewrite) // Обновляем декоратор
+@Scene(DIConstants.MainChannelToRewrite)
 export class MainChannelsToRewrite {
 	constructor(
-		@Inject(DIConstants.UpdateCategory) private UpdateCategory: UpdateCategoryInterface,
+		@Inject(DIConstants.TextRewriter) private textRewriter: TextRewriterInterface,
 		@Inject(DIConstants.MainChannelsToRewriteConfig) private config: MainChannelsToRewriteConfig, // Внедряем конфиг
 	) {}
 
@@ -42,7 +41,10 @@ export class MainChannelsToRewrite {
 			telegramContext.text === this.config.generateContent ||
 			telegramContext.text === this.config.regenerateContent
 		) {
-			const prompt: PromptInterface = {
+			const prompt: {
+				prompt: string;
+				text?: string;
+			} = {
 				prompt: telegramContext.scene.state.currentPrompt
 					? telegramContext.scene.state.currentPrompt
 					: this.config.cancelMessage,
@@ -58,7 +60,7 @@ export class MainChannelsToRewrite {
 			});
 
 			try {
-				const rewrittenContent = await this.UpdateCategory.rewrite(
+				const rewrittenContent = await this.textRewriter.rewrite(
 					{
 						channelsToRewrite: telegramContext.scene.state.channelsToRewrite,
 					},

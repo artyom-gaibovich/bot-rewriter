@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { UrlConstants } from '../../../constants/url.constants';
 import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
+import { DIConstants } from '../../../constants/DI.constants';
 
 export interface ChannelServiceConfig {
 	createUrl: string;
@@ -20,7 +21,7 @@ export const channelServiceConfig = (
 	const CheckChannel = configService.get<string>(UrlConstants.CheckChannel);
 	const DeleteChannel = configService.get<string>(UrlConstants.DeleteChannel);
 	const DeleteChannelRewrite = configService.get<string>(UrlConstants.DeleteChannelRewrite);
-	const context = `[channelServiceConfig]`;
+	const context = `[${DIConstants.ChannelServiceConfig}]`;
 	if (!Storage) {
 		throw new Error(`${context} Environment variable ${UrlConstants.Storage} is not defined`);
 	}

@@ -5,7 +5,7 @@ import { UserRepository } from './user.repository';
 import { UserServiceModule } from '../../client/storage/user/user.service.module';
 
 @Module({
-	imports: [UserServiceModule, ConfigModule],
+	imports: [UserServiceModule],
 	providers: [
 		{
 			provide: DIConstants.UserRepository,

@@ -4,7 +4,6 @@ import { ChannelServiceInterface } from './channel.service.interface';
 import { DIConstants } from '../../../constants/DI.constants';
 import axios from 'axios';
 import { ChannelServiceConfig } from './channel.service.config';
-import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 
 @Injectable()
@@ -14,40 +13,40 @@ export class ChannelService implements ChannelServiceInterface {
 		private logger: CustomLoggerService,
 	) {}
 
-	async create(req: { user: User }): Promise<{ user: User }> {
+	async create(user: { user: User }): Promise<{ user: User }> {
 		try {
-			const { data } = await axios.post<{ user: User }>(this.config.createUrl, req);
+			const { data } = await axios.post<{ user: User }>(this.config.createUrl, user);
 			return data;
 		} catch (error) {
 			this.logger.error(error);
 		}
 	}
 
-	async delete(req: { user: User }): Promise<{ user: User }> {
+	async delete(user: { user: User }): Promise<{ user: User }> {
 		try {
-			const { data } = await axios.post<{ user: User }>(this.config.deleteUrl, req);
+			const { data } = await axios.post<{ user: User }>(this.config.deleteUrl, user);
 			return data;
 		} catch (error) {
 			this.logger.error(error);
 		}
 	}
 
-	async deleteSecondary(req: { user: User }): Promise<{ user: User }> {
+	async deleteSecondary(user: { user: User }): Promise<{ user: User }> {
 		try {
-			const { data } = await axios.post<{ user: User }>(this.config.deleteSecondaryUrl, req);
+			const { data } = await axios.post<{ user: User }>(this.config.deleteSecondaryUrl, user);
 			return data;
 		} catch (error) {
 			this.logger.error(error);
 		}
 	}
 
-	async checkChannel(req: { links: { link: string }[] }): Promise<{
+	async check(channels: { links: { link: string }[] }): Promise<{
 		checkedChannels: { status: string; channelLink: string; isChannelExists: boolean }[];
 	}> {
 		try {
 			const { data } = await axios.post<{
 				checkedChannels: { status: string; channelLink: string; isChannelExists: boolean }[];
-			}>(this.config.checkUrl, req);
+			}>(this.config.checkUrl, channels);
 			return data;
 		} catch (error) {
 			this.logger.error(error);

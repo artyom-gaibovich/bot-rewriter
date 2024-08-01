@@ -1,7 +1,5 @@
-import { LinkInterface } from '../model/link/link.interface';
 import { ConfigService } from '@nestjs/config';
 import { CustomLoggerInterface } from '../logger/custom-logger.interface';
-import { UrlConstants } from '../constants/url.constants';
 import { DIConstants } from '../constants/DI.constants';
 import { EnvConstants } from '../constants/env.constants';
 

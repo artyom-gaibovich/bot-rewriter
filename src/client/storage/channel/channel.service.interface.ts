@@ -1,13 +1,13 @@
 import { User } from '../storage.model';
 
 export interface ChannelServiceInterface {
-	create(req: { user: User }): Promise<{ user: User }>;
+	create(user: { user: User }): Promise<{ user: User }>;
 
-	delete(req: { user: User }): Promise<{ user: User }>;
+	delete(user: { user: User }): Promise<{ user: User }>;
 
-	deleteSecondary(req: { user: User }): Promise<{ user: User }>;
+	deleteSecondary(user: { user: User }): Promise<{ user: User }>;
 
-	checkChannel(req: { links: { link: string }[] }): Promise<{
+	check(channels: { links: { link: string }[] }): Promise<{
 		checkedChannels: {
 			status: string;
 			channelLink: string;

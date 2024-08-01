@@ -1,14 +1,13 @@
 import { TelegramContextModel } from '../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { AddStep, Ctx, Scene } from 'nestjs-puregram';
-import { Inject, UseInterceptors } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { LinkValidatorInterface } from '../../../../validator/link.validator.interface';
 import { DIConstants } from '../../../../constants/DI.constants';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
 import { CategoryInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
 import { AddUserChannelConfig } from './add-user-channel.config';
-import { ErrorInterceptor } from '../../../../interceptors/telegram-bot.interceptor'; // Импортируем конфиг
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	category: CategoryInterface;

@@ -18,6 +18,7 @@ export enum DIConstants {
 	TextService = 'TextService',
 
 	TextRewriter = 'TextRewriter',
+	ChannelChecker = 'ChannelChecker',
 
 	CategoryRepository = 'CategoryRepository',
 	ChannelRepository = 'ChannelRepository',

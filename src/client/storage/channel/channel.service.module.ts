@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
-import { channelServiceConfig } from './channel.service.config';
+import { ChannelServiceConfig, channelServiceConfig } from './channel.service.config';
 import { CustomLoggerModule } from '../../../logger/custom-logger.module';
 import { ChannelService } from './channel.service';
 
@@ -11,8 +11,10 @@ import { ChannelService } from './channel.service';
 	providers: [
 		{
 			provide: DIConstants.ChannelServiceConfig,
-			useFactory: (configService: ConfigService, logger: CustomLoggerService) =>
-				channelServiceConfig(configService, logger),
+			useFactory: (
+				configService: ConfigService,
+				logger: CustomLoggerService,
+			): ChannelServiceConfig => channelServiceConfig(configService, logger),
 			inject: [ConfigService, CustomLoggerService],
 		},
 		{

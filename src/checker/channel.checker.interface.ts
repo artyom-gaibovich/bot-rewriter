@@ -1,5 +1,8 @@
-import { LinkInterface } from '../model/link/link.interface';
-
 export interface ChannelCheckerInterface {
-	checkByLinks(links: LinkInterface[]): Promise<CheckedChannelsModel>;
+	check(channels: { link: string }[]): Promise<{
+		checkedChannels: {
+			channelLink: string;
+			isChannelExists: boolean;
+		}[];
+	}>;
 }

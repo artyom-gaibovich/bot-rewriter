@@ -1,21 +1,25 @@
 import { ChannelCheckerInterface } from './channel.checker.interface';
-import { LinkInterface } from '../model/link/link.interface';
-import { ContentAgencyClientInterface } from '../client/content-agency/content-agency.client.interface';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ChannelServiceInterface } from '../client/storage/channel/channel.service.interface';
+import { DIConstants } from '../constants/DI.constants';
 
 @Injectable()
 export class ChannelChecker implements ChannelCheckerInterface {
-	constructor(private url: LinkInterface, private client: ContentAgencyClientInterface) {}
+	constructor(
+		@Inject(DIConstants.ChannelService) private channelService: ChannelServiceInterface,
+	) {}
 
-	async checkByLinks(links: LinkInterface[]): Promise<CheckedChannelsModel> {
-		const response = await this.client.checkChannels({
-			url: this.url,
-			body: {
-				links: links,
-			},
+	async check(channels: { link: string }[]): Promise<{
+		checkedChannels: {
+			channelLink: string;
+			isChannelExists: boolean;
+		}[];
+	}> {
+		const { checkedChannels } = await this.channelService.check({
+			links: channels,
 		});
 		return {
-			checkedChannels: response.checkedChannels.map((chn) => {
+			checkedChannels: checkedChannels.map((chn) => {
 				return {
 					channelLink: chn.channelLink,
 					isChannelExists: chn.isChannelExists,

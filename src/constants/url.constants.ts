@@ -10,7 +10,7 @@ export enum UrlConstants {
 	CreateChannel = 'CREATE_CHANNEL_ENDPOINT',
 	DeleteChannel = 'DELETE_CHANNEL_ENDPOINT',
 	DeleteChannelRewrite = 'DELETE_CHANNEL_REWRITE_ENDPOINT',
-	CheckChannel = 'REWRITE_CONTENT_ENDPOINT',
+	CheckChannel = 'REWRITE_TEXT_ENDPOINT',
 
 	CreateCategory = 'CREATE_CATEGORY_ENDPOINT',
 	GetAllCategories = 'GET_ALL_CATEGORIES_ENDPOINT',

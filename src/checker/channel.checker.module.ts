@@ -1,23 +1,16 @@
 import { Module } from '@nestjs/common';
-import { LinkInterface } from '../model/link/link.interface';
-import { ContentAgencyClient } from '../client/content-agency/content-agency.client';
-import { UpdateCategory } from '../rewriter/text.rewriter';
+import { DIConstants } from '../constants/DI.constants';
+import { ChannelServiceModule } from '../client/storage/channel/channel.service.module';
 import { ChannelChecker } from './channel.checker';
-import { ConfigService } from '@nestjs/config';
 
 @Module({
+	imports: [ChannelServiceModule],
 	providers: [
 		{
-			provide: 'CUSTOM_CHANNEL_CHECKER',
-			useFactory: (config: ConfigService) => {
-				return new ChannelChecker(
-					{ link: config.get('CHECK_CHANNELS_URL') },
-					new ContentAgencyClient(),
-				);
-			},
-			inject: [ConfigService],
+			provide: DIConstants.ChannelChecker,
+			useClass: ChannelChecker,
 		},
 	],
-	exports: [`CUSTOM_CHANNEL_CHECKER`],
+	exports: [DIConstants.ChannelChecker],
 })
 export class ChannelCheckerModule {}

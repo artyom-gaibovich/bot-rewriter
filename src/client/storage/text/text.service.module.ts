@@ -6,6 +6,7 @@ import { CustomLoggerService } from '../../../logger/custom-logger.service';
 import { channelServiceConfig } from '../channel/channel.service.config';
 import { ChannelService } from '../channel/channel.service';
 import { textServiceConfig } from './text.service.config';
+import { TextService } from './text.service';
 
 @Module({
 	imports: [ConfigModule, CustomLoggerModule],
@@ -18,7 +19,7 @@ import { textServiceConfig } from './text.service.config';
 		},
 		{
 			provide: DIConstants.TextService,
-			useClass: ChannelService,
+			useClass: TextService,
 		},
 	],
 	exports: [DIConstants.TextService],

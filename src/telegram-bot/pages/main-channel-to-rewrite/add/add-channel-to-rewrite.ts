@@ -23,7 +23,7 @@ export type AddUserChannelSceneContext = TelegramContextModel &
 export class AddChannelToRewrite {
 	constructor(
 		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
-		@Inject('CUSTOM_CHANNEL_CHECKER') private checker: ChannelCheckerInterface,
+		@Inject(DIConstants.ChannelChecker) private checker: ChannelCheckerInterface,
 		@Inject(DIConstants.AddChannelToRewriteConfig) private config: AddChannelToRewriteConfig, // Внедряем конфиг
 	) {}
 
@@ -64,7 +64,7 @@ export class AddChannelToRewrite {
 					},
 				});
 			}
-			const isChannelExists = (await this.checker.checkByLinks([{ link: telegramContext.text }]))
+			const isChannelExists = (await this.checker.check([{ link: telegramContext.text }]))
 				.checkedChannels[0].isChannelExists;
 
 			if (isChannelExists) {

@@ -65,7 +65,7 @@ export class MainChannel {
 					telegramContext.text.replace(`◽️ `, ''),
 			);
 
-			return telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
+			return telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 				state: {
 					foundUserChannel: foundUserChannel,
 					currentPrompt: telegramContext.scene.state.currentPrompt

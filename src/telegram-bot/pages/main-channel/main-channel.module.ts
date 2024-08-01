@@ -7,7 +7,7 @@ import { MainChannel } from './main-channel';
 import { MainChannelConfig, mainChannelConfig } from '../../../config/pages/main-channel.config';
 
 @Module({
-	imports: [EditPromptModule, UserManagerModule, UserRepositoryModule],
+	imports: [UserManagerModule, UserRepositoryModule],
 	providers: [
 		{
 			provide: DIConstants.MainChannelConfig,

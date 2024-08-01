@@ -47,6 +47,7 @@ export class ChannelService implements ChannelServiceInterface {
 			const { data } = await axios.post<{
 				checkedChannels: { status: string; channelLink: string; isChannelExists: boolean }[];
 			}>(this.config.checkUrl, channels);
+
 			return data;
 		} catch (error) {
 			this.logger.error(error);

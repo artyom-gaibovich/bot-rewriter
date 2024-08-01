@@ -3,9 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CustomLoggerModule } from '../../../logger/custom-logger.module';
 import { DIConstants } from '../../../constants/DI.constants';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
-import { channelServiceConfig } from '../channel/channel.service.config';
 import { UserService } from './user.service';
-import { userServiceConfig } from '../../../config/user.service.config';
+import { userServiceConfig } from './user.service.config';
 
 @Module({
 	imports: [ConfigModule, CustomLoggerModule],

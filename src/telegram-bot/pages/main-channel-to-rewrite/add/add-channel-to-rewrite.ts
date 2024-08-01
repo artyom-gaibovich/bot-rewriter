@@ -46,7 +46,7 @@ export class AddChannelToRewrite {
 			});
 		}
 		if (telegramContext.text === this.config.cancelButton) {
-			return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
+			return await telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
 				state: {
 					foundUserChannel: foundUserChannel,
 				},
@@ -87,7 +87,7 @@ export class AddChannelToRewrite {
 						(chn.userChannel as ChannelLinkInterface).link ===
 						(foundUserChannel.userChannel as ChannelLinkInterface).link,
 				);
-				return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
+				return await telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
 					state: {
 						foundUserChannel: newChannel,
 					},

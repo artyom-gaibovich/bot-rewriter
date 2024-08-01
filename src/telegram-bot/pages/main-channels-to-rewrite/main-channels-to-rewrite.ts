@@ -18,7 +18,7 @@ export interface MainChannelsToRewriteSceneInterface extends Record<string, any>
 export type MainChannelsToRewriteSceneContext = TelegramContextModel &
 	StepContext<MainChannelsToRewriteSceneInterface>;
 
-@Scene(DIConstants.MainChannelToRewrite)
+@Scene(DIConstants.MainChannelsToRewrite)
 export class MainChannelsToRewrite {
 	constructor(
 		@Inject(DIConstants.TextRewriter) private textRewriter: TextRewriterInterface,
@@ -59,19 +59,15 @@ export class MainChannelsToRewrite {
 				},
 			});
 
-			try {
-				const rewrittenContent = await this.textRewriter.rewrite(
-					{
-						channelsToRewrite: telegramContext.scene.state.channelsToRewrite,
-					},
-					prompt,
-				);
-				await telegramContext.send(rewrittenContent.rewrittenContent);
-				await telegramContext.send(this.config.contentGenerationSuccess);
-				telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent;
-			} catch (e) {
-				await telegramContext.send(this.config.technicalIssuesMessage);
-			}
+			const rewrittenContent = await this.textRewriter.rewrite(
+				{
+					channelsToRewrite: telegramContext.scene.state.channelsToRewrite,
+				},
+				prompt,
+			);
+			await telegramContext.send(rewrittenContent.rewrittenContent);
+			await telegramContext.send(this.config.contentGenerationSuccess);
+			telegramContext.scene.state.generatedContent = rewrittenContent.rewrittenContent;
 		}
 
 		if (telegramContext.text === this.config.backButton) {
@@ -112,7 +108,8 @@ export class MainChannelsToRewrite {
 					(chn) =>
 						chn.link === telegramContext.text.replace(this.config.channelToRewritePrefix, ''),
 				);
-			return telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
+
+			return await telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
 				state: {
 					foundChannelToRewrite,
 					foundUserChannel,

@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
-import { UrlConstants } from '../constants/url.constants';
-import { CustomLoggerInterface } from '../logger/custom-logger.interface';
+import { UrlConstants } from '../../../constants/url.constants';
+import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
 
 export interface UserServiceConfig {
 	createUrl: string;

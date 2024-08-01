@@ -23,17 +23,15 @@ export class MainChannelToRewrite {
 		@Inject(DIConstants.ChannelManager) private channelManager: ChannelManagerInterface,
 	) {}
 
-	/*@SceneEnter()
+	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: MainChannelToRewriteSceneContext) {
 		if (telegramContext.scene.step.firstTime) {
-			// Initialize any necessary state or perform setup tasks
 		}
-	}*/
+	}
 
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: MainChannelToRewriteSceneContext) {
 		const { foundChannelToRewrite, foundUserChannel } = telegramContext.scene.state;
-
 		if (telegramContext.scene.step.firstTime) {
 			return await telegramContext.send(
 				this.config.initialMessage.replace(
@@ -51,7 +49,6 @@ export class MainChannelToRewrite {
 				},
 			);
 		}
-
 		if (telegramContext.text === this.config.backButton) {
 			return await telegramContext.scene.enter(DIConstants.MainChannelsToRewrite, {
 				state: {
@@ -59,7 +56,6 @@ export class MainChannelToRewrite {
 				},
 			});
 		}
-
 		if (telegramContext.text === this.config.deleteSubChannelButton) {
 			const result = await this.channelManager.deleteSecondary({
 				user: {
@@ -72,7 +68,6 @@ export class MainChannelToRewrite {
 					],
 				},
 			});
-
 			const currentUserChannel = result.user.userChannels.find(
 				(chn) => (chn.userChannel as ChannelLinkInterface).id === foundUserChannel.userChannel.id,
 			);

@@ -13,18 +13,24 @@ export class CategoryManager implements CategoryManagerInterface {
 	) {}
 
 	async create(category: {
-		categories: CategoryInterface[];
+		categories: CategoryInterface;
 	}): Promise<{ categories: CategoryInterface[] }> {
 		return await this.categoryService.create(category);
 	}
 
 	async delete(category: {
-		categories: CategoryInterface[];
+		categories: CategoryInterface;
 	}): Promise<{ categories: CategoryInterface[] }> {
 		return await this.categoryService.delete(category);
 	}
 
 	async getAll(): Promise<{ categories: CategoryInterface[] }> {
 		return await this.categoryService.getAll();
+	}
+
+	async update(category: {
+		categories: CategoryInterface;
+	}): Promise<{ categories: CategoryInterface[] }> {
+		return await this.categoryService.update(category);
 	}
 }

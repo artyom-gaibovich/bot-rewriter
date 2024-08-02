@@ -3,9 +3,10 @@ import { ChannelManagerModule } from '../../../../manager/channel/channel.manage
 import { DIConstants } from '../../../../constants/DI.constants';
 import { categoryConfig } from './category.config';
 import { Category } from './category';
+import { CategoryManagerModule } from '../../../../manager/category/category.manager.module';
 
 @Module({
-	imports: [ChannelManagerModule],
+	imports: [CategoryManagerModule],
 	providers: [
 		{
 			provide: DIConstants.CategoryConfig,

@@ -7,7 +7,7 @@ import { ChannelLinkInterface } from '../../../model/link/channel.link.interface
 import { UserManagerInterface } from '../../../manager/user/user.manager.interface';
 import { DIConstants } from '../../../constants/DI.constants';
 import { UserChannelInterface } from '../../../client/storage/storage.model';
-import { MainChannelConfig } from '../../../config/pages/main-channel.config';
+import { MainChannelConfig } from './main-channel.config';
 
 export interface MainChannelSceneInterface extends Record<string, any> {
 	userChannels: UserChannelInterface[];
@@ -88,24 +88,23 @@ export class MainChannel {
 
 		const addChannelKeyboard = [[{ text: this.config.addCategory }]];
 		const limitKeyboard = [[{ text: this.config.improveLimits }]];
+		const exitKeyboard = [[{ text: this.config.exitButton }]];
 		const techSupport = [[{ text: this.config.support }]];
-
-		const editPromptKeyboard = [[{ text: this.config.changePrompt }]];
 
 		let mainKeyboard = [];
 		if (channelsCount === channelsLimit) {
-			mainKeyboard = [...limitKeyboard, ...channelKeyboard, ...techSupport];
+			mainKeyboard = [...limitKeyboard, ...channelKeyboard, ...techSupport, ...exitKeyboard];
 		}
 		if (channelsCount > 0 && channelsCount < channelsLimit) {
-			mainKeyboard = [...addChannelKeyboard, ...channelKeyboard, ...techSupport];
+			mainKeyboard = [...addChannelKeyboard, ...channelKeyboard, ...techSupport, ...exitKeyboard];
 		}
 		if (channelsCount === 0) {
-			mainKeyboard = [...addChannelKeyboard, ...techSupport];
+			mainKeyboard = [...addChannelKeyboard, ...techSupport, ...exitKeyboard];
 		}
 
 		switch (telegramContext.text) {
-			case this.config.changePrompt:
-				return await telegramContext.scene.enter(DIConstants.EditPrompt);
+			case this.config.exitButton:
+				return await telegramContext.scene.enter(DIConstants.AddChannelPromo);
 			case this.config.addCategory:
 				return await telegramContext.scene.enter(DIConstants.AddChannelCategory, {
 					state: {
@@ -129,7 +128,7 @@ export class MainChannel {
 					reply_markup: {
 						resize_keyboard: true,
 						remove_keyboard: true,
-						keyboard: [...editPromptKeyboard, ...mainKeyboard],
+						keyboard: [...mainKeyboard],
 					},
 				});
 		}

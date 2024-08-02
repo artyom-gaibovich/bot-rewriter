@@ -33,6 +33,7 @@ export enum DIConstants {
 	CategoriesConfig = 'CategoriesConfig',
 	CategoryConfig = 'CategoryConfig',
 	AddCategoryConfig = 'AddCategoryConfig',
+	EditCategoryConfig = 'EditCategoryConfig',
 
 	SupportConfig = 'SupportConfig',
 	MainChannelsToRewriteConfig = 'MainChannelsToRewriteConfig',
@@ -54,6 +55,8 @@ export enum DIConstants {
 
 	Category = 'Category',
 	AddCategory = 'AddCategory',
+	EditCategory = 'EditCategory',
+
 	Support = 'Support',
 	Categories = 'Categories',
 	Start = 'Start',

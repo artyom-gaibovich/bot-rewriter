@@ -1,9 +1,10 @@
 import { DIConstants } from '../../../constants/DI.constants';
-import { AddStep, Ctx, Scene } from 'nestjs-puregram';
+import { AddStep, Ctx, Scene, SceneEnter } from 'nestjs-puregram';
 import { Inject } from '@nestjs/common';
 import { CategoriesConfig } from './categories.config';
 import { TelegramContextModel } from '../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
+import { CategoryRepositoryInterface } from '../../../repository/category/category.repository.interface';
 
 export interface CategoriesInterface extends Record<string, any> {
 	data: string;
@@ -13,7 +14,22 @@ export type CategoriesContext = TelegramContextModel & StepContext<CategoriesInt
 
 @Scene(DIConstants.Categories)
 export class Categories {
-	constructor(@Inject(DIConstants.CategoriesConfig) private config: CategoriesConfig) {}
+	constructor(
+		@Inject(DIConstants.CategoryRepository) private repository: CategoryRepositoryInterface,
+		@Inject(DIConstants.CategoriesConfig) private config: CategoriesConfig,
+	) {}
+
+	@SceneEnter()
+	async sceneEnter(@Ctx() telegramContext: CategoriesContext) {
+		if (telegramContext.scene.step.firstTime) {
+			telegramContext.scene.state.categories = [
+				...(await this.repository.findAll()).categories,
+			].sort((a, b) => a.sequence - b.sequence);
+			telegramContext.scene.state.limit = 17;
+			telegramContext.scene.state.currentPage = 0;
+			return await this.showCategories(telegramContext);
+		}
+	}
 
 	@AddStep(0)
 	async firstStep(@Ctx() telegramContext: CategoriesContext) {
@@ -21,12 +37,16 @@ export class Categories {
 			telegramContext.scene.state.currentPage++;
 			return await this.showCategories(telegramContext);
 		}
+		if (telegramContext.text === this.config.addNewCategoryButton) {
+			return await telegramContext.scene.enter(DIConstants.AddCategory);
+		}
+
 		if (telegramContext.text === this.config.backButton) {
 			telegramContext.scene.state.currentPage--;
 			return await this.showCategories(telegramContext);
 		}
 		if (telegramContext.text === this.config.exitButton) {
-			return await telegramContext.scene.enter(DIConstants.MainChannel);
+			return await telegramContext.scene.enter(DIConstants.AddChannelPromo);
 		}
 		if (
 			telegramContext.text !== this.config.addCategoryButton &&
@@ -55,6 +75,7 @@ export class Categories {
 		if (currentPage === 0) {
 			mainKeyboard = [
 				...categoriesForPage.map((category) => [{ text: `${category.title}` }]),
+				[{ text: this.config.addNewCategoryButton }],
 				[{ text: this.config.nextButton }],
 				[{ text: this.config.exitButton }],
 			];
@@ -62,12 +83,14 @@ export class Categories {
 			if (categoriesForPage.length !== limit) {
 				mainKeyboard = [
 					...categoriesForPage.map((category) => [{ text: category.title }]),
+					[{ text: this.config.addNewCategoryButton }],
 					[{ text: this.config.backButton }],
 					[{ text: this.config.exitButton }],
 				];
 			} else {
 				mainKeyboard = [
 					...categoriesForPage.map((category) => [{ text: category.title }]),
+					[{ text: this.config.addNewCategoryButton }],
 					[{ text: this.config.backButton }],
 					[{ text: this.config.nextButton }],
 					[{ text: this.config.exitButton }],

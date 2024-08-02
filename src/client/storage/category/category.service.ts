@@ -1,9 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
-import { CategoryServiceInterface } from './category.service.interface';
+import { CategoryInterface, CategoryServiceInterface } from './category.service.interface';
 import axios from 'axios';
-import { CategoryInterface, User } from '../storage.model';
-import { CustomLoggerInterface } from '../../../logger/custom-logger.interface';
 import { CategoryServiceConfig } from './category.service.config';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 
@@ -24,7 +22,7 @@ export class CategoryService implements CategoryServiceInterface {
 	}
 
 	async create(req: {
-		categories: CategoryInterface[];
+		categories: CategoryInterface;
 	}): Promise<{ categories: CategoryInterface[] }> {
 		try {
 			const { data } = await axios.post<{ categories: CategoryInterface[] }>(
@@ -38,7 +36,7 @@ export class CategoryService implements CategoryServiceInterface {
 	}
 
 	async delete(req: {
-		categories: CategoryInterface[];
+		categories: CategoryInterface;
 	}): Promise<{ categories: CategoryInterface[] }> {
 		try {
 			const { data } = await axios.post<{ categories: CategoryInterface[] }>(
@@ -52,7 +50,7 @@ export class CategoryService implements CategoryServiceInterface {
 	}
 
 	async update(req: {
-		categories: CategoryInterface[];
+		categories: CategoryInterface;
 	}): Promise<{ categories: CategoryInterface[] }> {
 		try {
 			const { data } = await axios.post<{ categories: CategoryInterface[] }>(

@@ -1,3 +1,5 @@
+import { CategoryInterface } from './category/category.service.interface';
+
 export interface User {
 	id: number;
 	userChannels?: UserChannelInterface[];

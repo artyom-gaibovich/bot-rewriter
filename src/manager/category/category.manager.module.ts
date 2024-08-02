@@ -14,4 +14,4 @@ import { CategoryManager } from './category.manager';
 	],
 	exports: [DIConstants.CategoryManager],
 })
-export class ChannelManagerModule {}
+export class CategoryManagerModule {}

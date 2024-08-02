@@ -6,6 +6,7 @@ export interface MainChannelConfig {
 	startMessage: string;
 	isNotWork: string;
 	chooseNextAction: string;
+	exitButton: string;
 	channelsLimit: number;
 }
 
@@ -14,6 +15,7 @@ export const mainChannelConfig = (): MainChannelConfig => {
 		addCategory: 'Добавить категорию',
 		changePrompt: 'Изменить промпт',
 		improveLimits: 'Повысить лимиты',
+		exitButton: 'Обратно',
 		startMessage:
 			'Для того, чтобы начать работу вам нужно добавить основные каналы для которых будет генерироваться контент.\n' +
 			'\n' +

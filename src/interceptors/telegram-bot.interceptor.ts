@@ -21,7 +21,6 @@ export class ErrorInterceptor implements NestInterceptor {
 				if (ctx) {
 					ctx.send('Ошибка произошла. Попробуйте еще раз.'); // Или используйте ваш конфиг для сообщения об ошибке
 				}
-				console.error('Произошла ошибка:', error);
 				return throwError(() => error);
 			}),
 		);

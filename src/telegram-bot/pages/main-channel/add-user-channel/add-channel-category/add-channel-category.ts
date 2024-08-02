@@ -4,11 +4,9 @@ import { CategoryRepositoryInterface } from '../../../../../repository/category/
 import { TelegramContextModel } from '../../../../model/telegram-context-model';
 import { StepContext } from '@puregram/scenes';
 import { DIConstants } from '../../../../../constants/DI.constants';
-import {
-	CategoryInterface,
-	UserChannelInterface,
-} from '../../../../../client/storage/storage.model';
+import { UserChannelInterface } from '../../../../../client/storage/storage.model';
 import { AddChannelCategoryConfig } from './add-channel-category.config';
+import { CategoryInterface } from '../../../../../client/storage/category/category.service.interface';
 
 export interface AddChannelCategoryInterface extends Record<string, any> {
 	categories: CategoryInterface[];
@@ -30,7 +28,9 @@ export class AddChannelCategory {
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: AddChannelCategoryContext) {
 		if (telegramContext.scene.step.firstTime) {
-			telegramContext.scene.state.categories = [...(await this.repository.findAll()).categories];
+			telegramContext.scene.state.categories = [
+				...(await this.repository.findAll()).categories,
+			].sort((a, b) => a.sequence - b.sequence);
 			telegramContext.scene.state.limit = 17;
 			telegramContext.scene.state.currentPage = 0;
 			return await this.showCategories(telegramContext);

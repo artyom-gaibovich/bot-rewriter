@@ -8,11 +8,11 @@ import { ChannelCheckerInterface } from '../../../../checker/channel.checker.int
 import { UserChannelInterface } from '../../../../client/storage/storage.model';
 import { DIConstants } from '../../../../constants/DI.constants';
 import { AddChannelToRewriteConfig } from './add-channel-to-rewrite.config';
-import { ErrorInterceptor } from '../../../../interceptors/telegram-bot.interceptor';
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	isChannelExists: boolean;
 	foundUserChannel: UserChannelInterface;
+	foundChannelToRewrite: ChannelLinkInterface;
 	channelsToRewrite: ChannelLinkInterface[];
 }
 
@@ -87,8 +87,12 @@ export class AddChannelToRewrite {
 						(chn.userChannel as ChannelLinkInterface).link ===
 						(foundUserChannel.userChannel as ChannelLinkInterface).link,
 				);
+				const currentChannelToRewrite = newChannel.channelsToRewrite.find(
+					(chn) => chn.link === telegramContext.text,
+				);
 				return await telegramContext.scene.enter(DIConstants.MainChannelToRewrite, {
 					state: {
+						foundChannelToRewrite: currentChannelToRewrite,
 						foundUserChannel: newChannel,
 					},
 				});

@@ -5,6 +5,7 @@ export interface CategoriesConfig {
 	exitButton: string;
 	addCategoryButton: string;
 	selectActionMessage: string;
+	addNewCategoryButton: string;
 }
 
 export const categoriesConfig = (): CategoriesConfig => {
@@ -14,6 +15,7 @@ export const categoriesConfig = (): CategoriesConfig => {
 		backButton: 'Назад',
 		exitButton: 'Выйти',
 		addCategoryButton: 'Добавить категорию',
+		addNewCategoryButton: 'Добавить новую категорию',
 		selectActionMessage: 'Выберите дальнейшее действие',
 	};
 };

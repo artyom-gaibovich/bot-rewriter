@@ -11,9 +11,17 @@ import { AddChannelsPromoModule } from './pages/add-channel-promo/add-channels-p
 import { ImproveLimitsModule } from './pages/improve-limits/improve-limits.module';
 import { SupportModule } from './pages/support/support.module';
 import { AddChannelCategoryModule } from './pages/main-channel/add-user-channel/add-channel-category/add-channel-category.module';
+import { CategoryModule } from './pages/categories/category/category.module';
+import { CategoriesModule } from './pages/categories/categories.module';
+import { AddCategoryModule } from './pages/categories/add-category/add-category.module';
+import { EditCategoryModule } from './pages/categories/edit-category/edit-category.module';
 
 @Module({
 	imports: [
+		CategoriesModule,
+		CategoryModule,
+		EditCategoryModule,
+		AddCategoryModule,
 		AddChannelCategoryModule,
 		AddChannelsPromoModule,
 		SupportModule,

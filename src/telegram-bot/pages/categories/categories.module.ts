@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
 import { categoriesConfig } from './categories.config';
+import { CategoryRepositoryModule } from '../../../repository/category/category.repository.module';
+import { Categories } from './categories';
 
 @Module({
+	imports: [CategoryRepositoryModule],
 	providers: [
 		{
 			provide: DIConstants.CategoriesConfig,
@@ -10,7 +13,7 @@ import { categoriesConfig } from './categories.config';
 		},
 		{
 			provide: DIConstants.Categories,
-			useClass: CategoriesModule,
+			useClass: Categories,
 		},
 	],
 })

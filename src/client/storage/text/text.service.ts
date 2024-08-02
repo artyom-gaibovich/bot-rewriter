@@ -5,6 +5,7 @@ import { Inject } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
 import { CustomLoggerService } from '../../../logger/custom-logger.service';
 import { TextServiceConfig } from './text.service.config';
+import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider';
 
 export class TextService implements TextServiceInterface {
 	constructor(
@@ -23,6 +24,7 @@ export class TextService implements TextServiceInterface {
 				response_message: string;
 				data: string;
 			}>(this.config.rewriteText, req);
+
 			return data;
 		} catch (error) {
 			this.logger.error(error);

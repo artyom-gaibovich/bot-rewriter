@@ -4,6 +4,9 @@ export interface AddCategoryConfig {
 	deleteSubChannelButton: string;
 	startMessage: string;
 	errorMessage: string;
+
+	promptMessage: string;
+	valueMessage: string;
 }
 
 export const addCategoryConfig = (): AddCategoryConfig => {
@@ -11,6 +14,8 @@ export const addCategoryConfig = (): AddCategoryConfig => {
 		deleteSubChannelMessage: 'Категория была удалёна.',
 		errorMessage: 'Произошла ошибка на сервере.',
 		startMessage: 'Отправьте название категории',
+		promptMessage: 'Отправьте промпт для этой категории',
+		valueMessage: 'Отправьте [value], используйте английский алфовит.',
 		backButton: 'Обратно',
 		deleteSubChannelButton: 'Удалить категорию',
 	};

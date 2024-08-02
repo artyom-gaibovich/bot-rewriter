@@ -4,6 +4,7 @@ import { DIConstants } from '../../../constants/DI.constants';
 import { AddChannelsPromo } from './add-channels-promo';
 
 @Module({
+	imports: [],
 	providers: [
 		{
 			provide: DIConstants.AddChannelPromoConfig,

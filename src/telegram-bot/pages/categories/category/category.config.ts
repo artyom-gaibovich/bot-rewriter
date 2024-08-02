@@ -5,17 +5,21 @@ export interface CategoryConfig {
 	channelAlreadyAddedError: string;
 	invalidLinkError: string;
 	successMessage: string;
+	editCategory: string;
 	error: string;
+	deleteCategory: string;
 }
 
 export const categoryConfig = (): CategoryConfig => {
 	return {
 		error: 'Произошла ошибка на стороне сервера. Скоро поправим.',
-		requestLinkMessage: 'Отправьте ссылку на ваш телеграм канал',
+		requestLinkMessage: 'Отправьте название категории',
 		goBackButton: 'Вернуться обратно',
 		channelNotAddedError: 'Канал не был добавлен, отправьте в корректном формате',
 		channelAlreadyAddedError: 'Вы уже добавили этот канал',
 		invalidLinkError: 'Канал не был добавлен, отправьте в корректном формате',
-		successMessage: 'Канал был успешно добавлен!',
+		successMessage: 'Категория была успешно добавлен!',
+		editCategory: 'Редактировать',
+		deleteCategory: 'Удалить',
 	};
 };

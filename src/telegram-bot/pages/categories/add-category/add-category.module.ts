@@ -2,8 +2,12 @@ import { Module } from '@nestjs/common';
 import { DIConstants } from '../../../../constants/DI.constants';
 import { categoriesConfig } from '../categories.config';
 import { addCategoryConfig } from './add-category.config';
+import { CategoryModule } from '../category/category.module';
+import { AddCategory } from './add-category';
+import { CategoryManagerModule } from '../../../../manager/category/category.manager.module';
 
 @Module({
+	imports: [CategoryManagerModule],
 	providers: [
 		{
 			provide: DIConstants.AddCategoryConfig,
@@ -11,8 +15,8 @@ import { addCategoryConfig } from './add-category.config';
 		},
 		{
 			provide: DIConstants.AddCategory,
-			useClass: CategoriesModule,
+			useClass: AddCategory,
 		},
 	],
 })
-export class CategoriesModule {}
+export class AddCategoryModule {}

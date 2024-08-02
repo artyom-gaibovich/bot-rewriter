@@ -6,8 +6,9 @@ import { ChannelManagerInterface } from '../../../../manager/channel/channel.man
 import { LinkValidatorInterface } from '../../../../validator/link.validator.interface';
 import { DIConstants } from '../../../../constants/DI.constants';
 import { ChannelLinkInterface } from '../../../../model/link/channel.link.interface';
-import { CategoryInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
+import { UserChannelInterface } from '../../../../client/storage/storage.model';
 import { AddUserChannelConfig } from './add-user-channel.config';
+import { CategoryInterface } from '../../../../client/storage/category/category.service.interface';
 
 export interface AddUserChannelSceneInterface extends Record<string, any> {
 	category: CategoryInterface;
@@ -55,14 +56,16 @@ export class AddUserChannel {
 						},
 					});
 				}
-
 				if (this.linkValidator.validate({ link: telegramContext.text })) {
 					const result = await this.channelManager.create({
 						user: {
 							id: telegramContext.from.id,
 							userChannels: [
 								{
-									userChannel: { link: `${telegramContext.text}` },
+									userChannel: {
+										category: telegramContext.scene.state.category,
+										link: `${telegramContext.text}`,
+									},
 								},
 							],
 						},

@@ -1,16 +1,11 @@
-export interface CategoryInterface {
-	title: string;
-	value: string;
-	sequence?: number;
-	prompt?: string;
-}
+import { CategoryInterface } from '../../client/storage/category/category.service.interface';
 
-export interface CategoryServiceInterface {
-	getAll(): Promise<{ categories: CategoryInterface[] }>;
-
+export interface CategoryManagerInterface {
 	create(req: { categories: CategoryInterface }): Promise<{ categories: CategoryInterface[] }>;
 
 	delete(req: { categories: CategoryInterface }): Promise<{ categories: CategoryInterface[] }>;
+
+	getAll(): Promise<{ categories: CategoryInterface[] }>;
 
 	update(req: { categories: CategoryInterface }): Promise<{ categories: CategoryInterface[] }>;
 }

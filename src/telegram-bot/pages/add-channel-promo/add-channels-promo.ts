@@ -11,7 +11,7 @@ export interface AddChannelsPromoInterface extends Record<string, any> {
 
 export type AddChannelsPromoContext = TelegramContextModel & StepContext<AddChannelsPromoInterface>;
 
-@Scene(DIConstants.AddChannelPromo) // Используем DIConstant
+@Scene(DIConstants.AddChannelPromo)
 export class AddChannelsPromo {
 	constructor(
 		@Inject(DIConstants.AddChannelPromoConfig) private config: AddChannelsPromoConfig, // Внедряем конфиг
@@ -27,7 +27,10 @@ export class AddChannelsPromo {
 				reply_markup: {
 					resize_keyboard: true,
 					remove_keyboard: true,
-					keyboard: [[{ text: this.config.startButton }, { text: this.config.supportButton }]],
+					keyboard: [
+						[{ text: this.config.startButton }, { text: this.config.supportButton }],
+						[{ text: this.config.categories }],
+					],
 				},
 			});
 		}
@@ -49,6 +52,9 @@ export class AddChannelsPromo {
 
 			case this.config.backButton:
 				return await telegramContext.scene.enter(DIConstants.Start);
+
+			case this.config.categories:
+				return await telegramContext.scene.enter(DIConstants.Categories);
 
 			default:
 				return;

@@ -1,6 +1,5 @@
 import { ConfigService } from '@nestjs/config';
 import { UrlConstants } from '../../../constants/url.constants';
-import { DIConstants } from '../../../constants/DI.constants';
 import { LoggerService } from '@nestjs/common';
 
 export interface CategoryServiceConfig {

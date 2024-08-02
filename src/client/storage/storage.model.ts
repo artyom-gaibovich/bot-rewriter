@@ -1,3 +1,5 @@
+import { CategoryInterface } from './category/category.service.interface';
+
 export interface User {
 	id: number;
 	userChannels?: UserChannelInterface[];
@@ -6,13 +8,6 @@ export interface User {
 export interface UserChannelInterface {
 	userChannel?: ChannelInterface | {};
 	channelsToRewrite?: ChannelInterface[];
-}
-
-export interface CategoryInterface {
-	title: string;
-	value: string;
-	sequence?: number;
-	prompt?: string;
 }
 
 export interface ChannelInterface {

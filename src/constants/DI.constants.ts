@@ -30,6 +30,11 @@ export enum DIConstants {
 
 	//Configs.Pages
 	StartConfig = 'StartConfig',
+	CategoriesConfig = 'CategoriesConfig',
+	CategoryConfig = 'CategoryConfig',
+	AddCategoryConfig = 'AddCategoryConfig',
+	EditCategoryConfig = 'EditCategoryConfig',
+
 	SupportConfig = 'SupportConfig',
 	MainChannelsToRewriteConfig = 'MainChannelsToRewriteConfig',
 	MainChannelToRewriteConfig = 'MainChannelToRewriteConfig',
@@ -48,7 +53,12 @@ export enum DIConstants {
 	UpdateCategoryLinkConfig = 'UpdateCategoryLinkConfig',
 	TextRewriterConfig = 'TextRewriterConfig',
 
+	Category = 'Category',
+	AddCategory = 'AddCategory',
+	EditCategory = 'EditCategory',
+
 	Support = 'Support',
+	Categories = 'Categories',
 	Start = 'Start',
 	MainChannelsToRewrite = 'MainChannelsToRewrite',
 	MainChannelToRewrite = 'MainChannelToRewrite',

@@ -4,14 +4,17 @@ import { StepContext } from '@puregram/scenes';
 import { ChannelLinkInterface } from '../../../model/link/channel.link.interface';
 import { Inject } from '@nestjs/common';
 import { DIConstants } from '../../../constants/DI.constants';
-import { UserChannelInterface } from '../../../client/storage/storage.model';
+import { ChannelInterface, UserChannelInterface } from '../../../client/storage/storage.model';
 import { MainChannelsToRewriteConfig } from './main-channels-to-rewrite.config';
-import { TextRewriterInterface } from '../../../rewriter/text.rewriter.interface'; // Импортируем конфиг
+import { TextRewriterInterface } from '../../../rewriter/text.rewriter.interface';
+import { CategoryRepositoryInterface } from '../../../repository/category/category.repository.interface';
+import { CategoryInterface } from '../../../client/storage/category/category.service.interface'; // Импортируем конфиг
 
 export interface MainChannelsToRewriteSceneInterface extends Record<string, any> {
 	foundUserChannel: UserChannelInterface;
 	channelsToRewrite?: ChannelLinkInterface[] | any; // Необходимо типизировать
 	generatedContent: string;
+	currentCategory: CategoryInterface;
 	currentPrompt: string;
 }
 
@@ -22,21 +25,27 @@ export type MainChannelsToRewriteSceneContext = TelegramContextModel &
 export class MainChannelsToRewrite {
 	constructor(
 		@Inject(DIConstants.TextRewriter) private textRewriter: TextRewriterInterface,
+		@Inject(DIConstants.CategoryRepository) private categoryRepository: CategoryRepositoryInterface,
 		@Inject(DIConstants.MainChannelsToRewriteConfig) private config: MainChannelsToRewriteConfig, // Внедряем конфиг
 	) {}
 
 	@SceneEnter()
 	async sceneEnter(@Ctx() telegramContext: MainChannelsToRewriteSceneContext) {
 		if (telegramContext.scene.step.firstTime) {
-			telegramContext.scene.state.channelsToRewrite =
-				telegramContext.scene.state.foundUserChannel.channelsToRewrite;
+			const { foundUserChannel } = telegramContext.scene.state;
+			telegramContext.scene.state.channelsToRewrite = foundUserChannel.channelsToRewrite;
+
+			telegramContext.scene.state.currentCategory = [
+				...(await this.categoryRepository.findAll()).categories,
+			].find(
+				(chn) => chn.value === (foundUserChannel.userChannel as ChannelInterface).category.value,
+			);
 		}
 	}
 
 	@AddStep(0)
 	async zeroStep(@Ctx() telegramContext: MainChannelsToRewriteSceneContext) {
 		const foundUserChannel = telegramContext.scene.state.foundUserChannel;
-
 		if (
 			telegramContext.text === this.config.generateContent ||
 			telegramContext.text === this.config.regenerateContent
@@ -45,12 +54,12 @@ export class MainChannelsToRewrite {
 				prompt: string;
 				text?: string;
 			} = {
-				prompt: telegramContext.scene.state.currentPrompt
-					? telegramContext.scene.state.currentPrompt
+				prompt: telegramContext.scene.state.currentCategory.prompt
+					? telegramContext.scene.state.currentCategory.prompt
 					: this.config.cancelMessage,
 			};
 			if (telegramContext.text === this.config.regenerateContent) {
-				prompt.prompt = telegramContext.scene.state.currentPrompt;
+				prompt.prompt = (foundUserChannel.userChannel as ChannelInterface).category.prompt;
 			}
 
 			await telegramContext.send(this.config.contentGenerationMessage, {
@@ -96,7 +105,6 @@ export class MainChannelsToRewrite {
 				},
 			});
 		}
-
 		if (
 			telegramContext.text.startsWith(this.config.channelToRewritePrefix) &&
 			telegramContext.scene.state.channelsToRewrite

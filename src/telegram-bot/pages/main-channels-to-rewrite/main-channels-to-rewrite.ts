@@ -34,12 +34,11 @@ export class MainChannelsToRewrite {
 		if (telegramContext.scene.step.firstTime) {
 			const { foundUserChannel } = telegramContext.scene.state;
 			telegramContext.scene.state.channelsToRewrite = foundUserChannel.channelsToRewrite;
-
-			telegramContext.scene.state.currentCategory = [
-				...(await this.categoryRepository.findAll()).categories,
-			].find(
+			const result = [...(await this.categoryRepository.findAll()).categories].find(
 				(chn) => chn.value === (foundUserChannel.userChannel as ChannelInterface).category.value,
 			);
+			console.log(result, foundUserChannel);
+			telegramContext.scene.state.currentCategory = result;
 		}
 	}
 

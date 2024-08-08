@@ -5,7 +5,7 @@ import { ChannelLinkInterface } from '../../../../model/link/channel.link.interf
 import { Inject, UseInterceptors } from '@nestjs/common';
 import { ChannelManagerInterface } from '../../../../manager/channel/channel.manager.interface';
 import { ChannelCheckerInterface } from '../../../../checker/channel.checker.interface';
-import { UserChannelInterface } from '../../../../client/storage/storage.model';
+import { ChannelInterface, UserChannelInterface } from '../../../../client/storage/storage.model';
 import { DIConstants } from '../../../../constants/DI.constants';
 import { AddChannelToRewriteConfig } from './add-channel-to-rewrite.config';
 
@@ -74,6 +74,7 @@ export class AddChannelToRewrite {
 						userChannels: [
 							{
 								userChannel: {
+									category: (foundUserChannel.userChannel as ChannelInterface).category,
 									link: (foundUserChannel.userChannel as ChannelLinkInterface).link,
 									id: (foundUserChannel.userChannel as ChannelLinkInterface).id,
 								},

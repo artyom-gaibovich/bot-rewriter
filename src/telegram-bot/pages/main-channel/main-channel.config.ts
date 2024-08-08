@@ -25,6 +25,6 @@ export const mainChannelConfig = (): MainChannelConfig => {
 		chooseNextAction: 'Выберите дальнейшее действие:',
 		support: 'Техническая поддержка',
 		isNotWork: 'На сервере ведутся технические работы',
-		channelsLimit: 3,
+		channelsLimit: 50,
 	};
 };

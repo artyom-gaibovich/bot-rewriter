@@ -17,7 +17,7 @@ export const editCategoryConfig = (): EditCategoryConfig => {
 		sequenceMessage: 'Отправьте [sequence]',
 		deleteSubChannelMessage: '[Категория была удалёна.]',
 		errorMessage: '[Произошла ошибка на сервере]',
-		startMessage: '[Отправьте название категории]',
+		startMessage: '[Отправьте название промпт]',
 		promptMessage: '[Отправьте промпт для этой категории]',
 		valueMessage: 'Отправьте [value], используйте английский алфовит.',
 		backButton: '[Вернуться обратно]',

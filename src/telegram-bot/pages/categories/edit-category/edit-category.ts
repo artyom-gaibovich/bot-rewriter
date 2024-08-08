@@ -47,31 +47,37 @@ export class EditCategory {
 			});
 		}
 		if (telegramContext.text === this.config.backButton) {
-			return await telegramContext.scene.enter(DIConstants.Category);
-		}
-		telegramContext.scene.state.title = telegramContext.text;
-		await telegramContext.scene.step.next();
-	}
-
-	@AddStep(1)
-	async firstStep(@Ctx() telegramContext: EditUserChannelSceneContext): Promise<unknown> {
-		if (telegramContext.scene.step.firstTime) {
-			return await telegramContext.send(this.config.promptMessage, {
-				reply_markup: {
-					remove_keyboard: true,
-					resize_keyboard: true,
-					keyboard: [[{ text: this.config.backButton }]],
+			return await telegramContext.scene.enter(DIConstants.Category, {
+				state: {
+					category: telegramContext.scene.state.category,
 				},
 			});
-		}
-		if (telegramContext.text === this.config.backButton) {
-			return await telegramContext.scene.enter(DIConstants.Category);
 		}
 		telegramContext.scene.state.prompt = telegramContext.text;
 		await telegramContext.scene.step.next();
 	}
 
-	@AddStep(2)
+	/*
+		@AddStep(1)
+		async firstStep(@Ctx() telegramContext: EditUserChannelSceneContext): Promise<unknown> {
+			if (telegramContext.scene.step.firstTime) {
+				return await telegramContext.send(this.config.promptMessage, {
+					reply_markup: {
+						remove_keyboard: true,
+						resize_keyboard: true,
+						keyboard: [[{ text: this.config.backButton }]],
+					},
+				});
+			}
+			if (telegramContext.text === this.config.backButton) {
+				return await telegramContext.scene.enter(DIConstants.Category);
+			}
+			telegramContext.scene.state.prompt = telegramContext.text;
+			await telegramContext.scene.step.next();
+		}
+	*/
+
+	/*@AddStep(1)
 	async thirdStep(@Ctx() telegramContext: EditUserChannelSceneContext): Promise<unknown> {
 		if (telegramContext.scene.step.firstTime) {
 			return await telegramContext.send(this.config.sequenceMessage, {
@@ -93,13 +99,13 @@ export class EditCategory {
 			return await telegramContext.scene.enter(DIConstants.Category);
 		}
 	}
-
-	@AddStep(3)
+*/
+	@AddStep(1)
 	async fourthStep(@Ctx() telegramContext: EditUserChannelSceneContext): Promise<unknown> {
 		const value = telegramContext.scene.state.category.value;
-		const title = telegramContext.scene.state.title;
+		const title = telegramContext.scene.state.category.title;
 		const prompt = telegramContext.scene.state.prompt;
-		const sequence = telegramContext.scene.state.sequence;
+		const sequence = telegramContext.scene.state.category.sequence;
 		const result = await this.categoryManager.update({
 			categories: {
 				sequence: sequence,

@@ -7,7 +7,7 @@ async function bootstrap() {
 		logger: new CustomLoggerService(),
 	});
 	app.setGlobalPrefix('api');
-	await app.listen(3000);
+	await app.listen(5001);
 }
 
 bootstrap();

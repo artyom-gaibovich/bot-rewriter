@@ -75,7 +75,6 @@ export class Categories {
 		if (currentPage === 0) {
 			mainKeyboard = [
 				...categoriesForPage.map((category) => [{ text: `${category.title}` }]),
-				[{ text: this.config.addNewCategoryButton }],
 				[{ text: this.config.nextButton }],
 				[{ text: this.config.exitButton }],
 			];
@@ -83,14 +82,12 @@ export class Categories {
 			if (categoriesForPage.length !== limit) {
 				mainKeyboard = [
 					...categoriesForPage.map((category) => [{ text: category.title }]),
-					[{ text: this.config.addNewCategoryButton }],
 					[{ text: this.config.backButton }],
 					[{ text: this.config.exitButton }],
 				];
 			} else {
 				mainKeyboard = [
 					...categoriesForPage.map((category) => [{ text: category.title }]),
-					[{ text: this.config.addNewCategoryButton }],
 					[{ text: this.config.backButton }],
 					[{ text: this.config.nextButton }],
 					[{ text: this.config.exitButton }],

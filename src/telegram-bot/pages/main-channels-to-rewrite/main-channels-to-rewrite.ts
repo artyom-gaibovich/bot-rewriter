@@ -58,9 +58,9 @@ export class MainChannelsToRewrite {
 					? telegramContext.scene.state.currentCategory.prompt
 					: this.config.cancelMessage,
 			};
-			if (telegramContext.text === this.config.regenerateContent) {
+			/*if (telegramContext.text === this.config.regenerateContent) {
 				prompt.prompt = (foundUserChannel.userChannel as ChannelInterface).category.prompt;
-			}
+			}*/
 
 			await telegramContext.send(this.config.contentGenerationMessage, {
 				reply_markup: {
@@ -137,7 +137,7 @@ export class MainChannelsToRewrite {
 			[
 				{
 					text: telegramContext.scene.state.generatedContent
-						? this.config.regenerateContent
+						? this.config.generateContent
 						: this.config.generateContent,
 				},
 			],

@@ -28,13 +28,7 @@ export class Category {
 					reply_markup: {
 						remove_keyboard: true,
 						resize_keyboard: true,
-						keyboard: [
-							[
-								{ text: this.config.goBackButton },
-								{ text: this.config.editCategory },
-								{ text: this.config.deleteCategory },
-							],
-						],
+						keyboard: [[{ text: this.config.goBackButton }, { text: this.config.editCategory }]],
 					},
 				});
 			}

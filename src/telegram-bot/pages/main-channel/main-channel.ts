@@ -75,8 +75,6 @@ export class MainChannel {
 			});
 		}
 		telegramContext.scene.state.countToJoinMainPage = 0;
-		//
-		//ПЕРЕВОДИМ НА ДРУГУЮ СЦЕНУ, ИЛИ ШАГ, ГДЕ ДОБАВЛЯЕТ КАНАЛ, А ЗАТЕМ НАЗАД ИДЁМ
 		const channels = telegramContext.scene.state.userChannels;
 		const channelsCount = telegramContext.scene.state.userChannels.length;
 

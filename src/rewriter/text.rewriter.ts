@@ -18,13 +18,13 @@ export class TextRewriter implements TextRewriterInterface {
 			text?: string;
 		},
 	): Promise<{ rewrittenContent: string }> {
-		const data = await this.textService.rewrite({
+		const { data } = await this.textService.rewrite({
 			prompt: prompt.prompt,
 			links: channelsToRewrite.channelsToRewrite,
 			limit: this.config.limit,
 		});
 		return {
-			rewrittenContent: '1',
+			rewrittenContent: data,
 		};
 	}
 }
